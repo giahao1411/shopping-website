@@ -1,5 +1,5 @@
 import React from "react";
-import InputField from "./InputField";
+import InputField from "../Utilities/InputField";
 import "./Login.css";
 
 const Login = () => {
@@ -7,7 +7,7 @@ const Login = () => {
         <div className="login-container">
             <h2 className="form-title">Log in</h2>
 
-            <form action="#" className="login-form">
+            <form method="post" action="/account/login" className="login-form">
                 <InputField
                     type="email"
                     placeholder="Email Address"
@@ -19,7 +19,10 @@ const Login = () => {
                     icon="lock"
                 />
 
-                <a href="#" className="forgot-password-link">
+                <a
+                    href="/account/forgot-password"
+                    className="forgot-password-link"
+                >
                     Forgot Password?
                 </a>
 
@@ -27,7 +30,8 @@ const Login = () => {
             </form>
 
             <p className="register-text">
-                Don&apos;t have an account? <a href="#">Register now</a>
+                Don&apos;t have an account?{" "}
+                <a href="/account/register">Register now</a>
             </p>
         </div>
     );
