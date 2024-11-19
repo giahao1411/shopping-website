@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import InputField from "../Utilities/InputField";
 import "./Login.css";
@@ -28,7 +29,9 @@ const Login = () => {
             console.log(response);
         } catch (error) {
             console.error("Login failed:", error);
-            setError(error.response?.data?.message || "Login failed");
+            setError(
+                error.response?.data?.message || "An unexpected error occurred."
+            );
         } finally {
             setLoading(false); // reset loading state
         }
@@ -56,12 +59,12 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <a
-                    href="/account/forgot-password"
+                <Link
+                    to="/account/forgot-password"
                     className="forgot-password-link"
                 >
                     Forgot Password?
-                </a>
+                </Link>
 
                 <button className="login-button" disabled={loading}>
                     {loading ? "Logging in..." : "Log in"}
@@ -70,7 +73,7 @@ const Login = () => {
 
             <p className="register-text">
                 Don&apos;t have an account?
-                <a href="/account/register"> Register now</a>
+                <Link to="/account/register"> Register now</Link>
             </p>
         </div>
     );

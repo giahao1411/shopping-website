@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../Utilities/InputField";
 import "./Register.css";
@@ -10,6 +11,7 @@ const Register = () => {
     const [cfPassword, setCfPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,10 +34,16 @@ const Register = () => {
                 "http://localhost:8080/account/register",
                 { username, email, password }
             );
-            console.log(response);
+
+            if (response.status === 200) {
+                alert(response.data.message);
+                navigate("/account/login");
+            }
         } catch (error) {
             console.error("Register failed:", error);
-            setError(error.response?.data?.message || "Registeration failed");
+            setError(
+                error.response?.data?.message || "An unexpected error occurred."
+            );
         } finally {
             setLoading(false); // reset loading state
         }
@@ -55,6 +63,7 @@ const Register = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
+
                 <InputField
                     type="email"
                     placeholder="Email Address"
@@ -62,6 +71,7 @@ const Register = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
+
                 <InputField
                     type="password"
                     placeholder="Password"
@@ -69,6 +79,7 @@ const Register = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+
                 <InputField
                     type="password"
                     placeholder="Confirm Password"
@@ -83,7 +94,7 @@ const Register = () => {
             </form>
 
             <p className="login-text">
-                Already have an account?<a href="/account/login"> Log in</a>
+                Already have an account?<Link to="/account/login"> Log in</Link>
             </p>
         </div>
     );

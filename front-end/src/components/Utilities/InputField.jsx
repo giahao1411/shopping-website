@@ -12,15 +12,14 @@ const InputField = ({ type, placeholder, icon, value, onChange }) => {
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
-                required
             />
-            <i class={`fa fa-${icon}`} aria-hidden="true"></i>
+            <i className={`fa fa-${icon}`} aria-hidden="true"></i>
             {type === "password" && (
                 <i
                     onClick={() =>
                         setIsPasswordShown((prevState) => !prevState)
                     }
-                    class={`fa fa-${isPasswordShown ? "eye" : "eye-slash"}`}
+                    className={`fa fa-${isPasswordShown ? "eye" : "eye-slash"}`}
                     aria-hidden="true"
                 ></i>
             )}

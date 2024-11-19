@@ -22,7 +22,6 @@ router.post("/login", async (req, res) => {
             return res.status(404).json({ message: "Invalid password" });
         }
 
-        console.log("Login ok");
         return res.status(200).json({ message: "Login successfully" });
     } catch (error) {
         console.error(error);
@@ -50,8 +49,49 @@ router.post("/register", async (req, res) => {
         const newUser = new User({ username, email, password });
         await newUser.save();
 
-        console.log("Register ok");
         return res.status(200).json({ message: "Register successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server error" });
+    }
+});
+
+// Checking email route
+router.post("/check-email", async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (user) {
+            return res.status(200).json({ existed: true });
+        } else {
+            return res
+                .status(404)
+                .json({ existed: false, message: "Email not found." });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server error" });
+    }
+});
+
+// Update password route
+router.patch("/update-password", async (req, res) => {
+    const { email, newPassword } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        return res
+            .status(200)
+            .json({ message: "Password update successfully" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server error" });
