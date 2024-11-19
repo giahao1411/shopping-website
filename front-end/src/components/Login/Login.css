@@ -37,6 +37,12 @@ body {
     margin-bottom: 1.87rem;
 }
 
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
 .login-form .input-wrapper {
     height: 54px;
     width: 100%;
