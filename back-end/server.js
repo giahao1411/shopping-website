@@ -5,19 +5,13 @@ const bodyParser = require("body-parser");
 
 // import modules
 const database = require("./config/database");
+const corsOptions = require("./config/cors");
 
 // import routers
 const AccountRouter = require("./routes/Account");
 
 const app = express();
 database.connection();
-
-// CORS configuration
-const corsOptions = {
-    origin: "http://localhost:5173",
-    methods: "GET,POST,PATCH,DELETE",
-    allowedHeaders: "Content-Type,Authorization",
-};
 
 // middlewares
 app.use(cors(corsOptions)); // enable CORS for specific origin

@@ -8,6 +8,8 @@ const courses = [
     { title: "ReactJS", duration: "2 Hours", icon: <BiBook /> },
     { title: "NodeJS", duration: "2 Hours", icon: <BiBook /> },
     { title: "Javascript", duration: "2 Hours", icon: <BiBook /> },
+    { title: "HTML CSS", duration: "2 Hours", icon: <BiBook /> },
+    { title: "MongoDB", duration: "2 Hours", icon: <BiBook /> },
 ];
 
 const Profile = () => {
