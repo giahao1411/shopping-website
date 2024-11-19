@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import InputField from "../Utilities/InputField";
-import "./Login.css";
+import InputField from "./InputField";
+import "../../styles/Account/Login.css";
 
 const Login = () => {
     const [email, setEmail] = useState("");

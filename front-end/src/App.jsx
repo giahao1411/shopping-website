@@ -1,8 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
-import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
+import Login from "./components/Account/Login";
+import Register from "./components/Account/Register";
+import ForgotPassword from "./components/Account/ForgotPassword";
+import Admin from "./components/Admin/Admin";
 
 const App = () => {
     return (
@@ -15,6 +16,7 @@ const App = () => {
                         path="/account/forgot-password"
                         element={<ForgotPassword />}
                     />
+                    <Route path="/" element={<Admin />} />
                 </Routes>
             </div>
         </Router>
