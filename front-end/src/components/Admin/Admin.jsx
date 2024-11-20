@@ -1,7 +1,7 @@
 import React from "react";
 import "../../styles/Admin/Admin.css";
+import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import Content from "./Content/Content";
 import Profile from "./Profile/Profile";
 
 const Admin = () => {
@@ -9,7 +9,7 @@ const Admin = () => {
         <div className="dashboard">
             <Sidebar />
             <div className="dashboard-content">
-                <Content />
+                <Outlet />
                 <Profile />
             </div>
         </div>

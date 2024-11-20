@@ -1,5 +1,6 @@
 .profile {
     flex: 1;
+    margin-top: -2px;
 }
 
 .profile-header {

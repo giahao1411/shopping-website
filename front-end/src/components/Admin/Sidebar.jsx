@@ -7,6 +7,7 @@ import {
     BiBox,
 } from "react-icons/bi";
 import "../../styles/Admin/Sidebar.css";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
     return (
@@ -17,25 +18,46 @@ const Sidebar = () => {
             </div>
 
             <div className="menu-list">
-                <a href="#" className="item active">
+                <NavLink
+                    to="/admin"
+                    end
+                    className={({ isActive }) =>
+                        `item ${isActive ? "active" : ""}`
+                    }
+                >
                     <BiHome className="icon" />
                     Dashboard
-                </a>
+                </NavLink>
 
-                <a href="#" className="item">
+                <NavLink
+                    to="/admin/user"
+                    className={({ isActive }) =>
+                        `item ${isActive ? "active" : ""}`
+                    }
+                >
                     <BiUserCircle className="icon" />
                     Users
-                </a>
+                </NavLink>
 
-                <a href="#" className="item">
+                <NavLink
+                    to="/admin/product"
+                    className={({ isActive }) =>
+                        `item ${isActive ? "active" : ""}`
+                    }
+                >
                     <BiBox className="icon" />
                     Products
-                </a>
+                </NavLink>
 
-                <a href="#" className="item">
+                <NavLink
+                    to="/admin/order"
+                    className={({ isActive }) =>
+                        `item ${isActive ? "active" : ""}`
+                    }
+                >
                     <BiTask className="icon" />
                     Orders
-                </a>
+                </NavLink>
             </div>
         </div>
     );

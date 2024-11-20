@@ -4,12 +4,12 @@ import ContentHeader from "./ContentHeader";
 import Card from "./Card";
 import TeacherList from "./TeacherList";
 
-const Content = () => {
+const Content = ({ title, children }) => {
     return (
         <div className="content">
-            <ContentHeader />
+            <ContentHeader title={title} />
             <Card />
-            <TeacherList />
+            {children}
         </div>
     );
 };
