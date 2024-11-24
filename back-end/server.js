@@ -19,7 +19,7 @@ app.use(cors(corsOptions)); // enable CORS for specific origin
 app.use(bodyParser.json());
 
 // register the end-points
-app.use("/api/account", AccountRouter);
+app.use("/account", AccountRouter);
 app.use("/api", UserRouter);
 
 // start the server
