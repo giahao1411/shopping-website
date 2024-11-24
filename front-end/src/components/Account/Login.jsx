@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "./InputField";
 import "../../styles/Account/Login.css";
@@ -9,6 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,7 +27,15 @@ const Login = () => {
                 "http://localhost:8080/account/login",
                 { email, password }
             );
-            console.log(response);
+            const { role, message } = response.data;
+
+            if (response.status === 200 && role === "admin") {
+                alert(message);
+                navigate("/admin");
+            } else if (response.status === 200 && role === "user") {
+                alert(message);
+                navigate("/account/login");
+            }
         } catch (error) {
             console.error("Login failed:", error);
             setError(

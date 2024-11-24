@@ -9,6 +9,7 @@ const corsOptions = require("./config/cors");
 
 // import routers
 const AccountRouter = require("./routes/Account");
+const UserRouter = require("./routes/User");
 
 const app = express();
 database.connection();
@@ -18,8 +19,11 @@ app.use(cors(corsOptions)); // enable CORS for specific origin
 app.use(bodyParser.json());
 
 // register the end-points
-app.use("/account", AccountRouter);
+app.use("/api/account", AccountRouter);
+app.use("/api", UserRouter);
 
 // start the server
 const PORT = process.env.PORT || 8080;
-app.listen(PORT);
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});

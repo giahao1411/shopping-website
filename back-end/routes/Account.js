@@ -3,6 +3,9 @@ const router = express.Router();
 
 const User = require("../models/UserModel");
 
+const validateEmail = require("../utilities/validateEmail");
+const validatePassword = require("../utilities/validatePassword");
+
 // Login route
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -22,7 +25,9 @@ router.post("/login", async (req, res) => {
             return res.status(404).json({ message: "Invalid password" });
         }
 
-        return res.status(200).json({ message: "Login successfully" });
+        return res
+            .status(200)
+            .json({ message: "Login successfully", role: user.role });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server error" });
@@ -45,8 +50,23 @@ router.post("/register", async (req, res) => {
             return res.status(400).json({ message: "Email already existed" });
         }
 
+        if (!validateEmail(email)) {
+            return res.status(406).json({
+                message: "Invalid email format",
+            });
+        }
+
+        if (!validatePassword(password)) {
+            return res.status(406).json({
+                message:
+                    "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number",
+            });
+        }
+
+        const role = email === "admin@gmail.com" ? "admin" : "user";
+
         // create new user
-        const newUser = new User({ username, email, password });
+        const newUser = new User({ username, email, password, role });
         await newUser.save();
 
         return res.status(200).json({ message: "Register successfully" });
@@ -86,8 +106,15 @@ router.patch("/update-password", async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        user.password = newPassword;
-        await user.save();
+        if (!validatePassword(newPassword)) {
+            return res.status(406).json({
+                message:
+                    "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number",
+            });
+        } else {
+            user.password = newPassword;
+            await user.save();
+        }
 
         return res
             .status(200)

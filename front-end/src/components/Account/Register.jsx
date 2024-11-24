@@ -39,6 +39,10 @@ const Register = () => {
                 alert(response.data.message);
                 navigate("/account/login");
             }
+
+            if (response.status === 406) {
+                setError(response.data.message);
+            }
         } catch (error) {
             console.error("Register failed:", error);
             setError(

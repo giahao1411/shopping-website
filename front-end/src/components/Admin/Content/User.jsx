@@ -1,18 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BiInfoCircle } from "react-icons/bi";
+import axios from "axios";
 import "../../../styles/Admin/User.css";
 
-const users = [
-    { name: "Gia Hao Tran", email: "john@gmail.com", phone: "0123456789" },
-    {
-        name: "Nguyen Gia Huy Tong",
-        email: "john@gmail.com",
-        phone: "0123456789",
-    },
-    { name: "Nhat Hao Vo", email: "john@gmail.com", phone: "0123456789" },
-];
-
 const User = () => {
+    const [users, setUsers] = useState([]);
+
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/users");
+
+            console.log(response.data);
+
+            if (response.status === 200) {
+                setUsers(response.data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
     return (
         <div className="user-list">
             <div className="list-header">
@@ -32,11 +43,13 @@ const User = () => {
                         <th>Detail</th>
                     </tr>
                     <tbody>
-                        {users.map((user) => (
-                            <tr>
-                                <td>{user.name}</td>
+                        {users.map((user, index) => (
+                            <tr key={index}>
+                                <td>{user.username}</td>
                                 <td>{user.email}</td>
-                                <td>{user.phone}</td>
+                                <td>
+                                    {user.phone == null ? "null" : user.phone}
+                                </td>
                                 <td>{<BiInfoCircle className="info" />}</td>
                             </tr>
                         ))}

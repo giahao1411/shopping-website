@@ -5,7 +5,8 @@ const UserSchema = new Schema({
     username: { type: String, require: true },
     email: { type: String, require: true, unique: true, lowercase: true },
     password: { type: String, require: true },
-    phone: { type: String },
+    phone: { type: String, unique: true },
+    role: { type: String, enum: ["admin", "user"], default: "user" },
 });
 
 // hash password before saving to database
@@ -17,9 +18,9 @@ UserSchema.pre("save", async function (next) {
     try {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
-        next();
+        return next();
     } catch (error) {
-        next(error);
+        return next(error);
     }
 });
 
