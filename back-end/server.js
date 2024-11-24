@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 
 // register the end-points
 app.use("/account", AccountRouter);
-app.use("/api", UserRouter);
+app.use("/api/user", UserRouter);
 
 // start the server
 const PORT = process.env.PORT || 8080;
