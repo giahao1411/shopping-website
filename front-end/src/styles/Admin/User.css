@@ -1,3 +1,40 @@
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination .page-move {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.pagination .page-move:hover {
+    color: #0056b3;
+}
+
+.pagination input {
+    padding: 5px 0;
+    width: 50px;
+    text-align: center;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.pagination input::-webkit-outer-spin-button,
+.pagination input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.pagination input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
 .user-table {
     margin-top: -15px;
     margin-left: -30px;

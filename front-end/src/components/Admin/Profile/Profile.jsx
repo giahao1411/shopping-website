@@ -25,8 +25,8 @@ const Profile = () => {
                 </div>
 
                 <div className="user-courses">
-                    {courses.map((course) => (
-                        <div className="course">
+                    {courses.map((course, index) => (
+                        <div className="course" key={index}>
                             <div className="course-detail">
                                 <div className="course-cover">
                                     {course.icon}
