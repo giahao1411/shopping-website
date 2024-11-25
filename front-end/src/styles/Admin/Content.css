@@ -19,28 +19,6 @@
     gap: 20px;
 }
 
-.search-box {
-    background: #dde6ed;
-    padding: 8px 10px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-}
-
-.search-box input {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    padding: 5px;
-}
-
-.search-box .icon {
-    color: #969393;
-    font-size: 22px;
-    cursor: pointer;
-    transition: 0.5 ease-in-out;
-}
-
 .notify {
     background: #dde6ed;
     padding: 11px;

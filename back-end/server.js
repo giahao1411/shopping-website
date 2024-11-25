@@ -9,6 +9,7 @@ const corsOptions = require("./config/cors");
 
 // import routers
 const AccountRouter = require("./routes/Account");
+const TaskRouter = require("./routes/Task");
 const UserRouter = require("./routes/User");
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 
 // register the end-points
 app.use("/account", AccountRouter);
+app.use("/api/task", TaskRouter);
 app.use("/api/user", UserRouter);
 
 // start the server

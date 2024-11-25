@@ -114,6 +114,9 @@ const User = () => {
                         ))}
                     </tbody>
                 </table>
+                <p className="table-footer">
+                    Page {page} / {totalPages}
+                </p>
             </div>
 
             <UserModal
