@@ -21,7 +21,7 @@ const User = () => {
     const fetchUsers = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8080/api/user/users?page=${page}&limit=5`
+                `http://localhost:8080/api/user/users?page=${page}&limit=7`
             );
 
             if (response.status === 200) {
@@ -70,6 +70,29 @@ const User = () => {
         setIsUserModalOpen(false);
     };
 
+    // update user information
+    const updateUser = async (updatedUser) => {
+        try {
+            const response = await axios.patch(
+                `http://localhost:8080/api/user/users/${selectedUser._id}`,
+                updatedUser
+            );
+
+            if (response.status === 200) {
+                setUsers((prevUsers) =>
+                    prevUsers.map((user) =>
+                        user._id === selectedUser._id
+                            ? { ...user, ...updatedUser }
+                            : user
+                    )
+                );
+                closeModal();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     // change user status handle
     const changeUserStatus = async (userID) => {
         try {
@@ -92,8 +115,9 @@ const User = () => {
 
     return (
         <div className="user-list">
+            <h1>User Management</h1>
             <div className="list-header">
-                <h2>Users</h2>
+                <h2>User List</h2>
                 <div className="pagination">
                     <BiSolidChevronLeft
                         onClick={handleBackward}
@@ -178,6 +202,7 @@ const User = () => {
                 isUserOpen={isUserModalOpen}
                 onClose={closeModal}
                 user={selectedUser}
+                updateUser={updateUser}
             />
         </div>
     );

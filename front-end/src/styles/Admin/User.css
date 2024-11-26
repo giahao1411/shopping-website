@@ -1,3 +1,14 @@
+.user-list {
+    width: 100%;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
 .pagination {
     display: flex;
     align-items: center;
@@ -35,28 +46,52 @@
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
+.list-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.list-header h2 {
+    color: #000;
+}
+
 .user-table {
+    width: 100%;
     margin-top: 15px;
-    margin-left: -30px;
+    border-collapse: collapse;
 }
 
-.user-table tr th {
-    padding: 10px;
+
+.user-table th,
+.user-table td {
+    padding: 15px 15px;
     text-align: center;
+    border: 1px solid #ddd;
 }
 
-.user-table tbody td {
-    padding: 15px;
-    text-align: center;
-    align-items: center;
+.user-table th {
+    background: #f7f7f7;
+    color: #2c3e50;
+}
+
+.user-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.user-table tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.user-table tr:hover {
+    background: #f0f8ff;
 }
 
 .user-status-active {
-    color: #28c125;
+    color: #27ae60;
 }
 
 .user-status-banned {
-    color: #f22a2a;
+    color: #e74c3c;
 }
 
 .action {
@@ -66,8 +101,17 @@
     text-align: center;
 }
 
+.action:hover {
+    color: #3498db;
+    transform: scale(1.1);
+}
+
 .table-footer {
-    margin-top: 17px;
-    font-size: 1rem;
+    position: sticky;
+    bottom: 0;
+    padding: 10px;
     text-align: center;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-top: 20px;
 }

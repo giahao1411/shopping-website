@@ -22,6 +22,7 @@ router.get("/users", async (req, res) => {
 // get user's information
 router.get("/users/:id", async (req, res) => {
     const userID = req.params.id;
+
     try {
         const user = await User.findById(userID);
         if (!user) {
@@ -29,6 +30,26 @@ router.get("/users/:id", async (req, res) => {
         }
 
         return res.status(200).json({ message: "User found", user: user });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+router.patch("/users/:id", async (req, res) => {
+    const userID = req.params.id;
+    const { username, email, phone } = req.body;
+
+    try {
+        const updateUser = await User.findByIdAndUpdate(userID, {
+            username,
+            email,
+            phone,
+        });
+        if (!updateUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json({ message: "User updated successfully" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
