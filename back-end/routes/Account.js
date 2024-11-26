@@ -21,8 +21,10 @@ router.post("/login", async (req, res) => {
         }
 
         const isMatch = await user.matchPassword(password);
-        if (!isMatch) {
-            return res.status(404).json({ message: "Invalid password" });
+        if (!isMatch || user.status === "banned") {
+            return res
+                .status(404)
+                .json({ message: "Invalid password or You're banned" });
         }
 
         return res
@@ -66,7 +68,13 @@ router.post("/register", async (req, res) => {
         const role = email === "admin@gmail.com" ? "admin" : "user";
 
         // create new user
-        const newUser = new User({ username, email, password, role });
+        const newUser = new User({
+            username,
+            email,
+            password,
+            role,
+            status: "active",
+        });
         await newUser.save();
 
         return res.status(200).json({ message: "Register successfully" });

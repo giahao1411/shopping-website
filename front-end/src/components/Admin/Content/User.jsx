@@ -5,6 +5,8 @@ import {
     BiInfoCircle,
     BiSolidChevronLeft,
     BiSolidChevronRight,
+    BiLockAlt,
+    BiLockOpenAlt,
 } from "react-icons/bi";
 import UserModal from "../Modals/UserModal";
 
@@ -13,7 +15,7 @@ const User = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPage] = useState(1);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
     const fetchUsers = async () => {
         try {
@@ -54,17 +56,31 @@ const User = () => {
 
     const getUserDetail = (user) => {
         setSelectedUser(user);
-        setIsModalOpen(true);
+        setIsUserModalOpen(true);
     };
 
     const closeModal = () => {
         setSelectedUser(null);
-        setIsModalOpen(false);
+        setIsUserModalOpen(false);
+    };
+
+    const changeUserStatus = async (userID) => {
+        try {
+            const response = await axios.patch(
+                `http://localhost:8080/api/user/users/status/${userID}`
+            );
+
+            if (response.status === 200) {
+                return;
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     useEffect(() => {
         fetchUsers();
-    }, [page]);
+    }, [page, users]);
 
     return (
         <div className="user-list">
@@ -95,21 +111,52 @@ const User = () => {
                             <th>Username</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Details</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {users.map((user, index) => (
-                            <tr
-                                key={user._id || index}
-                                onClick={() => getUserDetail(user)}
-                            >
+                            <tr key={user._id || index}>
                                 <td>{user.username}</td>
                                 <td>{user.email}</td>
                                 <td>
                                     {user.phone == null ? "null" : user.phone}
                                 </td>
-                                <td>{<BiInfoCircle className="info" />}</td>
+                                <td className={`user-status-${user.status}`}>
+                                    {user.status}
+                                </td>
+                                <td>
+                                    {user.email !== "admin@gmail.com" && (
+                                        <>
+                                            <BiInfoCircle
+                                                className="action"
+                                                onClick={() =>
+                                                    getUserDetail(user)
+                                                }
+                                            />
+                                            {user.status === "active" ? (
+                                                <BiLockAlt
+                                                    className="action"
+                                                    onClick={() =>
+                                                        changeUserStatus(
+                                                            user._id
+                                                        )
+                                                    }
+                                                />
+                                            ) : (
+                                                <BiLockOpenAlt
+                                                    className="action"
+                                                    onClick={() =>
+                                                        changeUserStatus(
+                                                            user._id
+                                                        )
+                                                    }
+                                                />
+                                            )}
+                                        </>
+                                    )}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
@@ -120,7 +167,7 @@ const User = () => {
             </div>
 
             <UserModal
-                isOpen={isModalOpen}
+                isUserOpen={isUserModalOpen}
                 onClose={closeModal}
                 user={selectedUser}
             />

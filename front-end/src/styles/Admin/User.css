@@ -49,16 +49,21 @@
     padding: 15px;
     text-align: center;
     align-items: center;
-    cursor: pointer;
 }
 
-.user-table tbody tr:hover {
-    background: #e2dfdf;
+.user-status-active {
+    color: #28c125;
 }
 
-.info {
+.user-status-banned {
+    color: #f22a2a;
+}
+
+.action {
     cursor: pointer;
     font-size: 1.2rem;
+    margin: 0 5px;
+    text-align: center;
 }
 
 .table-footer {

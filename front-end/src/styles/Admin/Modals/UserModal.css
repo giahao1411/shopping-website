@@ -1,4 +1,4 @@
-.modal-overlay {
+.user-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,7 +13,7 @@
     box-sizing: border-box;
 }
 
-.modal-content {
+.user-modal-content {
     background: #fff;
     padding: 30px;
     border-radius: 10px;
@@ -21,24 +21,24 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     gap: 20px;
 }
 
-.modal-content h2 {
+.user-modal-content h2 {
     font-size: 1.5rem;
     color: #333;
     margin-bottom: 20px;
     text-align: center;
 }
 
-label {
+.user-modal-content label {
     font-size: 1rem;
     font-weight: bold;
     color: #555;
 }
 
-input {
+.user-modal-content input {
     padding: 10px;
     font-size: 1rem;
     border: 1px solid #ccc;
@@ -49,22 +49,44 @@ input {
     margin: -5px 0px;
 }
 
-input:focus {
+.user-modal-content input:focus {
     border-color: #007bff;
 }
 
-.close-btn {
+.user-action {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     margin-top: 15px;
-    background: #ff4d4f;
-    color: white;
+    gap: 1rem;
+}
+
+.user-update-btn,
+.user-close-btn {
+    padding: 10px 0;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
     cursor: pointer;
+    border-radius: 5px;
     font-size: 1rem;
+    color: white;
+    width: 48%;
+    text-align: center;
     transition: background 0.3s ease;
 }
 
-.closebtn:hover {
-    background: #ff7875;
+.user-update-btn {
+    background: #47ce25;
+}
+
+.user-close-btn {
+    background: #ef3535;
+    color: white;
+}
+
+.user-update-btn:hover {
+    background: #45bb27;
+}
+
+.user-close-btn:hover {
+    background: #c12a2a;
 }

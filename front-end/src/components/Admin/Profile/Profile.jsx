@@ -24,22 +24,6 @@ const Profile = () => {
         }
     };
 
-    const createTask = async (newTask) => {
-        try {
-            const response = await axios.post(
-                "http://localhost:8080:/api/task/tasks",
-                newTask
-            );
-
-            if (response.status === 200) {
-                alert(response.data.message);
-                setTasks((prevTask) => [...prevTask, response.data.task]);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     const deleteTask = async (taskID) => {
         try {
             const response = await axios.delete(
@@ -63,7 +47,7 @@ const Profile = () => {
 
     return (
         <div className="profile">
-            <ProfileHeader onSubmitTask={createTask} />
+            <ProfileHeader />
 
             <div className="user-profile">
                 <div className="user-detail">
