@@ -11,9 +11,11 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // handle submit for login
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // check fields
         if (!email || !password) {
             setError("Please fill in all fields.");
             return;
@@ -23,6 +25,7 @@ const Login = () => {
         setLoading(true);
 
         try {
+            // fetch data to back-end
             const response = await axios.post(
                 "http://localhost:8080/account/login",
                 { email, password }

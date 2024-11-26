@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Task = require("../models/TaskModel");
 
+// get all tasks (5 tasks existed a time)
 router.get("/tasks", async (req, res) => {
     try {
         const tasks = await Task.find();
@@ -12,6 +13,7 @@ router.get("/tasks", async (req, res) => {
     }
 });
 
+// create task
 router.post("/tasks", async (req, res) => {
     try {
         const taskCount = await Task.countDocuments();
@@ -33,6 +35,7 @@ router.post("/tasks", async (req, res) => {
     }
 });
 
+// delete task
 router.delete("/delete/:id", async (req, res) => {
     const taskID = req.params.id;
 
@@ -49,4 +52,5 @@ router.delete("/delete/:id", async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 });
+
 module.exports = router;

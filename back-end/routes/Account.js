@@ -6,7 +6,7 @@ const User = require("../models/UserModel");
 const validateEmail = require("../utilities/validateEmail");
 const validatePassword = require("../utilities/validatePassword");
 
-// Login route
+// login - authenticate account
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -36,7 +36,7 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// Register route
+// register - create account
 router.post("/register", async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -84,7 +84,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// Checking email route
+// check email
 router.post("/check-email", async (req, res) => {
     const { email } = req.body;
 
@@ -104,7 +104,7 @@ router.post("/check-email", async (req, res) => {
     }
 });
 
-// Update password route
+// update password
 router.patch("/update-password", async (req, res) => {
     const { email, newPassword } = req.body;
 

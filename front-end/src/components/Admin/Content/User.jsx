@@ -17,6 +17,7 @@ const User = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
+    // get users by page
     const fetchUsers = async () => {
         try {
             const response = await axios.get(
@@ -32,17 +33,20 @@ const User = () => {
         }
     };
 
+    // move backward 1 page
     const handleBackward = () => {
         // make sure not down below 1
         setPage((prevPage) => Math.max(prevPage - 1, 1));
     };
 
+    // move forward 1 page
     const handleForward = () => {
         setPage((prevPage) =>
             prevPage < totalPages ? prevPage + 1 : prevPage
         );
     };
 
+    // page input field
     const handleInputChange = (event) => {
         const value = parseInt(event.target.value, 10);
         if (value > 0 && value <= totalPages) {
@@ -54,16 +58,19 @@ const User = () => {
         }
     };
 
+    // get user detail and open user modal
     const getUserDetail = (user) => {
         setSelectedUser(user);
         setIsUserModalOpen(true);
     };
 
+    // on close modal and reset selectedUser state
     const closeModal = () => {
         setSelectedUser(null);
         setIsUserModalOpen(false);
     };
 
+    // change user status handle
     const changeUserStatus = async (userID) => {
         try {
             const response = await axios.patch(
@@ -78,6 +85,7 @@ const User = () => {
         }
     };
 
+    // states on change
     useEffect(() => {
         fetchUsers();
     }, [page, users]);

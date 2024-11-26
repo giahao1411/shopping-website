@@ -2,6 +2,7 @@ import React from "react";
 import "../../../styles/Admin/TeacherList.css";
 import Image1 from "../../../assets/image.jpg";
 
+// temporary for testing UI
 const teachers = [
     {
         image: Image1,

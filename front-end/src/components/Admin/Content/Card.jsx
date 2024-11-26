@@ -1,6 +1,7 @@
 import React from "react";
 import { BiBuilding, BiLogoAndroid, BiLogoHtml5 } from "react-icons/bi";
 
+// temporary for testing UI
 const course = [
     {
         title: "Web Development",

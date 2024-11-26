@@ -3,6 +3,7 @@ const router = express.Router();
 
 const User = require("../models/UserModel");
 
+// get user list by limit
 router.get("/users", async (req, res) => {
     const { page = 1, limit = 5 } = req.query;
     const skip = (page - 1) * limit;
@@ -18,6 +19,7 @@ router.get("/users", async (req, res) => {
     }
 });
 
+// get user's information
 router.get("/users/:id", async (req, res) => {
     const userID = req.params.id;
     try {
@@ -32,6 +34,7 @@ router.get("/users/:id", async (req, res) => {
     }
 });
 
+// update user status
 router.patch("/users/status/:id", async (req, res) => {
     const userID = req.params.id;
 

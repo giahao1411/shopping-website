@@ -8,6 +8,7 @@ import ProfileHeader from "./ProfileHeader";
 const Profile = () => {
     const [tasks, setTasks] = useState([]);
 
+    // get tasks
     const fetchTasks = async () => {
         try {
             const response = await axios.get(
@@ -24,6 +25,7 @@ const Profile = () => {
         }
     };
 
+    // delete task on click
     const deleteTask = async (taskID) => {
         try {
             const response = await axios.delete(
@@ -32,6 +34,7 @@ const Profile = () => {
 
             if (response.status === 200) {
                 alert(response.data.message);
+                // no need to useEffect on delete by reState the task
                 setTasks((prevTask) =>
                     prevTask.filter((t) => t._id !== taskID)
                 );

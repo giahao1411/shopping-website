@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "../../../styles/Admin/Modals/UserModal.css";
 
 const UserModal = ({ isUserOpen, onClose, user }) => {
+    // ESC key activate
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {

@@ -9,6 +9,7 @@ const Admin = () => {
         <div className="dashboard">
             <Sidebar />
             <div className="dashboard-content">
+                // outlet for more Children in
                 <Outlet />
                 <Profile />
             </div>
