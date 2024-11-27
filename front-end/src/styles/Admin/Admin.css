@@ -9,7 +9,10 @@
 body {
     padding: 20px;
     background: #dde6ed;
+}
 
+body::-webkit-scrollbar {
+    display: none;
 }
 
 .dashboard {

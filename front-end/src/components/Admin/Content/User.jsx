@@ -89,7 +89,11 @@ const User = () => {
                 closeModal();
             }
         } catch (error) {
-            console.error(error);
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
         }
     };
 

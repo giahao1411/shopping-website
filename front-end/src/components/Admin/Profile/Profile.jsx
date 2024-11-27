@@ -44,13 +44,32 @@ const Profile = () => {
         }
     };
 
+    const createTask = async (newTask) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/api/task/tasks",
+                newTask
+            );
+
+            if (response.status === 200) {
+                setTasks((prevTask) => [...prevTask, response.data.task]);
+            }
+        } catch (error) {
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
+        }
+    };
+
     useEffect(() => {
         fetchTasks();
     }, []);
 
     return (
         <div className="profile">
-            <ProfileHeader />
+            <ProfileHeader createTask={createTask} />
 
             <div className="user-profile">
                 <div className="user-detail">

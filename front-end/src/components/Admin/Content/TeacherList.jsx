@@ -34,12 +34,6 @@ const teachers = [
         duration: "20 hours lesson",
         cost: "100",
     },
-    {
-        image: Image1,
-        name: "Prof. John Doe",
-        duration: "20 hours lesson",
-        cost: "100",
-    },
 ];
 
 const TeacherList = () => {

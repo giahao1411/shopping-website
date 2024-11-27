@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../../styles/Admin/Modals/UserModal.css";
 
-const validatePhone = (phone) => {
-    const phoneRegex = /^0\d{9}$/;
-    return phoneRegex.test(phone);
-};
-
 const UserModal = ({ isUserOpen, onClose, user, updateUser }) => {
     const [username, setUserName] = useState("");
     const [email, setEmail] = useState("");
@@ -36,10 +31,7 @@ const UserModal = ({ isUserOpen, onClose, user, updateUser }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!validatePhone(phone)) {
-            alert("Phone contains 0 and 9 numbers come after");
-            return;
-        }
+
         updateUser({ username, email, phone }); // pass data back to parent component
     };
 

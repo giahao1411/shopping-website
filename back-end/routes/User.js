@@ -3,6 +3,8 @@ const router = express.Router();
 
 const User = require("../models/UserModel");
 
+const validatePhone = require("../utilities/validatePhone");
+
 // get user list by limit
 router.get("/users", async (req, res) => {
     const { page = 1, limit = 5 } = req.query;
@@ -40,6 +42,13 @@ router.patch("/users/:id", async (req, res) => {
     const { username, email, phone } = req.body;
 
     try {
+        if (!validatePhone(phone)) {
+            return res.status(400).json({
+                message:
+                    "Phone number should starts with 0 and 9 numbers come after.",
+            });
+        }
+
         const updateUser = await User.findByIdAndUpdate(userID, {
             username,
             email,
