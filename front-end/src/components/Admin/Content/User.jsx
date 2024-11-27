@@ -29,7 +29,11 @@ const User = () => {
                 setTotalPage(response.data.totalPages);
             }
         } catch (error) {
-            console.error(error);
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
         }
     };
 
@@ -108,7 +112,11 @@ const User = () => {
                 return;
             }
         } catch (error) {
-            console.error(error);
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
         }
     };
 
