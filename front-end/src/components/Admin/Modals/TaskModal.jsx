@@ -47,14 +47,12 @@ const TaskModal = ({ isTaskOpen, taskClose, createTask }) => {
                             onChange={(e) => setTaskName(e.target.value)}
                         />
 
-                        <label
-                            htmlFor="importance"
+                        <label htmlFor="importance">Importance</label>
+                        <select
+                            id="importance"
                             value={importance}
                             onChange={(e) => setImportance(e.target.value)}
                         >
-                            Importance
-                        </label>
-                        <select id="importance">
                             <option value="Low">Low</option>
                             <option value="Medium">Medium</option>
                             <option value="High">High</option>
