@@ -44,7 +44,42 @@ router.post("/products", upload.array("images", 3), async (req, res) => {
     }
 });
 
-router.patch("/products/edit/:id", async (req, res) => {});
+router.patch(
+    "/products/edit/:id",
+    upload.array("images", 3),
+    async (req, res) => {
+        try {
+            const productId = req.params.id;
+            const { category, name, description, quantity, price } = req.body;
+            const images = req.files;
+
+            const product = await Product.findByIdAndUpdate(
+                productId,
+                {
+                    category,
+                    name,
+                    images: images.map((image) => image.path),
+                    description,
+                    quantity,
+                    price,
+                },
+                { new: true }
+            );
+
+            if (!product) {
+                return res.status(404).json({ message: "Product not found" });
+            }
+            return res
+                .status(200)
+                .json({
+                    message: "Edit product successfully",
+                    product: product,
+                });
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+);
 
 router.patch("/products/delete/:id", async (req, res) => {});
 
