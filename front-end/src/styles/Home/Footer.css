@@ -1,0 +1,10 @@
+.footer {
+  background-color: #FFF8E7;
+  color: black;
+  font-weight: 600;
+  padding: 10px 0;
+  text-align: center;
+  width: 100%;  /* Đảm bảo footer chiếm toàn bộ chiều rộng */
+  margin: 0;  /* Loại bỏ margin */
+  position: relative; /* Footer sẽ nằm bình thường trong dòng tài liệu */
+}

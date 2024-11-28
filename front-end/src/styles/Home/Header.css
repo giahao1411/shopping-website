@@ -1,0 +1,79 @@
+/* Cập nhật CSS cho header */
+header {
+    width: 100%;
+    color: white;
+    font-family: Arial, sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 70px; /* Đảm bảo chiều cao đủ cho header */
+    background-color: #FFF8E7; /* Màu nền cho header */
+}
+
+/* Cập nhật cho phần logo và menu */
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FFF8E7;
+    padding: 0 15px; /* Đảm bảo padding bên trái và phải */
+    height: 100%; /* Đảm bảo container của header có chiều cao đầy đủ */
+}
+
+/* Đảm bảo logo có không gian */
+.header-main .logo {
+    display: flex;
+    align-items: center;
+}
+
+.header-main .logo img {
+    width: 40px; /* Giảm kích thước logo */
+    height: 30px; /* Giảm chiều cao logo */
+    margin-right: 10px;
+}
+
+.header-main .logo h1 {
+    font-size: 1.5rem; /* Giảm kích thước chữ trong logo */
+    margin: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #FF9800; /* Màu cam cho logo */
+}
+
+/* Cập nhật cho nav và các link */
+nav ul {
+    display: flex;
+    justify-content: space-evenly;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    margin: 0 15px; /* Khoảng cách giữa các link */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #000000; /* Màu chữ mặc định là đen */
+    font-size:large; /* Kích thước chữ */
+    font-weight: 500;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #FF9800; /* Màu cam khi hover */
+    transform: scale(1.1); /* Hiệu ứng phóng to khi hover */
+}
+
+nav ul li a.active {
+    color: #FF9800; /* Màu cam khi active */
+    font-weight: 600; /* Đậm hơn khi active */
+}
+
+/* Thêm một khoảng cách cho phần nội dung để không bị che khuất bởi header */
+body {
+    padding-top: 70px; /* Đảm bảo nội dung không bị che khuất bởi header */
+}
