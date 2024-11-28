@@ -1,8 +1,5 @@
-/* home.css */
 .home-container {
   min-height: 100vh;
-  /* Đảm bảo chiều cao tối thiểu của trang là 100% */
   display: flex;
   flex-direction: column;
-  /* Đảm bảo các phần tử sắp xếp theo chiều dọc */
 }

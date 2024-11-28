@@ -1,4 +1,3 @@
-/* Cập nhật CSS cho header */
 header {
     width: 100%;
     color: white;
@@ -8,41 +7,38 @@ header {
     left: 0;
     right: 0;
     z-index: 1000;
-    height: 70px; /* Đảm bảo chiều cao đủ cho header */
-    background-color: #FFF8E7; /* Màu nền cho header */
+    height: 70px; 
+    background-color: #FFF8E7; 
 }
 
-/* Cập nhật cho phần logo và menu */
 .header-main {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #FFF8E7;
-    padding: 0 15px; /* Đảm bảo padding bên trái và phải */
-    height: 100%; /* Đảm bảo container của header có chiều cao đầy đủ */
+    padding: 0 15px; 
+    height: 100%;
 }
 
-/* Đảm bảo logo có không gian */
 .header-main .logo {
     display: flex;
     align-items: center;
 }
 
 .header-main .logo img {
-    width: 40px; /* Giảm kích thước logo */
-    height: 30px; /* Giảm chiều cao logo */
+    width: 40px; 
+    height: 30px; 
     margin-right: 10px;
 }
 
 .header-main .logo h1 {
-    font-size: 1.5rem; /* Giảm kích thước chữ trong logo */
+    font-size: 1.5rem; 
     margin: 0;
     font-weight: 700;
     text-transform: uppercase;
-    color: #FF9800; /* Màu cam cho logo */
+    color: #FF9800; 
 }
 
-/* Cập nhật cho nav và các link */
 nav ul {
     display: flex;
     justify-content: space-evenly;
@@ -52,28 +48,27 @@ nav ul {
 }
 
 nav ul li {
-    margin: 0 15px; /* Khoảng cách giữa các link */
+    margin: 0 15px; 
 }
 
 nav ul li a {
     text-decoration: none;
-    color: #000000; /* Màu chữ mặc định là đen */
-    font-size:large; /* Kích thước chữ */
+    color: #000000; 
+    font-size:large;
     font-weight: 500;
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
 nav ul li a:hover {
-    color: #FF9800; /* Màu cam khi hover */
-    transform: scale(1.1); /* Hiệu ứng phóng to khi hover */
+    color: #FF9800; 
+    transform: scale(1.1); 
 }
 
 nav ul li a.active {
-    color: #FF9800; /* Màu cam khi active */
-    font-weight: 600; /* Đậm hơn khi active */
+    color: #FF9800;
+    font-weight: 600; 
 }
 
-/* Thêm một khoảng cách cho phần nội dung để không bị che khuất bởi header */
 body {
-    padding-top: 70px; /* Đảm bảo nội dung không bị che khuất bởi header */
+    padding-top: 70px; 
 }

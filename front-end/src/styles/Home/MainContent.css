@@ -2,7 +2,6 @@
     padding: 30px;
 }
 
-/* Style cho Banner */
 .banner {
     background-image: url('https://i.pinimg.com/736x/8f/d9/80/8fd980799c7a8292943dde2225236518.jpg');
     background-size: cover;
@@ -11,10 +10,22 @@
     color: white;
     height: 500px;
     text-align: center;
-    padding: 80px 20px;
+    padding: 0;
+    /* Gỡ bỏ padding mặc định để sử dụng flex */
     margin-bottom: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+    /* Thêm flexbox để căn giữa chữ */
+    display: flex;
+    flex-direction: column;
+    /* Đảm bảo căn giữa theo chiều dọc */
+    justify-content: center;
+    /* Căn giữa theo chiều ngang */
+    align-items: center;
+    /* Căn giữa theo chiều dọc */
+    text-align: center;
+    /* Căn giữa văn bản */
 }
 
 .banner h2 {
@@ -30,10 +41,16 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
+
 .search-container {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    /* Căn giữa theo chiều ngang */
+    align-items: center;
+    /* Căn giữa theo chiều dọc */
     margin-bottom: 40px;
 }
+
 
 .search-form {
     display: inline-flex;
@@ -84,6 +101,14 @@
     margin-top: 10px;
 }
 
+.card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
 .card {
     background-color: #f1f1f1;
     border-radius: 8px;
@@ -92,7 +117,14 @@
     width: 30%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+
+    /* Căn giữa nội dung trong card */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
+
 
 .card h3 {
     font-size: 1.5rem;
