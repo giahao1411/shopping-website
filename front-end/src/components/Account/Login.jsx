@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "./InputField";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import "../../styles/Account/Login.css";
 
 const Login = () => {
@@ -11,6 +12,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // handle submit for login
     // handle submit for login
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,19 +32,23 @@ const Login = () => {
                 "http://localhost:8080/account/login",
                 { email, password }
             );
-            const { role, message, username } = response.data;
+
+            const { message, username } = response.data; // Lấy username từ backend
 
             if (response.status === 200) {
-                // Save user info to localStorage
-                localStorage.setItem("user", JSON.stringify({ username, role }));
+                // Hiển thị pop-up thông báo login thành công
+                Swal.fire({
+                    icon: 'success',
+                    title: message, // Thông báo từ backend
+                    showConfirmButton: false,
+                    timer: 1500 // Thời gian hiển thị pop-up
+                });
 
-                alert(message);
+                // Lưu thông tin user vào localStorage, bao gồm cả username
+                localStorage.setItem("user", JSON.stringify({ username, email }));
 
-                if (role === "admin") {
-                    navigate("/admin");
-                } else {
-                    navigate("/");
-                }
+                // Điều hướng tới trang admin hoặc home
+                navigate("/"); // Hoặc /admin nếu là admin
             }
         } catch (error) {
             console.error("Login failed:", error);
@@ -53,6 +59,7 @@ const Login = () => {
             setLoading(false); // reset loading state
         }
     };
+
 
     return (
         <div className="login-container">

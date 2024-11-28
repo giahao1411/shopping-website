@@ -7,6 +7,7 @@ const validateEmail = require("../utilities/validateEmail");
 const validatePassword = require("../utilities/validatePassword");
 
 // login - authenticate account
+// login - authenticate account
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -25,17 +26,16 @@ router.post("/login", async (req, res) => {
             return res.status(404).json({ message: "Invalid password or You're banned" });
         }
 
-        // Trả về thêm thông tin username và role
+        // Trả về thông báo login thành công
         return res.status(200).json({
-            message: "Login successfully",
-            role: user.role,
-            username: user.username // Trả về tên người dùng
+            message: "Login successful", // Thay thế thông báo JSON chi tiết
         });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server error" });
     }
 });
+
 
 // register - create account
 router.post("/register", async (req, res) => {
