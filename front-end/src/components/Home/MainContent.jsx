@@ -31,7 +31,7 @@ const MainContent = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    console.log("Tìm kiếm: ", searchQuery, "Với bộ lọc: ", selectedFilter);
+    console.log("Search: ", searchQuery, "Filter: ", selectedFilter);
   };
 
   return (
@@ -57,9 +57,11 @@ const MainContent = () => {
             className="filter-select"
           >
             <option value="all">All Categories</option>
-            <option value="card1">T-Shirt</option>
-            <option value="card2">Pant</option>
-            <option value="card3">Backpack</option>
+            <option value="card1">T-Shirts</option>
+            <option value="card2">Pants</option>
+            <option value="card3">Backpacks</option>
+            <option value="card3">Outerwear</option>
+            <option value="card3">Wallets</option>
           </select>
 
           <button type="submit" className="search-button">Search</button>

@@ -14,12 +14,13 @@ const Header = () => {
             alt="Logo"
             className="logo-img"
           />
-          <h1>Website của tôi</h1>
+          <h1>BAANHEM</h1>
         </div>
         <nav>
           <ul>
             <li><Link to="/" className={location.pathname === "/" ? "active" : ""}>Home</Link></li>
             <li><Link to="/cart" className={location.pathname === "/cart" ? "active" : ""}>Cart</Link></li>
+            <li><Link to="/sales" className={location.pathname === "/sales" ? "active" : ""}>Sales</Link></li>
             <li><Link to="/account/login" className={location.pathname === "/account/login" ? "active" : ""}>Log In</Link></li>
             <li><Link to="/about" className={location.pathname === "/about" ? "active" : ""}>About Us</Link></li>
           </ul>
