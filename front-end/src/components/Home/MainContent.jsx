@@ -11,7 +11,7 @@ const MainContent = () => {
         const fetchProducts = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:8000/api/products"
+                    "http://localhost:8000/api/product/products"
                 );
                 const data = await response.json();
                 setProducts(data);

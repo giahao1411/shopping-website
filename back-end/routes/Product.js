@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Product = require("../models/ProductModel");
+const upload = require("../middlewares/multer");
 
 router.get("/products", async (req, res) => {
     try {
@@ -12,17 +13,10 @@ router.get("/products", async (req, res) => {
     }
 });
 
-router.post("/products", async (req, res) => {
+router.post("/products", upload.array("images", 3), async (req, res) => {
     try {
-        const {
-            category,
-            name,
-            images,
-            description,
-            quantity,
-            price,
-            most_sale,
-        } = req.body;
+        const { category, name, description, quantity, price } = req.body;
+        const images = req.files;
 
         if (!category || !name || !quantity || !price) {
             return res
@@ -32,13 +26,13 @@ router.post("/products", async (req, res) => {
 
         // image and description are optional for a product
         const newProduct = new Product({
-            category: category,
-            name: name,
-            images: images || [],
-            description: description || "",
-            quantity: quantity,
-            price: price,
-            most_sale: most_sale || 0,
+            category,
+            name,
+            images: images.map((image) => image.path),
+            description,
+            quantity,
+            price,
+            most_sale: 0,
         });
 
         await newProduct.save();
