@@ -22,14 +22,15 @@ router.post("/login", async (req, res) => {
 
         const isMatch = await user.matchPassword(password);
         if (!isMatch || user.status === "banned") {
-            return res
-                .status(404)
-                .json({ message: "Invalid password or You're banned" });
+            return res.status(404).json({ message: "Invalid password or You're banned" });
         }
 
-        return res
-            .status(200)
-            .json({ message: "Login successfully", role: user.role });
+        // Trả về thêm thông tin username và role
+        return res.status(200).json({
+            message: "Login successfully",
+            role: user.role,
+            username: user.username // Trả về tên người dùng
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server error" });

@@ -30,14 +30,19 @@ const Login = () => {
                 "http://localhost:8080/account/login",
                 { email, password }
             );
-            const { role, message } = response.data;
+            const { role, message, username } = response.data;
 
-            if (response.status === 200 && role === "admin") {
+            if (response.status === 200) {
+                // Save user info to localStorage
+                localStorage.setItem("user", JSON.stringify({ username, role }));
+
                 alert(message);
-                navigate("/admin");
-            } else if (response.status === 200 && role === "user") {
-                alert(message);
-                navigate("/account/login");
+
+                if (role === "admin") {
+                    navigate("/admin");
+                } else {
+                    navigate("/");
+                }
             }
         } catch (error) {
             console.error("Login failed:", error);
@@ -71,10 +76,7 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <Link
-                    to="/account/forgot-password"
-                    className="forgot-password-link"
-                >
+                <Link to="/account/forgot-password" className="forgot-password-link">
                     Forgot Password?
                 </Link>
 
@@ -84,8 +86,7 @@ const Login = () => {
             </form>
 
             <p className="register-text">
-                Don&apos;t have an account?
-                <Link to="/account/register"> Register now</Link>
+                Don&apos;t have an account? <Link to="/account/register"> Register now</Link>
             </p>
         </div>
     );

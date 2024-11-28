@@ -1,3 +1,4 @@
+/* General styles */
 header {
     width: 100%;
     color: white;
@@ -7,8 +8,8 @@ header {
     left: 0;
     right: 0;
     z-index: 1000;
-    height: 70px; 
-    background-color: #FFF8E7; 
+    height: 70px;
+    background-color: #FFF8E7;
 }
 
 .header-main {
@@ -16,29 +17,31 @@ header {
     justify-content: space-between;
     align-items: center;
     background-color: #FFF8E7;
-    padding: 0 20px; 
+    padding: 0 20px;
     height: 100%;
 }
 
 .header-main .logo {
     display: flex;
     align-items: center;
+    flex: 1;
 }
 
 .header-main .logo img {
-    width: 50px; 
-    height: 30px; 
+    width: 50px;
+    height: 30px;
     margin-right: 10px;
 }
 
 .header-main .logo h1 {
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
     margin: 0;
     font-weight: 700;
     text-transform: uppercase;
-    color: #FF9800; 
+    color: #FF9800;
 }
 
+/* Navigation */
 nav ul {
     display: flex;
     justify-content: space-evenly;
@@ -48,27 +51,139 @@ nav ul {
 }
 
 nav ul li {
-    margin: 0 15px; 
+    margin: 0 15px;
 }
 
 nav ul li a {
     text-decoration: none;
-    color: #000000; /* Màu mặc định của các liên kết */
+    color: #000000;
     font-size: large;
     font-weight: 500;
-    transition: color 0.3s ease, transform 0.3s ease;
+    transition: color 0.3s ease;
 }
 
 nav ul li a:hover {
-    color: #FF9800; /* Màu khi hover */
-    transform: scale(1.1);
+    color: #FF9800;
 }
 
 nav ul li a.active {
-    color: #FF9800; /* Màu khi active */
+    color: #FF9800;
     font-weight: 600;
 }
 
 body {
-    padding-top: 70px; /* Đảm bảo nội dung không bị che bởi header */
+    padding-top: 70px;
+}
+
+@media (max-width: 768px) {
+    .header-main {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .header-main .logo {
+        margin-bottom: 10px;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        background-color: #FFF8E7;
+        padding: 20px 0;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        z-index: 1000;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+
+    nav ul li a {
+        font-size: 1.2rem;
+    }
+
+    nav ul li a.active {
+        font-weight: 600;
+    }
+
+    .hamburger-menu {
+        display: block;
+        cursor: pointer;
+        position: absolute;
+        top: 20px;
+        right: 50px;
+    }
+
+    .hamburger-menu div {
+        width: 30px;
+        height: 3px;
+        background-color: #FF9800;
+        margin: 6px 0;
+    }
+}
+
+.nav-open nav ul {
+    display: flex;
+}
+
+/* User menu and dropdown */
+.user-menu {
+    position: relative;
+}
+
+.username {
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000;
+    transition: color 0.3s ease;
+}
+
+.username:hover {
+    color: #FF9800;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background-color: #FFF8E7;
+    border: 1px solid #FF9800;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 0;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    text-align: center;
+    color: #000;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box; /* Prevent overflow */
+}
+
+.dropdown-item:hover {
+    background-color: #FF9800;
+    color: white;
+}
+
+/* Logout style */
+.logout {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.logout:hover {
+    background-color: #FF9800;
+    color: white;
 }
