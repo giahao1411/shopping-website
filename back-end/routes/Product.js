@@ -49,6 +49,7 @@ router.post("/products", upload.array("images", 3), async (req, res) => {
 router.patch("/edit/:id", upload.array("images", 3), async (req, res) => {
     const productId = req.params.id;
     const { category, name, description, quantity, price } = req.body;
+
     try {
         const images = req.files;
 
