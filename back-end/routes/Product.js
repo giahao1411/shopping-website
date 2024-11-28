@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
 
 const Product = require("../models/ProductModel");
 const upload = require("../middlewares/multer");
@@ -69,18 +70,41 @@ router.patch(
             if (!product) {
                 return res.status(404).json({ message: "Product not found" });
             }
-            return res
-                .status(200)
-                .json({
-                    message: "Edit product successfully",
-                    product: product,
-                });
+            return res.status(200).json({
+                message: "Edit product successfully",
+                product: product,
+            });
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }
     }
 );
 
-router.patch("/products/delete/:id", async (req, res) => {});
+router.delete("/products/delete/:id", async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await Product.findByIdAndDelete(productId);
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        if (product.images && Array.isArray(product.images)) {
+            product.images.forEach((image) => {
+                if (fs.existsSync(image)) {
+                    fs.unlinkSync(image);
+                }
+            });
+        }
+
+        await Product.findByIdAndDelete(productId);
+
+        return res
+            .status(200)
+            .json({ message: "Delete product successfully", product: product });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
 
 module.exports = router;
