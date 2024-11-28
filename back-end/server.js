@@ -11,6 +11,7 @@ const corsOptions = require("./config/cors");
 const AccountRouter = require("./routes/Account");
 const TaskRouter = require("./routes/Task");
 const UserRouter = require("./routes/User");
+const ProductRouter = require("./routes/Product");
 
 const app = express();
 database.connection();
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 app.use("/account", AccountRouter);
 app.use("/api/task", TaskRouter);
 app.use("/api/user", UserRouter);
+app.use("/api/product", ProductRouter);
 
 // start the server
 const PORT = process.env.PORT || 8080;

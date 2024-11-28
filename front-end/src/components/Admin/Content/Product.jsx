@@ -28,11 +28,12 @@ const Product = () => {
                     <thead>
                         <tr>
                             <th>Product ID</th>
+                            <th>Category</th>
                             <th>Name</th>
                             <th>Image</th>
                             <th>Quantity</th>
                             <th>Price</th>
-                            <th>Actions</th>
+                            <th>Detail</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
