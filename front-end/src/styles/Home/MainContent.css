@@ -1,6 +1,7 @@
 .main {
     padding: 30px;
     margin-top: 60px;
+    flex: 1;
 }
 
 .banner {
