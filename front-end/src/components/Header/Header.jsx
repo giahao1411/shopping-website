@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import "../../styles/Home/Header.css";
+import "./Header.css";
 
 const Header = () => {
   const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
@@ -20,7 +20,8 @@ const Header = () => {
           <ul>
             <li><Link to="/" className={location.pathname === "/" ? "active" : ""}>Home</Link></li>
             <li><Link to="/cart" className={location.pathname === "/cart" ? "active" : ""}>Cart</Link></li>
-            <li><Link to="/account/login" className={location.pathname === "/account/login" ? "active" : ""}>Login</Link></li>
+            <li><Link to="/account/login" className={location.pathname === "/account/login" ? "active" : ""}>Log In</Link></li>
+            <li><Link to="/about" className={location.pathname === "/about" ? "active" : ""}>About Us</Link></li>
           </ul>
         </nav>
       </div>
