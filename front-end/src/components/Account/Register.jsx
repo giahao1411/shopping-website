@@ -39,15 +39,15 @@ const Register = () => {
                 alert(response.data.message);
                 navigate("/account/login");
             }
-
-            if (response.status === 406) {
-                setError(response.data.message);
-            }
         } catch (error) {
-            console.error("Register failed:", error);
-            setError(
-                error.response?.data?.message || "An unexpected error occurred."
-            );
+            if (error.response) {
+                setError(
+                    error.response.data.message ||
+                        "An unexpected error occurred."
+                );
+            } else {
+                console.error(error);
+            }
         } finally {
             setLoading(false); // reset loading state
         }

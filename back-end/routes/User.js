@@ -49,6 +49,11 @@ router.patch("/users/:id", async (req, res) => {
             });
         }
 
+        const phoneExisted = await User.findOne({ phone });
+        if (phoneExisted) {
+            return res.status(400).json({ message: "Phone number existed" });
+        }
+
         const updateUser = await User.findByIdAndUpdate(userID, {
             username,
             email,

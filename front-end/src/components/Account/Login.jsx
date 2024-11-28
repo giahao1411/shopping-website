@@ -13,7 +13,6 @@ const Login = () => {
     const navigate = useNavigate();
 
     // handle submit for login
-    // handle submit for login
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -51,9 +50,9 @@ const Login = () => {
                 );
 
                 if (user.role === "user") {
-                    navigate("/"); 
+                    navigate("/");
                 } else {
-                    navigate("/admin")
+                    navigate("/admin");
                 }
             }
         } catch (error) {
