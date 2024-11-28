@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require("fs");
 
 const Product = require("../models/ProductModel");
+
 const upload = require("../middlewares/multer");
 
 router.get("/products", async (req, res) => {
@@ -45,44 +46,41 @@ router.post("/products", upload.array("images", 3), async (req, res) => {
     }
 });
 
-router.patch(
-    "/products/edit/:id",
-    upload.array("images", 3),
-    async (req, res) => {
-        try {
-            const productId = req.params.id;
-            const { category, name, description, quantity, price } = req.body;
-            const images = req.files;
-
-            const product = await Product.findByIdAndUpdate(
-                productId,
-                {
-                    category,
-                    name,
-                    images: images.map((image) => image.path),
-                    description,
-                    quantity,
-                    price,
-                },
-                { new: true }
-            );
-
-            if (!product) {
-                return res.status(404).json({ message: "Product not found" });
-            }
-            return res.status(200).json({
-                message: "Edit product successfully",
-                product: product,
-            });
-        } catch (error) {
-            return res.status(500).json({ message: error.message });
-        }
-    }
-);
-
-router.delete("/products/delete/:id", async (req, res) => {
+router.patch("/edit/:id", upload.array("images", 3), async (req, res) => {
+    const productId = req.params.id;
+    const { category, name, description, quantity, price } = req.body;
     try {
-        const productId = req.params.id;
+        const images = req.files;
+
+        const product = await Product.findByIdAndUpdate(
+            productId,
+            {
+                category,
+                name,
+                images: images.map((image) => image.path),
+                description,
+                quantity,
+                price,
+            },
+            { new: true }
+        );
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        return res.status(200).json({
+            message: "Edit product successfully",
+            product: product,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+router.delete("/delete/:id", async (req, res) => {
+    const productId = req.params.id;
+
+    try {
         const product = await Product.findByIdAndDelete(productId);
 
         if (!product) {
