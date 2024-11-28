@@ -2,9 +2,12 @@
   background-color: #FFF8E7;
   color: black;
   font-weight: 600;
-  padding: 10px 0;
+  padding: 20px 0;
   text-align: center;
   width: 100%;
   margin: 0;
-  position: relative;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin: 0;
 }

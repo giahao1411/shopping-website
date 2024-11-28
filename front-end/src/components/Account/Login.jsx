@@ -33,22 +33,28 @@ const Login = () => {
                 { email, password }
             );
 
-            const { message, username } = response.data; // Lấy username từ backend
+            const { message, user } = response.data; // Lấy username từ backend
 
             if (response.status === 200) {
                 // Hiển thị pop-up thông báo login thành công
                 Swal.fire({
-                    icon: 'success',
+                    icon: "success",
                     title: message, // Thông báo từ backend
                     showConfirmButton: false,
-                    timer: 1500 // Thời gian hiển thị pop-up
+                    timer: 1500, // Thời gian hiển thị pop-up
                 });
 
                 // Lưu thông tin user vào localStorage, bao gồm cả username
-                localStorage.setItem("user", JSON.stringify({ username, email }));
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify({ username: user.username, email })
+                );
 
-                // Điều hướng tới trang admin hoặc home
-                navigate("/"); // Hoặc /admin nếu là admin
+                if (user.role === "user") {
+                    navigate("/");
+                } else {
+                    navigate("/admin");
+                }
             }
         } catch (error) {
             console.error("Login failed:", error);
@@ -59,7 +65,6 @@ const Login = () => {
             setLoading(false); // reset loading state
         }
     };
-
 
     return (
         <div className="login-container">
@@ -83,7 +88,10 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <Link to="/account/forgot-password" className="forgot-password-link">
+                <Link
+                    to="/account/forgot-password"
+                    className="forgot-password-link"
+                >
                     Forgot Password?
                 </Link>
 
@@ -93,7 +101,8 @@ const Login = () => {
             </form>
 
             <p className="register-text">
-                Don&apos;t have an account? <Link to="/account/register"> Register now</Link>
+                Don&apos;t have an account?{" "}
+                <Link to="/account/register"> Register now</Link>
             </p>
         </div>
     );
