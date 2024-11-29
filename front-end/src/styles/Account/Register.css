@@ -46,6 +46,7 @@ body {
     height: 54px;
     width: 100%;
     margin-bottom: 1.5rem;
+    position: relative;
 }
 
 .register-form .input-wrapper .input-field {
@@ -70,21 +71,20 @@ body {
 .register-form .input-wrapper i {
     color: #a395e0;
     position: absolute;
-    margin-top: 27px;
+    top: 50%;
     transform: translateY(-50%);
     font-size: 1.4rem;
 }
 
 .register-form .input-wrapper i:not(.fa-eye-slash, .fa-eye) {
-    right: 57rem;
+    left: 1rem;
     pointer-events: none;
 }
 
 .register-form .input-wrapper i.fa-eye-slash,
 .register-form .input-wrapper i.fa-eye {
+    right: 1rem;
     font-size: 1.25rem;
-    right: 37.5rem;
-    margin-top: 85px;
     cursor: pointer;
     display: none;
 }
@@ -92,7 +92,6 @@ body {
 .register-form .input-wrapper .input-field:valid~i.fa-eye-slash,
 .register-form .input-wrapper .input-field:valid~i.fa-eye {
     display: block;
-    margin-top: -27px;
 }
 
 .fa-lock {

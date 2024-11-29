@@ -67,7 +67,29 @@ const Login = () => {
 
     return (
         <div className="login-container">
-            <h2 className="form-title">Log in</h2>
+            <h2 className="form-title">Log in with</h2>
+            <div className="social-login">
+                <button className="social-button">
+                    <img
+                        src="/google.svg"
+                        alt="Google"
+                        className="social-icon"
+                    />
+                    Google
+                </button>
+                <button className="social-button">
+                    <img
+                        src="/facebook.svg"
+                        alt="Facebook"
+                        className="social-icon"
+                    />
+                    Facebook
+                </button>
+            </div>
+
+            <p className="separator">
+                <span>or</span>
+            </p>
 
             {error && <p className="error-message">{error}</p>}
 
