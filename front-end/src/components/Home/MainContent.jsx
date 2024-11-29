@@ -36,7 +36,7 @@ const MainContent = () => {
             description: "Winter jacket to keep you warm",
             imageUrl: "https://placehold.co/400x500",
             category: "Outerwear",
-            price: "$59.99",  // Thêm giá sản phẩm
+            price: "$59.99",  
         },
         {
             id: 5,
