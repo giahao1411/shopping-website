@@ -1,27 +1,53 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../styles/Home/MainContent.css";
+import { Link } from "react-router-dom";
 
 const MainContent = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("all");
-    const [products, setProducts] = useState([]);
+    const [products] = useState([  // Mảng sản phẩm tĩnh
+        {
+            id: 1,
+            name: "T-Shirt",
+            description: "Comfortable cotton t-shirt sdasdn dadasd dasdasd sada s",
+            imageUrl: "https://placehold.co/400x500",
+            category: "T-Shirts",
+            price: "$19.99",  // Thêm giá sản phẩm
+        },
+        {
+            id: 2,
+            name: "Pants",
+            description: "Stylish denim pants",
+            imageUrl: "https://placehold.co/400x500",
+            category: "Pants",
+            price: "$39.99",  // Thêm giá sản phẩm
+        },
+        {
+            id: 3,
+            name: "Backpack",
+            description: "Durable travel backpack",
+            imageUrl: "https://placehold.co/400x500",
+            category: "Backpacks",
+            price: "$49.99",  // Thêm giá sản phẩm
+        },
+        {
+            id: 4,
+            name: "Outerwear",
+            description: "Winter jacket to keep you warm",
+            imageUrl: "https://placehold.co/400x500",
+            category: "Outerwear",
+            price: "$59.99",  // Thêm giá sản phẩm
+        },
+        {
+            id: 5,
+            name: "Wallet",
+            description: "Leather wallet for everyday use",
+            imageUrl: "https://placehold.co/400x500",
+            category: "Wallets",
+            price: "$29.99",  // Thêm giá sản phẩm
+        },
+    ]);
 
-    // Lấy dữ liệu sản phẩm từ API khi component mount
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await fetch(
-                    "http://localhost:8000/api/product/products"
-                );
-                const data = await response.json();
-                setProducts(data);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
-        };
-
-        fetchProducts();
-    }, []);
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -35,6 +61,13 @@ const MainContent = () => {
         e.preventDefault();
         console.log("Search: ", searchQuery, "Filter: ", selectedFilter);
     };
+
+    // Lọc các sản phẩm theo category và search query
+    const filteredProducts = products.filter((product) => {
+        const matchesSearchQuery = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesCategory = selectedFilter === "all" || product.category === selectedFilter;
+        return matchesSearchQuery && matchesCategory;
+    });
 
     return (
         <main className="main">
@@ -59,11 +92,11 @@ const MainContent = () => {
                         className="filter-select"
                     >
                         <option value="all">All Categories</option>
-                        <option value="card1">T-Shirts</option>
-                        <option value="card2">Pants</option>
-                        <option value="card3">Backpacks</option>
-                        <option value="card3">Outerwear</option>
-                        <option value="card3">Wallets</option>
+                        <option value="T-Shirts">T-Shirts</option>
+                        <option value="Pants">Pants</option>
+                        <option value="Backpacks">Backpacks</option>
+                        <option value="Outerwear">Outerwear</option>
+                        <option value="Wallets">Wallets</option>
                     </select>
 
                     <button type="submit" className="search-button">
@@ -72,18 +105,23 @@ const MainContent = () => {
                 </form>
             </div>
 
+            <hr className="divider" />
+
             {/* Cards Section */}
             <div className="cards">
-                {products.map((product) => (
-                    <div className="card" key={product.id}>
-                        <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="card-image"
-                        />
-                        <h3>{product.name}</h3>
-                        <p>{product.description}</p>
-                    </div>
+                {filteredProducts.map((product) => (
+                    <Link to={`/product/${product.id}`} key={product.id} className="card-link">
+                        <div className="card">
+                            <img
+                                src={product.imageUrl}
+                                alt={product.name}
+                                className="card-image"
+                            />
+                            <h3>{product.name}</h3>
+                            <p>{product.description}</p>
+                            <p className="price">{product.price}</p>  {/* Hiển thị giá tiền */}
+                        </div>
+                    </Link>
                 ))}
             </div>
         </main>
