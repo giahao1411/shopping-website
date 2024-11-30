@@ -3,11 +3,25 @@ import { BiSolidChevronRight, BiSolidChevronLeft } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "../../../styles/Admin/Product.css";
+import { useEffect } from "react";
+
 
 const Product = () => {
     const [products, setProducts] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get(`/api/products?page=${page}`);
+        } catch (error) {
+            console.error("Error fetching products", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchProducts();
+    }, [page]);
 
     return (
         <div className="product-list">
@@ -36,7 +50,28 @@ const Product = () => {
                             <th>Detail</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        {products.map((product, index) => (
+                            <tr key={product._id || index}>
+                                <td>{product._id}</td>
+                                <td>{product.category}</td>
+                                <td>{product.name}</td>
+                                <td>
+                                    <img
+                                        src={product.images[0]}
+                                        alt={product.name}
+                                    />
+                                </td>
+                                <td>{product.quantity}</td>
+                                <td>{product.price}</td>
+                                <td>
+                                    <Link to={`/admin/product/${product._id}`}>
+                                        Detail
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
                 <p className="table-footer">
                     Page {page} / {totalPage}
