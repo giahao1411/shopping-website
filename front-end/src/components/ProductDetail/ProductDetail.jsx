@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const ProductDetail = () => {
     const { productId } = useParams(); // Lấy productId từ URL params
@@ -9,15 +10,18 @@ const ProductDetail = () => {
         // Giả sử bạn đang gọi API để lấy chi tiết sản phẩm
         const fetchProductDetails = async () => {
             try {
-                const response = await fetch(`/api/products/${productId}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setProduct(data);
-                } else {
-                    console.error("Sản phẩm không tìm thấy");
+                const response = await axios.get(
+                    `http://localhost:8080/api/products/${productId}`
+                );
+                if (response.status === 200) {
+                    setProduct(response.data.product);
                 }
-            } catch (err) {
-                console.error("Lỗi khi lấy thông tin sản phẩm", err);
+            } catch (error) {
+                if (error.response) {
+                    alert("Failed to get product");
+                } else {
+                    console.error(error);
+                }
             }
         };
 

@@ -4,6 +4,7 @@ import axios from "axios";
 import InputField from "./InputField";
 import Swal from "sweetalert2"; // Import SweetAlert2
 import "../../styles/Account/Login.css";
+import { SESSION } from "../../libs/constant";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -11,6 +12,22 @@ const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    const googleLogin = async () => {
+        window.location.href = "http://localhost:8080/social/google/auth";
+
+        try {
+            const response = await axios.get(
+                "http://localhost:8080/social/google/auth"
+            );
+        } catch (error) {
+            if (error.response) {
+                alert(error.response);
+            } else {
+                console.error(error);
+            }
+        }
+    };
 
     // handle submit for login
     const handleSubmit = async (e) => {
@@ -45,7 +62,7 @@ const Login = () => {
 
                 // Lưu thông tin user vào localStorage, bao gồm cả username
                 localStorage.setItem(
-                    "user",
+                    SESSION,
                     JSON.stringify({ username: user.username, email })
                 );
 
@@ -56,10 +73,14 @@ const Login = () => {
                 }
             }
         } catch (error) {
-            console.error("Login failed:", error);
-            setError(
-                error.response?.data?.message || "An unexpected error occurred."
-            );
+            if (error.response) {
+                setError(
+                    error.response?.data?.message ||
+                        "An unexpected error occurred."
+                );
+            } else {
+                console.error(error);
+            }
         } finally {
             setLoading(false); // reset loading state
         }
@@ -69,7 +90,7 @@ const Login = () => {
         <div className="login-container">
             <h2 className="form-title">Log in with</h2>
             <div className="social-login">
-                <button className="social-button">
+                <button className="social-button" onClick={googleLogin}>
                     <img
                         src="/google.svg"
                         alt="Google"

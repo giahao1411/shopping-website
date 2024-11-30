@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.css";
+import { SESSION } from "../../libs/constant";
 
 const Header = () => {
     const location = useLocation();
@@ -10,7 +11,7 @@ const Header = () => {
 
     useEffect(() => {
         // Lấy thông tin người dùng từ localStorage
-        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const storedUser = JSON.parse(localStorage.getItem(SESSION));
         if (storedUser) {
             setUser(storedUser); // Lưu thông tin người dùng vào state
         }

@@ -15,6 +15,22 @@ router.get("/products", async (req, res) => {
     }
 });
 
+router.get("/products/:id", async (req, res) => {
+    const productID = req.params.id;
+    try {
+        const product = await Product.findById({ productID });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        return res
+            .status(200)
+            .json({ message: "Product found", product: product });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
 router.post("/products", upload.array("images", 3), async (req, res) => {
     try {
         const { category, name, description, quantity, price } = req.body;
@@ -46,39 +62,43 @@ router.post("/products", upload.array("images", 3), async (req, res) => {
     }
 });
 
-router.patch("/edit/:id", upload.array("images", 3), async (req, res) => {
-    const productId = req.params.id;
-    const { category, name, description, quantity, price } = req.body;
+router.patch(
+    "products/edit/:id",
+    upload.array("images", 3),
+    async (req, res) => {
+        const productId = req.params.id;
+        const { category, name, description, quantity, price } = req.body;
 
-    try {
-        const images = req.files;
+        try {
+            const images = req.files;
 
-        const product = await Product.findByIdAndUpdate(
-            productId,
-            {
-                category,
-                name,
-                images: images.map((image) => image.path),
-                description,
-                quantity,
-                price,
-            },
-            { new: true }
-        );
+            const product = await Product.findByIdAndUpdate(
+                productId,
+                {
+                    category,
+                    name,
+                    images: images.map((image) => image.path),
+                    description,
+                    quantity,
+                    price,
+                },
+                { new: true }
+            );
 
-        if (!product) {
-            return res.status(404).json({ message: "Product not found" });
+            if (!product) {
+                return res.status(404).json({ message: "Product not found" });
+            }
+            return res.status(200).json({
+                message: "Edit product successfully",
+                product: product,
+            });
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
         }
-        return res.status(200).json({
-            message: "Edit product successfully",
-            product: product,
-        });
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
     }
-});
+);
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("products/delete/:id", async (req, res) => {
     const productId = req.params.id;
 
     try {

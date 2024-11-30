@@ -146,7 +146,7 @@ const User = () => {
                         onClick={handleForward}
                         className="page-move"
                     />
-                </div>
+                </div>  
             </div>
             <div className="list-container">
                 <table className="user-table">

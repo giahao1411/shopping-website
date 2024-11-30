@@ -12,6 +12,7 @@ const AccountRouter = require("./routes/Account");
 const TaskRouter = require("./routes/Task");
 const UserRouter = require("./routes/User");
 const ProductRouter = require("./routes/Product");
+const GoogleAuth = require("./routes/GoogleAuth");
 
 const app = express();
 database.connection();
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 
 // register the end-points
 app.use("/account", AccountRouter);
+app.use("/social", GoogleAuth);
 app.use("/api/task", TaskRouter);
 app.use("/api/user", UserRouter);
 app.use("/api/product", ProductRouter);
