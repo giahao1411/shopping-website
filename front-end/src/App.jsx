@@ -4,6 +4,7 @@ import AccountRoutes from "./routes/AccountRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
 import HomeRoutes from "./routes/HomeRoutes";
 import ProductDetailRoutes from "./routes/ProductDetailRoutes";
+import CartRoutes from "./routes/CartRoutes";   
 
 const App = () => {
     return (
@@ -14,6 +15,7 @@ const App = () => {
                     {AccountRoutes}
                     {AdminRoutes}
                     {ProductDetailRoutes}
+                    {CartRoutes}
                 </Routes>
             </div>
         </Router>
