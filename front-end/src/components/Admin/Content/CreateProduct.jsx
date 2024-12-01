@@ -1,135 +1,141 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import "../../../styles/Admin/CreateProduct.css";  
+import { useNavigate, Link } from "react-router-dom";
+import "../../../styles/Admin/CreateProduct.css";
 
 const CreateProduct = () => {
-  const [productData, setProductData] = useState({
-    name: "",
-    category: "",
-    description: "",
-    quantity: 0,
-    price: 0,
-    images: null,
-  });
-
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();  
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProductData({
-      ...productData,
-      [name]: value,
+    const [productData, setProductData] = useState({
+        name: "",
+        category: "",
+        description: "",
+        quantity: 0,
+        price: 0,
+        images: null,
     });
-  };
 
-  const handleFileChange = (e) => {
-    setProductData({
-      ...productData,
-      images: e.target.files,
-    });
-  };
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setProductData({
+            ...productData,
+            [name]: value,
+        });
+    };
 
-    const formData = new FormData();
-    formData.append("name", productData.name);
-    formData.append("category", productData.category);
-    formData.append("description", productData.description);
-    formData.append("quantity", productData.quantity);
-    formData.append("price", productData.price);
-    
-    if (productData.images) {
-      for (let i = 0; i < productData.images.length; i++) {
-        formData.append("images", productData.images[i]);
-      }
-    }
+    const handleFileChange = (e) => {
+        setProductData({
+            ...productData,
+            images: e.target.files,
+        });
+    };
 
-    try {
-      const response = await axios.post("/api/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      alert(response.data.message);
-      setLoading(false);
-      
-      navigate("/admin/product");
-    } catch (error) {
-      console.error("Error creating product:", error);
-      alert("Failed to create product.");
-      setLoading(false);
-    }
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-  return (
-    <div className="create-product-container">
-      <h1>Create New Product</h1>
+        const formData = new FormData();
+        formData.append("name", productData.name);
+        formData.append("category", productData.category);
+        formData.append("description", productData.description);
+        formData.append("quantity", productData.quantity);
+        formData.append("price", productData.price);
 
-      <form className="create-product-form" onSubmit={handleSubmit}>
-        <label>Name:</label>
-        <input
-          type="text"
-          name="name"
-          value={productData.name}
-          onChange={handleInputChange}
-          required
-        />
-        
-        <label>Category:</label>
-        <input
-          type="text"
-          name="category"
-          value={productData.category}
-          onChange={handleInputChange}
-          required
-        />
-        
-        <label>Description:</label>
-        <textarea
-          name="description"
-          value={productData.description}
-          onChange={handleInputChange}
-        ></textarea>
+        if (productData.images) {
+            for (let i = 0; i < productData.images.length; i++) {
+                formData.append("images", productData.images[i]);
+            }
+        }
 
-        <label>Quantity:</label>
-        <input
-          type="number"
-          name="quantity"
-          value={productData.quantity}
-          onChange={handleInputChange}
-          required
-        />
-        
-        <label>Price:</label>
-        <input
-          type="number"
-          name="price"
-          value={productData.price}
-          onChange={handleInputChange}
-          required
-        />
-        
-        <label>Images:</label>
-        <input
-          type="file"
-          multiple
-          onChange={handleFileChange}
-        />
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/api/product/products",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating..." : "Create Product"}
-        </button>
-      </form>
+            if (response.status === 200) {
+                alert(response.data.message);
 
-      <Link to="/admin/product" className="create-product-link">
-        Back to Product List
-      </Link>
-    </div>
-  );
+                navigate("/admin/product");
+            }
+        } catch (error) {
+            if (error.response) {
+                alert("Failed to create product.");
+            } else {
+                console.error("Error creating product:", error);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="create-product-container">
+            <h1>Create New Product</h1>
+
+            <form className="create-product-form" onSubmit={handleSubmit}>
+                <label>Name:</label>
+                <input
+                    type="text"
+                    name="name"
+                    value={productData.name}
+                    onChange={handleInputChange}
+                    required
+                />
+
+                <label>Category:</label>
+                <input
+                    type="text"
+                    name="category"
+                    value={productData.category}
+                    onChange={handleInputChange}
+                    required
+                />
+
+                <label>Description:</label>
+                <textarea
+                    name="description"
+                    value={productData.description}
+                    onChange={handleInputChange}
+                ></textarea>
+
+                <label>Quantity:</label>
+                <input
+                    type="number"
+                    name="quantity"
+                    value={productData.quantity}
+                    onChange={handleInputChange}
+                    required
+                />
+
+                <label>Price:</label>
+                <input
+                    type="number"
+                    name="price"
+                    value={productData.price}
+                    onChange={handleInputChange}
+                    required
+                />
+
+                <label>Images:</label>
+                <input type="file" multiple onChange={handleFileChange} />
+
+                <button type="submit" disabled={loading}>
+                    {loading ? "Creating..." : "Create Product"}
+                </button>
+            </form>
+
+            <Link to="/admin/product" className="create-product-link">
+                Back to Product List
+            </Link>
+        </div>
+    );
 };
 
 export default CreateProduct;

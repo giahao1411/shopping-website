@@ -5,7 +5,6 @@ import axios from "axios";
 import "../../../styles/Admin/Product.css";
 import { useEffect } from "react";
 
-
 const Product = () => {
     const [products, setProducts] = useState([]);
     const [page, setPage] = useState(1);
@@ -13,15 +12,49 @@ const Product = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get(`/api/products?page=${page}`);
+            const response = await axios.get(
+                `http://localhost:8080/api/product/products?page=${page}&limit=7`
+            );
+
+            if (response.status === 200) {
+                setProducts(response.data.products);
+                setTotalPage(response.data.totalPages);
+            }
         } catch (error) {
-            console.error("Error fetching products", error);
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error("Error fetching products", error);
+            }
+        }
+    };
+
+    // move backward 1 page
+    const handleBackward = () => {
+        // make sure not down below 1
+        setPage((prevPage) => Math.max(prevPage - 1, 1));
+    };
+
+    // move forward 1 page
+    const handleForward = () => {
+        setPage((prevPage) => (prevPage < totalPage ? prevPage + 1 : prevPage));
+    };
+
+    // page input field
+    const handleInputChange = (event) => {
+        const value = parseInt(event.target.value, 10);
+        if (value > 0 && value <= totalPage) {
+            setPage(value);
+        } else if (value > totalPage) {
+            setPage(totalPage);
+        } else {
+            setPage(1);
         }
     };
 
     useEffect(() => {
         fetchProducts();
-    }, [page]);
+    }, [products, page]);
 
     return (
         <div className="product-list">
@@ -29,9 +62,21 @@ const Product = () => {
             <div className="list-header">
                 <h2>Product List</h2>
                 <div className="pagination">
-                    <BiSolidChevronLeft className="page-move" />
-                    <input type="number" min="1" max={totalPage} value={page} />
-                    <BiSolidChevronRight className="page-move" />
+                    <BiSolidChevronLeft
+                        className="page-move"
+                        onClick={handleBackward}
+                    />
+                    <input
+                        type="number"
+                        min="1"
+                        max={totalPage}
+                        value={page}
+                        onChange={handleInputChange}
+                    />
+                    <BiSolidChevronRight
+                        className="page-move"
+                        onClick={handleForward}
+                    />
                 </div>
             </div>
             <Link to="/admin/product/create" className="create-product-link">

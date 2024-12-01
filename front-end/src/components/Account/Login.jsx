@@ -98,14 +98,6 @@ const Login = () => {
                     />
                     Google
                 </button>
-                <button className="social-button">
-                    <img
-                        src="/facebook.svg"
-                        alt="Facebook"
-                        className="social-icon"
-                    />
-                    Facebook
-                </button>
             </div>
 
             <p className="separator">

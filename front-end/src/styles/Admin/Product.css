@@ -2,8 +2,8 @@
     width: 100%;
 }
 
-.create-product-link {
-    text-decoration: none;
+.product-list .create-product-link {
+    text-align: left;
 }
 
 .create-product-link:hover {

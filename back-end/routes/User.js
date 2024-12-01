@@ -7,7 +7,7 @@ const validatePhone = require("../utilities/validatePhone");
 
 // get user list by limit
 router.get("/users", async (req, res) => {
-    const { page = 1, limit = 5 } = req.query;
+    const { page = 1, limit = 7 } = req.query;
     const skip = (page - 1) * limit;
 
     try {

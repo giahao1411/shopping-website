@@ -7,9 +7,15 @@ const Product = require("../models/ProductModel");
 const upload = require("../middlewares/multer");
 
 router.get("/products", async (req, res) => {
+    const { page = 1, limit = 7 } = req.query;
+    const skip = (page - 1) * limit;
+
     try {
-        const products = await Product.find();
-        return res.status(200).json(products);
+        const products = await Product.find().skip(skip).limit(parseInt(limit));
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        return res.status(200).json({ products, totalPages });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -17,6 +23,7 @@ router.get("/products", async (req, res) => {
 
 router.get("/products/:id", async (req, res) => {
     const productID = req.params.id;
+
     try {
         const product = await Product.findById({ productID });
         if (!product) {
