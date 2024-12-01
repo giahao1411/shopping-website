@@ -5,14 +5,16 @@ import { Link } from "react-router-dom";
 const MainContent = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("all");
-    const [products] = useState([  // Mảng sản phẩm tĩnh
+    const [products] = useState([
+        // Mảng sản phẩm tĩnh
         {
             id: 1,
             name: "T-Shirt",
-            description: "Comfortable cotton t-shirt sdasdn dadasd dasdasd sada s",
+            description:
+                "Comfortable cotton t-shirt sdasdn dadasd dasdasd sada s",
             imageUrl: "https://placehold.co/400x500",
             category: "T-Shirts",
-            price: "$19.99",  // Thêm giá sản phẩm
+            price: "$19.99", // Thêm giá sản phẩm
         },
         {
             id: 2,
@@ -20,7 +22,7 @@ const MainContent = () => {
             description: "Stylish denim pants",
             imageUrl: "https://placehold.co/400x500",
             category: "Pants",
-            price: "$39.99",  // Thêm giá sản phẩm
+            price: "$39.99", // Thêm giá sản phẩm
         },
         {
             id: 3,
@@ -28,7 +30,7 @@ const MainContent = () => {
             description: "Durable travel backpack",
             imageUrl: "https://placehold.co/400x500",
             category: "Backpacks",
-            price: "$49.99",  // Thêm giá sản phẩm
+            price: "$49.99", // Thêm giá sản phẩm
         },
         {
             id: 4,
@@ -36,7 +38,7 @@ const MainContent = () => {
             description: "Winter jacket to keep you warm",
             imageUrl: "https://placehold.co/400x500",
             category: "Outerwear",
-            price: "$59.99",  
+            price: "$59.99",
         },
         {
             id: 5,
@@ -44,10 +46,9 @@ const MainContent = () => {
             description: "Leather wallet for everyday use",
             imageUrl: "https://placehold.co/400x500",
             category: "Wallets",
-            price: "$29.99",  // Thêm giá sản phẩm
+            price: "$29.99", // Thêm giá sản phẩm
         },
     ]);
-
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -64,8 +65,11 @@ const MainContent = () => {
 
     // Lọc các sản phẩm theo category và search query
     const filteredProducts = products.filter((product) => {
-        const matchesSearchQuery = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = selectedFilter === "all" || product.category === selectedFilter;
+        const matchesSearchQuery = product.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
+        const matchesCategory =
+            selectedFilter === "all" || product.category === selectedFilter;
         return matchesSearchQuery && matchesCategory;
     });
 
@@ -110,7 +114,11 @@ const MainContent = () => {
             {/* Cards Section */}
             <div className="cards">
                 {filteredProducts.map((product) => (
-                    <Link to={`/product/${product.id}`} key={product.id} className="card-link">
+                    <Link
+                        to={`/details/product/${product.id}`}
+                        key={product.id}
+                        className="card-link"
+                    >
                         <div className="card">
                             <img
                                 src={product.imageUrl}
@@ -119,7 +127,8 @@ const MainContent = () => {
                             />
                             <h3>{product.name}</h3>
                             <p>{product.description}</p>
-                            <p className="price">{product.price}</p>  {/* Hiển thị giá tiền */}
+                            <p className="price">{product.price}</p>{" "}
+                            {/* Hiển thị giá tiền */}
                         </div>
                     </Link>
                 ))}
