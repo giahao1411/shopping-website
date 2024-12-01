@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "./InputField";
@@ -13,20 +13,8 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const googleLogin = async () => {
+    const googleLogin = () => {
         window.location.href = "http://localhost:8080/social/google/auth";
-
-        try {
-            const response = await axios.get(
-                "http://localhost:8080/social/google/auth"
-            );
-        } catch (error) {
-            if (error.response) {
-                alert(error.response);
-            } else {
-                console.error(error);
-            }
-        }
     };
 
     // handle submit for login
@@ -63,14 +51,13 @@ const Login = () => {
                 // Lưu thông tin user vào localStorage, bao gồm cả username
                 localStorage.setItem(
                     SESSION,
-                    JSON.stringify({ username: user.username, email })
+                    JSON.stringify({
+                        username: user.username,
+                        email: user.email,
+                    })
                 );
 
-                if (user.role === "user") {
-                    navigate("/");
-                } else {
-                    navigate("/admin");
-                }
+                navigate(user.role === "user" ? "/" : "/admin");
             }
         } catch (error) {
             if (error.response) {

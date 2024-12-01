@@ -2,8 +2,6 @@ const passport = require("passport");
 const express = require("express");
 const router = express.Router();
 
-const User = require("../models/UserModel");
-
 // google auth utility
 require("../utilities/googleAuth");
 
@@ -14,14 +12,23 @@ router.get(
 
 router.get(
     "/google/callback",
-    passport.authenticate("google", {
-        successRedirect: "/",
-        failureRedirect: "/google/auth/failure",
-    })
+    passport.authenticate("google", { session: false }),
+    (req, res) => {
+        const user = req.user;
+        const queryParams = new URLSearchParams({
+            username: user.username,
+            email: user.email,
+            role: user.role,
+        });
+
+        return res.redirect(
+            `http://localhost:5173/account/oauth/callback?${queryParams}`
+        );
+    }
 );
 
 router.get("/google/auth/failure", (req, res) => {
-    return res.status(400).json({ message: "Something went wrong..." });
+    return res.status(400).json({ message: "Authentication failed" });
 });
 
 module.exports = router;

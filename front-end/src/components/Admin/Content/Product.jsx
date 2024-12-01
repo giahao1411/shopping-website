@@ -89,7 +89,6 @@ const Product = () => {
                             <th>Product ID</th>
                             <th>Category</th>
                             <th>Name</th>
-                            <th>Image</th>
                             <th>Quantity</th>
                             <th>Price</th>
                             <th>Detail</th>
@@ -101,12 +100,6 @@ const Product = () => {
                                 <td>{product._id}</td>
                                 <td>{product.category}</td>
                                 <td>{product.name}</td>
-                                <td>
-                                    <img
-                                        src={product.images[0]}
-                                        alt={product.name}
-                                    />
-                                </td>
                                 <td>{product.quantity}</td>
                                 <td>{product.price}</td>
                                 <td>
