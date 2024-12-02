@@ -3,11 +3,11 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const ProductDetail = () => {
-    const { productId } = useParams(); 
+    const { productId } = useParams();
     const [product, setProduct] = useState(null);
 
     useEffect(() => {
-       
+
         const fetchProductDetails = async () => {
             try {
                 const response = await axios.get(

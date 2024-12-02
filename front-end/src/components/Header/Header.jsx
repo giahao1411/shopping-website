@@ -5,9 +5,9 @@ import { SESSION } from "../../libs/constant";
 
 const Header = () => {
     const location = useLocation();
-    const [menuOpen, setMenuOpen] = useState(false); 
-    const [user, setUser] = useState(null); 
-    const [dropdownOpen, setDropdownOpen] = useState(false); 
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [user, setUser] = useState(null);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem(SESSION));
@@ -17,22 +17,22 @@ const Header = () => {
     }, []);
 
     const toggleMenu = () => {
-        setMenuOpen(!menuOpen); 
+        setMenuOpen(!menuOpen);
     };
 
     const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen); 
+        setDropdownOpen(!dropdownOpen);
     };
 
     const handleLogout = () => {
         localStorage.removeItem("user");
-        setUser(null); 
-        setDropdownOpen(false); 
+        setUser(null);
+        setDropdownOpen(false);
     };
 
     const handleProfileClick = () => {
         history.push("/profile");
-        setMenuOpen(false); // Đóng menu khi chuyển trang
+        setMenuOpen(false);
     };
 
 
@@ -105,9 +105,16 @@ const Header = () => {
                                         <Link
                                             to="/profile"
                                             className="dropdown-item"
-                                            onClick={handleProfileClick} // Thêm hàm xử lý khi click vào Profile
+                                            onClick={handleProfileClick}
                                         >
                                             Profile
+                                        </Link>
+                                        <Link
+                                            to="/order-history"
+                                            className="dropdown-item"
+                                            onClick={handleProfileClick}
+                                        >
+                                            Order History
                                         </Link>
                                         <span
                                             onClick={handleLogout}

@@ -5,6 +5,7 @@ import MainContent from "../components/Home/MainContent";
 import ProductDetail from "../components/ProductDetail/ProductDetail";
 import Cart from "../components/Cart/Cart";
 import Profile from "../components/Account/Profile";
+import OrderHistory from "../components/OrderHistory/OrderHistory";
 
 
 const HomeRoutes = [
@@ -19,6 +20,11 @@ const HomeRoutes = [
             key="home-cart"
             path="/cart"
             element={<Cart />}
+        />
+        <Route
+            key="home-order-history"
+            path="/order-history"
+            element={<OrderHistory />}
         />
         <Route
             key="home-profile"

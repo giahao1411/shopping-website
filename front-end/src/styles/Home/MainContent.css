@@ -29,6 +29,7 @@
     font-size: 3rem;
     font-weight: 700;
     margin: 0;
+    color: #ff9800;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
@@ -48,18 +49,18 @@
 .search-form {
     display: inline-flex;
     align-items: center;
-    border: 2px solid #ff9800;
+    background-color: #dde6ed;
+    border: 1px solid #ff9800;
     border-radius: 30px;
-    width: 600px;
-    padding: 5px 10px;
+    width: 550px;
+    padding: 5px 8px;
 }
 
 .search-input {
     border: none;
     padding: 10px;
     font-size: 1rem;
-    width: 250px;
-    border: 1px solid #ff9800;
+    width: 300px;
     border-radius: 30px;
     outline: none;
 }
