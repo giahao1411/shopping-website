@@ -3,8 +3,6 @@ import axios from "axios";
 import { SESSION } from "../../libs/constant";
 import "../../styles/Cart/Cart.css";
 import { Link } from "react-router-dom";
-import Header from "../Header/Header"; // Import Header
-import Footer from "../Footer/Footer"; // Import Footer
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
@@ -66,32 +64,51 @@ const Cart = () => {
 
     return (
         <div className="cart-page">
-            <Header /> {/* Thêm Header ở đầu trang */}
             <div className="cart-container">
-                <h2>Your Cart</h2>
+                <h2>Shopping Cart</h2>
                 {cartItems.length === 0 ? (
                     <p>Your cart is empty.</p>
                 ) : (
-                    <ul>
-                        {cartItems.map(item => (
-                            <li key={item._id} className="cart-item">
-                                <div className="item-details">
-                                    <img src={item.imageUrl} alt={item.name} />
-                                    <div>
-                                        <h4>{item.name}</h4>
-                                        <p>Price: ${item.price}</p>
+                    <table className="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {cartItems.map(item => (
+                                <tr key={item._id}>
+                                    <td>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td>{item.name}</td>
+                                    <td>
+                                        <input 
+                                            type="number" 
+                                            value={item.quantity} 
+                                            min="1" 
+                                            onChange={(e) => {
+                                                // Handle quantity change logic
+                                            }} 
+                                        />
+                                    </td>
+                                    <td>${item.price}</td>
+                                    <td>
                                         <button onClick={() => handleRemoveItem(item._id)}>Remove</button>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 )}
                 <Link to="/checkout" className="checkout-button">
                     Proceed to Checkout
                 </Link>
             </div>
-            <Footer /> {/* Thêm Footer ở cuối trang */}
         </div>
     );
 };

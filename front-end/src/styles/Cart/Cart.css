@@ -1,31 +1,101 @@
+.cart-page {
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+}
+
 .cart-container {
-    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.cart-item {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #ccc;
-    padding: 10px 0;
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 2rem;
 }
 
-.cart-item img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    margin-right: 20px;
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
-.item-details h4 {
-    margin: 0;
+.cart-table th,
+.cart-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-table th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.cart-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.cart-table input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.cart-table input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+.cart-table button {
+    padding: 8px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cart-table button:hover {
+    background-color: #c82333;
 }
 
 .checkout-button {
-    margin-top: 20px;
     display: inline-block;
-    padding: 10px 20px;
-    background-color: #4CAF50;
+    padding: 12px 20px;
+    background-color: #28a745;
     color: white;
+    text-align: center;
     text-decoration: none;
+    font-size: 1rem;
     border-radius: 5px;
+    margin-top: 20px;
+}
+
+.checkout-button:hover {
+    background-color: #218838;
+}
+
+@media (max-width: 768px) {
+    .cart-table th,
+    .cart-table td {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .cart-table input[type="number"] {
+        width: 50px;
+    }
+
+    .checkout-button {
+        width: 100%;
+        text-align: center;
+    }
 }

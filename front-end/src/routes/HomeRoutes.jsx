@@ -3,6 +3,9 @@ import { Route } from "react-router-dom";
 import Home from "../components/Home/Home";
 import MainContent from "../components/Home/MainContent";
 import ProductDetail from "../components/ProductDetail/ProductDetail";
+import Cart from "../components/Cart/Cart";
+import Profile from "../components/Account/Profile";
+
 
 const HomeRoutes = [
     <Route key="home" path="/" element={<Home />}>
@@ -11,6 +14,16 @@ const HomeRoutes = [
             key="home-product-detail"
             path="/details/product/:productId"
             element={<ProductDetail />}
+        />
+        <Route
+            key="home-cart"
+            path="/cart"
+            element={<Cart />}
+        />
+        <Route
+            key="home-profile"
+            path="/profile"
+            element={<Profile />}
         />
     </Route>,
 ];

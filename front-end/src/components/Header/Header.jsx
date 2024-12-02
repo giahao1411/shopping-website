@@ -5,32 +5,36 @@ import { SESSION } from "../../libs/constant";
 
 const Header = () => {
     const location = useLocation();
-    const [menuOpen, setMenuOpen] = useState(false); // Menu hamburger
-    const [user, setUser] = useState(null); // Lưu thông tin người dùng
-    const [dropdownOpen, setDropdownOpen] = useState(false); // Trạng thái của menu dropdown
+    const [menuOpen, setMenuOpen] = useState(false); 
+    const [user, setUser] = useState(null); 
+    const [dropdownOpen, setDropdownOpen] = useState(false); 
 
     useEffect(() => {
-        // Lấy thông tin người dùng từ localStorage
         const storedUser = JSON.parse(localStorage.getItem(SESSION));
         if (storedUser) {
-            setUser(storedUser); // Lưu thông tin người dùng vào state
+            setUser(storedUser);
         }
     }, []);
 
     const toggleMenu = () => {
-        setMenuOpen(!menuOpen); // Điều khiển menu hamburger
+        setMenuOpen(!menuOpen); 
     };
 
     const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen); // Điều khiển menu dropdown
+        setDropdownOpen(!dropdownOpen); 
     };
 
     const handleLogout = () => {
-        // Xóa thông tin người dùng khi đăng xuất
         localStorage.removeItem("user");
-        setUser(null); // Xóa state người dùng
-        setDropdownOpen(false); // Đóng dropdown khi đăng xuất
+        setUser(null); 
+        setDropdownOpen(false); 
     };
+
+    const handleProfileClick = () => {
+        history.push("/profile");
+        setMenuOpen(false); // Đóng menu khi chuyển trang
+    };
+
 
     return (
         <header className={`header ${menuOpen ? "nav-open" : ""}`}>
@@ -99,10 +103,11 @@ const Header = () => {
                                 {dropdownOpen && (
                                     <div className="dropdown-menu">
                                         <Link
-                                            to="/account"
+                                            to="/profile"
                                             className="dropdown-item"
+                                            onClick={handleProfileClick} // Thêm hàm xử lý khi click vào Profile
                                         >
-                                            Account
+                                            Profile
                                         </Link>
                                         <span
                                             onClick={handleLogout}

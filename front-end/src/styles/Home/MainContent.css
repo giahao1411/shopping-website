@@ -48,8 +48,9 @@
 .search-form {
     display: inline-flex;
     align-items: center;
-    /* border: 2px solid #ff9800; */
+    border: 2px solid #ff9800;
     border-radius: 30px;
+    width: 600px;
     padding: 5px 10px;
 }
 

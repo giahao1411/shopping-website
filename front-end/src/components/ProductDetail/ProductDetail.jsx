@@ -3,11 +3,11 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const ProductDetail = () => {
-    const { productId } = useParams(); // Lấy productId từ URL params
+    const { productId } = useParams(); 
     const [product, setProduct] = useState(null);
 
     useEffect(() => {
-        // Giả sử bạn đang gọi API để lấy chi tiết sản phẩm
+       
         const fetchProductDetails = async () => {
             try {
                 const response = await axios.get(
