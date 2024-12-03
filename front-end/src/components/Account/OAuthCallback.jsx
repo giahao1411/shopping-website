@@ -13,6 +13,7 @@ const OAuthCallback = () => {
                 const username = params.get("username");
                 const email = params.get("email");
                 const role = params.get("role");
+                const error = params.get("error");
 
                 if (username && email) {
                     Swal.fire({
@@ -28,6 +29,16 @@ const OAuthCallback = () => {
                     );
 
                     navigate(role === "user" ? "/" : "/admin");
+                }
+
+                if (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Login Failed",
+                        text: error,
+                    });
+                    navigate("/account/login");
+                    return;
                 }
             } catch (error) {
                 Swal.fire({

@@ -21,6 +21,12 @@ router.get(
             role: user.role,
         });
 
+        if (user.status === "banned") {
+            return res.redirect(
+                "http://localhost:5173/account/oauth/callback?error=Your+account+is+banned"
+            );
+        }
+
         return res.redirect(
             `http://localhost:5173/account/oauth/callback?${queryParams}`
         );
@@ -28,7 +34,9 @@ router.get(
 );
 
 router.get("/google/auth/failure", (req, res) => {
-    return res.status(400).json({ message: "Authentication failed" });
+    return res.redirect(
+        "http://localhost:5173/account/oauth/callback?error=Authentication+failed"
+    );
 });
 
 module.exports = router;
