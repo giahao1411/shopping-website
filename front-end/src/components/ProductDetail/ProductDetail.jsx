@@ -59,10 +59,10 @@ const ProductDetail = () => {
                 <p className="price">${product.price}</p>
                 <div className="action-buttons">
                     <button className="add-to-cart" onClick={handleAddToCart}>
-                        Thêm vào giỏ hàng
+                        Add to cart
                     </button>
                     <button className="buy-now" onClick={handleBuyNow}>
-                        Mua ngay
+                        Buy Now
                     </button>
                 </div>
             </div>

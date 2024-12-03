@@ -7,8 +7,8 @@ header {
     right: 0;
     z-index: 1000;
     height: 70px;
-    background-color: #1A1A1A; 
-    color: #fff; 
+    background-color: #1A1A1A;
+    color: #fff;
 }
 
 .header-main {
@@ -54,18 +54,18 @@ header {
 
 .header-main nav ul li a {
     text-decoration: none;
-    color: #fff; 
+    color: #fff;
     font-size: large;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .header-main nav ul li a:hover {
-    color: #00B0FF; 
+    color: #00B0FF;
 }
 
 .header-main nav ul li a.active {
-    background-color: #1A1A1A; 
+    background-color: #1A1A1A;
     color: #FF9800 !important;
     font-weight: 600;
 }
@@ -118,7 +118,7 @@ header {
     .hamburger-menu div {
         width: 30px;
         height: 3px;
-        background-color: #00B0FF; 
+        background-color: #00B0FF;
         margin: 6px 0;
     }
 }
@@ -140,15 +140,15 @@ header {
 }
 
 .username:hover {
-    color: #00B0FF; 
+    color: #00B0FF;
 }
 
 .dropdown-menu {
     position: absolute;
     top: 30px;
     right: 0;
-    background-color: #1A1A1A; 
-    border: 1px solid #00B0FF; 
+    background-color: #1A1A1A;
+    border: 1px solid #00B0FF;
     border-radius: 5px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     z-index: 1000;
@@ -166,7 +166,7 @@ header {
 }
 
 .dropdown-menu .dropdown-item:hover {
-    background-color: #FF5722; 
+    background-color: #FF5722;
     color: white;
 }
 
@@ -176,6 +176,6 @@ header {
 }
 
 .logout:hover {
-    background-color: #FF5722; 
+    background-color: #FF5722;
     color: white;
 }

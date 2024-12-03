@@ -107,7 +107,7 @@ const MainContent = () => {
                     >
                         <div className="card">
                             <img
-                                src={product.images[0]} // Dùng URL đầy đủ của ảnh
+                                src={product.images[0]} // Sử dụng URL đầy đủ trả về từ backend
                                 alt={product.name}
                                 className="card-image"
                             />
@@ -117,7 +117,6 @@ const MainContent = () => {
                     </Link>
                 ))}
             </div>
-
         </main>
     );
 };

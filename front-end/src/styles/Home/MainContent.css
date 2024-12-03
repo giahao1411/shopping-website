@@ -20,7 +20,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(5px); 
+    backdrop-filter: blur(5px);
 }
 
 .banner h2 {
@@ -91,9 +91,15 @@
     background-color: #e68900;
 }
 
+.divider {
+    border: 0;
+    border-top: 2px solid #FF9800;
+    margin: 40px 250px;
+}
+
 .cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     padding: 20px;
     margin: 20px 100px;
@@ -112,6 +118,7 @@
     width: 100%;
     color: #333;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #FF9800;
     text-align: center;
     display: flex;
     gap: 10px;
@@ -119,25 +126,28 @@
     justify-content: flex-start;
     align-items: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    max-height: 600px;
+    height: 450px;
     overflow: hidden;
-}
-
-.card:hover {
-    transform: translateY(-5px); 
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    margin-bottom: 20px;
 }
 
 .card img {
     width: 100%;
-    height: 250px;
+    height: 300px;
     border-radius: 8px;
     object-fit: cover;
+    margin-bottom: 15px;
 }
 
 .card h3 {
-    font-size: 1.5rem;
-    margin: 10px 0;
+    font-size: 1.2rem;
+    height: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 
 .card p {
@@ -146,22 +156,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
 
 .price {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: bold;
     color: #FF9800;
-    margin-top: 5px;
+    margin-top: 15px;
     white-space: nowrap;
-}
-
-.divider {
-    border: 0;
-    border-top: 2px solid #FF9800;
-    margin: 40px 250px;
 }
 
 @media (max-width: 768px) {
@@ -169,12 +173,12 @@
         grid-template-columns: repeat(2, 1fr);
         margin: 10px 30px;
     }
-    
+
     .search-form {
         width: 100%;
         margin-bottom: 10px;
     }
-    
+
     .banner {
         margin: 0 10px;
         height: 300px;
