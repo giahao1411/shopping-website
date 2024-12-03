@@ -101,13 +101,13 @@ const MainContent = () => {
             <div className="cards">
                 {filteredProducts.map((product) => (
                     <Link
-                        to={`/details/product/${product._id}`} // Đảm bảo truyền đúng ID của sản phẩm
+                        to={`/details/product/${product._id}`} 
                         key={product._id}
                         className="card-link"
                     >
                         <div className="card">
                             <img
-                                src={product.images[0]} // Sử dụng URL đầy đủ trả về từ backend
+                                src={product.images[0]} 
                                 alt={product.name}
                                 className="card-image"
                             />

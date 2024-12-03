@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaCartPlus } from "react-icons/fa";
+import "../../styles/ProductDetail/ProductDetail.css";
 
 const ProductDetail = () => {
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
+    const [quantity, setQuantity] = useState(1);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,7 +17,9 @@ const ProductDetail = () => {
                     `http://localhost:8080/api/product/products/${productId}`
                 );
                 if (response.status === 200) {
-                    setProduct(response.data.product); // Lưu dữ liệu sản phẩm vào state
+                    console.log("Product quantity:", response.data.product.quantity); 
+                    setProduct(response.data.product);
+                    setQuantity(1); 
                 }
             } catch (error) {
                 if (error.response) {
@@ -28,42 +33,69 @@ const ProductDetail = () => {
         fetchProductDetails();
     }, [productId]);
 
+
+
     if (!product) {
         return <div>Loading...</div>;
     }
 
-    // Hàm xử lý thêm vào giỏ hàng
     const handleAddToCart = () => {
-        alert("Product added to cart!");
-        // Logic thêm sản phẩm vào giỏ hàng
+        alert(`Added ${quantity} ${product.name}(s) to the cart!`);
     };
 
-    // Hàm xử lý mua ngay
     const handleBuyNow = () => {
         alert("Proceeding to checkout...");
-        // Logic chuyển hướng đến trang thanh toán
-        navigate("/checkout"); // Chuyển hướng đến trang checkout (nếu có)
+        navigate("/checkout");
     };
+
+    const incrementQuantity = () => {
+        if (quantity < product.quantity) {
+            setQuantity(prevQuantity => prevQuantity + 1);
+        }
+    };
+
+    const decrementQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(prevQuantity => prevQuantity - 1);
+        }
+    };
+
+
 
     return (
         <div className="product-detail">
-            <div className="product-image">
-                <img
-                    src={`http://localhost:8080/${product.images[0]}`} // Lấy ảnh sản phẩm từ server
-                    alt={product.name}
-                />
-            </div>
-            <div className="product-info">
-                <h2>{product.name}</h2>
-                <p>{product.description}</p>
-                <p className="price">${product.price}</p>
-                <div className="action-buttons">
-                    <button className="add-to-cart" onClick={handleAddToCart}>
-                        Add to cart
-                    </button>
-                    <button className="buy-now" onClick={handleBuyNow}>
-                        Buy Now
-                    </button>
+            <div className="product-content">
+                <div className="product-image">
+                    <div className="product-name">{product.name}</div>
+                    <img
+                        src={product.images[0]}
+                        alt={product.name}
+                    />
+                </div>
+                <div className="product-info">
+                    <h2>Product Information</h2>
+                    <hr className="divider" />
+                    <p><strong>Category:</strong> {product.category}</p>
+                    <p><strong>Description:</strong> {product.description}</p>
+                    <p><strong>Price:</strong> ${product.price}</p>
+                    <p><strong>Quantity Available:</strong> {product.quantity}</p>
+                    <p><strong>Most Sold: </strong> {product.most_sale || "Not Available"}</p>
+
+                    <div className="quantity-controls">
+                        <button className="decrement" onClick={decrementQuantity}>-</button>
+                        <span className="quantity">{quantity}</span>
+                        <button className="increment" onClick={incrementQuantity}>+</button>
+                    </div>
+
+
+                    <div className="action-buttons">
+                        <button className="add-to-cart" onClick={handleAddToCart}>
+                            <FaCartPlus style={{ marginRight: "8px" }} /> Add to Cart
+                        </button>
+                        <button className="buy-now" onClick={handleBuyNow}>
+                            Buy Now
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
