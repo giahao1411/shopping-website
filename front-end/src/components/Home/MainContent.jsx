@@ -1,54 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../../styles/Home/MainContent.css";
 import { Link } from "react-router-dom";
 
 const MainContent = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("all");
-    const [products] = useState([
-        // Mảng sản phẩm tĩnh
-        {
-            id: 1,
-            name: "T-Shirt",
-            description:
-                "Comfortable cotton t-shirt sdasdn dadasd dasdasd sada s",
-            imageUrl: "https://placehold.co/400x500",
-            category: "T-Shirts",
-            price: "$19.99", // Thêm giá sản phẩm
-        },
-        {
-            id: 2,
-            name: "Pants",
-            description: "Stylish denim pants",
-            imageUrl: "https://placehold.co/400x500",
-            category: "Pants",
-            price: "$39.99", // Thêm giá sản phẩm
-        },
-        {
-            id: 3,
-            name: "Backpack",
-            description: "Durable travel backpack",
-            imageUrl: "https://placehold.co/400x500",
-            category: "Backpacks",
-            price: "$49.99", // Thêm giá sản phẩm
-        },
-        {
-            id: 4,
-            name: "Outerwear",
-            description: "Winter jacket to keep you warm",
-            imageUrl: "https://placehold.co/400x500",
-            category: "Outerwear",
-            price: "$59.99",
-        },
-        {
-            id: 5,
-            name: "Wallet",
-            description: "Leather wallet for everyday use",
-            imageUrl: "https://placehold.co/400x500",
-            category: "Wallets",
-            price: "$29.99", // Thêm giá sản phẩm
-        },
-    ]);
+    const [products, setProducts] = useState([]); // Sản phẩm lấy từ API
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(""); // Để lưu lỗi khi gọi API
+
+    // Gọi API để lấy sản phẩm
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true);
+            setError("");
+            try {
+                const response = await axios.get("http://localhost:8080/api/product/products");
+                setProducts(response.data.products); // Lưu sản phẩm vào state
+            } catch (error) {
+                setError("Failed to fetch products.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []); // Chạy 1 lần khi component được mount
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -73,6 +51,14 @@ const MainContent = () => {
         return matchesSearchQuery && matchesCategory;
     });
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
     return (
         <main className="main">
             <div className="banner">
@@ -83,7 +69,7 @@ const MainContent = () => {
             <div className="search-container">
                 <form onSubmit={handleSearchSubmit} className="search-form">
                     <input
-                        type="text1"
+                        type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="Search..."
@@ -96,11 +82,11 @@ const MainContent = () => {
                         className="filter-select"
                     >
                         <option value="all">All Categories</option>
-                        <option value="T-Shirts">T-Shirts</option>
-                        <option value="Pants">Pants</option>
-                        <option value="Backpacks">Backpacks</option>
-                        <option value="Outerwear">Outerwear</option>
-                        <option value="Wallets">Wallets</option>
+                        <option value="Phone">Phone</option>
+                        <option value="Laptop">Laptop</option>
+                        <option value="Screen">Screen</option>
+                        <option value="Smart Watch">Smart Watch</option>
+                        <option value="Television">Television</option>
                     </select>
 
                     <button type="submit" className="search-button">
@@ -115,22 +101,21 @@ const MainContent = () => {
             <div className="cards">
                 {filteredProducts.map((product) => (
                     <Link
-                        to={`/details/product/${product.id}`}
-                        key={product.id}
+                        to={`/details/product/${product._id}`} // Đảm bảo truyền đúng ID của sản phẩm
+                        key={product._id}
                         className="card-link"
                     >
                         <div className="card">
                             <img
-                                src={product.imageUrl}
+                                src={`http://localhost:8080/${product.images[0]}`} // Đảm bảo lấy đúng ảnh
                                 alt={product.name}
                                 className="card-image"
                             />
                             <h3>{product.name}</h3>
-                            <p>{product.description}</p>
-                            <p className="price">{product.price}</p>{" "}
-                            {/* Hiển thị giá tiền */}
+                            <p className="price">${product.price}</p>
                         </div>
                     </Link>
+
                 ))}
             </div>
         </main>

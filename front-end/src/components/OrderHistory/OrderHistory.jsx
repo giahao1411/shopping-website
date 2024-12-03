@@ -20,7 +20,6 @@ const OrderHistory = () => {
             }
 
             try {
-                // Giả sử API trả về danh sách các đơn hàng của người dùng
                 const response = await axios.get(
                     `http://localhost:8080/api/orders/${storedUser._id}`,
                     {
@@ -29,7 +28,7 @@ const OrderHistory = () => {
                         },
                     }
                 );
-                setOrders(response.data.orders); // Giả sử API trả về danh sách đơn hàng trong trường "orders"
+                setOrders(response.data.orders); 
             } catch (err) {
                 setError("Failed to load order history.");
             } finally {

@@ -16,6 +16,9 @@ const CreateProduct = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Categories available for selection
+    const categories = ["Phone", "Laptop", "Screen", "Smart Watch", "Television"];
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProductData({
@@ -61,7 +64,6 @@ const CreateProduct = () => {
 
             if (response.status === 200) {
                 alert(response.data.message);
-
                 navigate("/admin/product");
             }
         } catch (error) {
@@ -90,13 +92,19 @@ const CreateProduct = () => {
                 />
 
                 <label>Category:</label>
-                <input
-                    type="text"
+                <select
                     name="category"
                     value={productData.category}
                     onChange={handleInputChange}
                     required
-                />
+                >
+                    <option value="">Select Category</option>
+                    {categories.map((cat, index) => (
+                        <option key={index} value={cat}>
+                            {cat}
+                        </option>
+                    ))}
+                </select>
 
                 <label>Description:</label>
                 <textarea
