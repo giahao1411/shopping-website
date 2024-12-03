@@ -1,12 +1,13 @@
+/* Profile container */
 .profile-container {
-    width: 450px; 
+    width: 450px;
     margin: 0 auto;
     padding: 30px;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9; 
-    border-radius: 8px; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-    margin-top: calc(60px + 1rem); 
+    font-family: 'Roboto', sans-serif; /* Sử dụng font hiện đại hơn */
+    background-color: #f8f9fa; /* Màu nền nhẹ nhàng */
+    border-radius: 10px; /* Góc bo tròn đẹp mắt */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Tạo bóng đổ nhẹ cho form */
+    margin-top: calc(60px + 1rem);
     margin-bottom: 20px;
 }
 
@@ -14,56 +15,57 @@ h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
-    font-size: 1.8rem; 
+    font-size: 2rem; /* Cỡ chữ tiêu đề lớn hơn */
+    font-weight: 600;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* Tăng khoảng cách giữa các trường */
 }
 
 label {
     display: block;
-    font-size: 1rem;
-    color: #333;
-    margin-bottom: 5px;
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 8px; /* Tăng khoảng cách giữa label và input */
 }
 
 input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 100%;
-    padding: 12px; 
-    font-size: 1rem;
+    padding: 14px;
+    font-size: 1.1rem;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 8px; /* Làm bo tròn các input */
     box-sizing: border-box;
     background-color: #fff;
-    transition: border-color 0.3s ease; 
+    transition: border-color 0.3s ease;
+    color: #333;
 }
 
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus {
-    border-color: #007bff;
+    border-color: #ff9800; /* Màu sắc nổi bật khi focus */
     outline: none;
 }
 
 button.submit-btn {
     width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    background-color: #28a745;
+    padding: 14px;
+    font-size: 1.1rem;
+    background-color: #ff9800; /* Màu cam sáng để phù hợp với chủ đề */
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 15px; 
-    max-width: 100%;
+    margin-top: 20px;
 }
 
 button.submit-btn:hover {
-    background-color: #218838;
+    background-color: #e68900; /* Đổi màu khi hover để tạo hiệu ứng tương tác */
 }
 
 .error-message,
@@ -71,7 +73,7 @@ button.submit-btn:hover {
     margin: 20px 0;
     padding: 15px;
     text-align: center;
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: 1rem;
 }
 
@@ -88,30 +90,31 @@ button.submit-btn:hover {
 }
 
 form {
-    border: 1px solid #ccc;
-    padding: 20px; 
-    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
     background-color: #fff;
     max-width: 100%;
-    
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Tạo bóng nhẹ cho form */
 }
 
+/* Mobile responsiveness */
 @media (max-width: 600px) {
     .profile-container {
-        padding: 15px;
+        padding: 20px;
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.6rem; /* Cỡ chữ tiêu đề phù hợp với di động */
     }
 
     input[type="text"],
     input[type="email"],
     input[type="password"] {
-        font-size: 0.9rem;
+        font-size: 1rem; /* Giảm kích thước font cho các trường input trên di động */
     }
 
     button.submit-btn {
-        font-size: 1rem;
+        font-size: 1.1rem; /* Cập nhật cỡ chữ cho button trên di động */
     }
 }

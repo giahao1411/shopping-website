@@ -69,7 +69,7 @@ const MainContent = () => {
             <div className="search-container">
                 <form onSubmit={handleSearchSubmit} className="search-form">
                     <input
-                        type="text"
+                        type="text1"
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="Search..."
@@ -107,7 +107,7 @@ const MainContent = () => {
                     >
                         <div className="card">
                             <img
-                                src={`http://localhost:8080/${product.images[0]}`} // Đảm bảo lấy đúng ảnh
+                                src={product.images[0]} // Dùng URL đầy đủ của ảnh
                                 alt={product.name}
                                 className="card-image"
                             />
@@ -115,9 +115,9 @@ const MainContent = () => {
                             <p className="price">${product.price}</p>
                         </div>
                     </Link>
-
                 ))}
             </div>
+
         </main>
     );
 };
