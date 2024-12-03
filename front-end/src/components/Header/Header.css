@@ -64,9 +64,9 @@ header {
     color: #00B0FF;
 }
 
-.header-main nav ul li a.active {
+nav ul li a.header-active {
     background-color: #1A1A1A;
-    color: #FF9800 !important;
+    color: #FF9800;
     font-weight: 600;
 }
 

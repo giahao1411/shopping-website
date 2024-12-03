@@ -35,7 +35,6 @@ const Header = () => {
         setMenuOpen(false);
     };
 
-
     return (
         <header className={`header ${menuOpen ? "nav-open" : ""}`}>
             <div className="header-main">
@@ -60,7 +59,9 @@ const Header = () => {
                             <Link
                                 to="/"
                                 className={
-                                    location.pathname === "/" ? "active" : ""
+                                    location.pathname === "/"
+                                        ? "header-active"
+                                        : ""
                                 }
                             >
                                 Home
@@ -71,7 +72,7 @@ const Header = () => {
                                 to="/cart"
                                 className={
                                     location.pathname === "/cart"
-                                        ? "active"
+                                        ? "header-active"
                                         : ""
                                 }
                             >
@@ -83,7 +84,7 @@ const Header = () => {
                                 to="/sales"
                                 className={
                                     location.pathname === "/sales"
-                                        ? "active"
+                                        ? "header-active"
                                         : ""
                                 }
                             >
@@ -131,7 +132,7 @@ const Header = () => {
                                     to="/account/login"
                                     className={
                                         location.pathname === "/account/login"
-                                            ? "active"
+                                            ? "header-active"
                                             : ""
                                     }
                                 >
@@ -145,7 +146,7 @@ const Header = () => {
                                 to="/about"
                                 className={
                                     location.pathname === "/about"
-                                        ? "active"
+                                        ? "header-active"
                                         : ""
                                 }
                             >

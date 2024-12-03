@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { BiSolidChevronRight, BiSolidChevronLeft } from "react-icons/bi";
+import {
+    BiSolidChevronRight,
+    BiSolidChevronLeft,
+    BiInfoCircle,
+} from "react-icons/bi";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "../../../styles/Admin/Product.css";
@@ -86,9 +90,8 @@ const Product = () => {
                 <table className="product-table">
                     <thead>
                         <tr>
-                            <th>Product ID</th>
-                            <th>Category</th>
                             <th>Name</th>
+                            <th>Category</th>
                             <th>Quantity</th>
                             <th>Price</th>
                             <th>Detail</th>
@@ -97,14 +100,13 @@ const Product = () => {
                     <tbody>
                         {products.map((product, index) => (
                             <tr key={product._id || index}>
-                                <td>{product._id}</td>
-                                <td>{product.category}</td>
                                 <td>{product.name}</td>
+                                <td>{product.category}</td>
                                 <td>{product.quantity}</td>
                                 <td>{product.price}</td>
                                 <td>
                                     <Link to={`/admin/product/${product._id}`}>
-                                        Detail
+                                        <BiInfoCircle />
                                     </Link>
                                 </td>
                             </tr>

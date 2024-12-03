@@ -22,11 +22,11 @@ const course = [
 
 const Card = () => {
     return (
-        <div className="card-container">
+        <div className="product-card-container">
             {course.map((item, index) => (
-                <div className="card" key={index}>
-                    <div className="card-cover">{item.icon}</div>
-                    <div className="card-title">
+                <div className="product-card" key={index}>
+                    <div className="product-card-cover">{item.icon}</div>
+                    <div className="product-card-title">
                         <h2>{item.title}</h2>
                     </div>
                 </div>

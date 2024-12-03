@@ -22,7 +22,7 @@ const Sidebar = () => {
                     to="/admin"
                     end
                     className={({ isActive }) =>
-                        `item ${isActive ? "active" : ""}`
+                        `item ${isActive ? "admin-active" : ""}`
                     }
                 >
                     <BiHome className="icon" />
@@ -32,7 +32,7 @@ const Sidebar = () => {
                 <NavLink
                     to="/admin/user"
                     className={({ isActive }) =>
-                        `item ${isActive ? "active" : ""}`
+                        `item ${isActive ? "admin-active" : ""}`
                     }
                 >
                     <BiUserCircle className="icon" />
@@ -42,7 +42,7 @@ const Sidebar = () => {
                 <NavLink
                     to="/admin/product"
                     className={({ isActive }) =>
-                        `item ${isActive ? "active" : ""}`
+                        `item ${isActive ? "admin-active" : ""}`
                     }
                 >
                     <BiBox className="icon" />
@@ -52,7 +52,7 @@ const Sidebar = () => {
                 <NavLink
                     to="/admin/order"
                     className={({ isActive }) =>
-                        `item ${isActive ? "active" : ""}`
+                        `item ${isActive ? "admin-active" : ""}`
                     }
                 >
                     <BiTask className="icon" />

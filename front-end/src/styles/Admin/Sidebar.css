@@ -38,7 +38,7 @@
 }
 
 .menu-list .item:hover,
-.active {
+.admin-active {
     background: #27374d;
     color: #dde6ed !important;
 }

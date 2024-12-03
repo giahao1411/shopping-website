@@ -6,21 +6,6 @@ const Product = require("../models/ProductModel");
 
 const upload = require("../middlewares/multer");
 
-// router.get("/products", async (req, res) => {
-//     const { page = 1, limit = 7 } = req.query;
-//     const skip = (page - 1) * limit;
-
-//     try {
-//         const products = await Product.find().skip(skip).limit(parseInt(limit));
-//         const totalProducts = await Product.countDocuments();
-//         const totalPages = Math.ceil(totalProducts / limit);
-
-//         return res.status(200).json({ products, totalPages });
-//     } catch (error) {
-//         return res.status(500).json({ message: error.message });
-//     }
-// });  
-
 router.get("/products", async (req, res) => {
     const { page = 1, limit = 7 } = req.query;
     const skip = (page - 1) * limit;
@@ -29,39 +14,23 @@ router.get("/products", async (req, res) => {
         const products = await Product.find().skip(skip).limit(parseInt(limit));
 
         // Thêm URL đầy đủ vào hình ảnh
-        const productsWithFullImages = products.map(product => ({
+        const productsWithFullImages = products.map((product) => ({
             ...product.toObject(),
-            images: product.images.map(image => `http://localhost:8080/${image}`) // Đảm bảo trả về URL đầy đủ cho ảnh
+            images: product.images.map(
+                (image) => `http://localhost:8080/${image}`
+            ), // Đảm bảo trả về URL đầy đủ cho ảnh
         }));
 
         const totalProducts = await Product.countDocuments();
         const totalPages = Math.ceil(totalProducts / limit);
 
-        return res.status(200).json({ products: productsWithFullImages, totalPages });
+        return res
+            .status(200)
+            .json({ products: productsWithFullImages, totalPages });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 });
-
-
-
-
-// router.get("/products/:id", async (req, res) => {
-//     const productID = req.params.id;
-
-//     try {
-//         const product = await Product.findById({ productID });
-//         if (!product) {
-//             return res.status(404).json({ message: "Product not found" });
-//         }
-
-//         return res
-//             .status(200)
-//             .json({ message: "Product found", product: product });
-//     } catch (error) {
-//         return res.status(500).json({ message: error.message });
-//     }
-// });
 
 router.get("/products/:id", async (req, res) => {
     const productID = req.params.id;
@@ -75,15 +44,18 @@ router.get("/products/:id", async (req, res) => {
         // Thêm URL đầy đủ vào hình ảnh
         const productWithFullImages = {
             ...product.toObject(),
-            images: product.images.map(image => `http://localhost:8080/${image}`)
+            images: product.images.map(
+                (image) => `http://localhost:8080/${image}`
+            ),
         };
 
-        return res.status(200).json({ message: "Product found", product: productWithFullImages });
+        return res
+            .status(200)
+            .json({ message: "Product found", product: productWithFullImages });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 });
-
 
 router.post("/products", upload.array("images", 3), async (req, res) => {
     try {

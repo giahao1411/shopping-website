@@ -40,14 +40,14 @@
 }
 
 /* Card component */
-.card-container {
+.product-card-container {
     display: flex;
     gap: 20px;
     align-items: center;
     margin-top: 2rem;
 }
 
-.card {
+.product-card {
     flex: 1;
     background: #dde6ed;
     padding: 20px;
@@ -59,11 +59,11 @@
     transition: 0.2s ease-in-out;
 }
 
-.card:hover {
+.product-card:hover {
     transform: scale(1.04);
 }
 
-.card-cover {
+.product-card-cover {
     background: #fff;
     font-size: 3rem;
     align-items: center;
@@ -73,7 +73,7 @@
     color: #969393;
 }
 
-.card-title {
+.product-card-title {
     background: #ffffffc0;
     width: 100%;
     text-align: center;
