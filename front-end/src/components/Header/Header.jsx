@@ -44,7 +44,7 @@ const Header = () => {
     return (
         <header className={`header ${menuOpen ? "nav-open" : ""}`}>
             <div className="header-main">
-                <div className="logo" onClick={redirectHome}>
+                <div className="logo ml-10" onClick={redirectHome}>
                     <img
                         src="https://cdn.haitrieu.com/wp-content/uploads/2021/09/Logo-DH-Ton-Duc-Thang-TDT.png"
                         alt="Logo"
@@ -52,14 +52,14 @@ const Header = () => {
                     />
                     <h1>BAANHEM</h1>
                 </div>
- 
+
                 <div className="hamburger-menu" onClick={toggleMenu}>
                     <div></div>
                     <div></div>
                     <div></div>
                 </div>
 
-                <nav>
+                <nav className="mr-10">
                     <ul>
                         <li>
                             <Link
@@ -108,7 +108,7 @@ const Header = () => {
                                     {user.username}
                                 </span>
                                 {dropdownOpen && (
-                                    <div className="dropdown-menu">
+                                    <div className="dropdown-menu px-5">
                                         <Link
                                             to="/profile"
                                             className="dropdown-item"

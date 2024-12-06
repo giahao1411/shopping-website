@@ -146,14 +146,15 @@ nav ul li a.header-active {
 
 .dropdown-menu {
     position: absolute;
-    top: 30px;
+    top: 40px;
     right: 0;
     background-color: #1A1A1A;
     border: 1px solid #00B0FF;
     border-radius: 5px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    padding: 0;
+    width: 200px;
+    margin-right: -55px;
 }
 
 .dropdown-menu .dropdown-item {
