@@ -1,33 +1,32 @@
 import React from "react";
-import { BiBuilding, BiLogoAndroid, BiLogoHtml5 } from "react-icons/bi";
+import { BiBox } from "react-icons/bi";
 
 // temporary for testing UI
 const course = [
     {
-        title: "Web Development",
-        duration: "2 Hours",
-        icon: <BiLogoHtml5 />,
+        title: "iPhone 15",
     },
     {
-        title: "App Development",
-        duration: "2 Hours",
-        icon: <BiLogoAndroid />,
+        title: "Mac Book Air M2",
     },
     {
-        title: "UX & UI",
-        duration: "2 Hours",
-        icon: <BiBuilding />,
+        title: "Machanical Keyboard",
     },
 ];
 
 const Card = () => {
     return (
-        <div className="product-card-container">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {course.map((item, index) => (
-                <div className="product-card" key={index}>
-                    <div className="product-card-cover">{item.icon}</div>
-                    <div className="product-card-title">
-                        <h2>{item.title}</h2>
+                <div
+                    className="flex flex-col items-center bg-gray-200 p-5 rounded-lg transition-transform duration-200 ease-in-out hover:scale-105"
+                    key={index}
+                >
+                    <div className="flex items-center justify-center bg-white text-4xl p-5 rounded-2xl text-gray-500">
+                        <BiBox />
+                    </div>
+                    <div className="w-full text-center py-2 text-gray-600 rounded-lg">
+                        <h2 className="text-2xl">{item.title}</h2>
                     </div>
                 </div>
             ))}

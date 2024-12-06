@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "./InputField";
@@ -74,57 +74,79 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2 className="form-title">Log in with</h2>
-            <div className="social-login">
-                <button className="social-button" onClick={googleLogin}>
-                    <img
-                        src="/google.svg"
-                        alt="Google"
-                        className="social-icon"
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-center text-2xl font-semibold mb-6">
+                    Log in with
+                </h2>
+                <div className="flex gap-4 mb-6">
+                    <button
+                        className="flex items-center justify-center gap-3 w-full px-4 py-2 border rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+                        onClick={googleLogin}
+                    >
+                        <img
+                            src="/google.svg"
+                            alt="Google"
+                            className="w-6 h-6"
+                        />
+                        <span className="text-gray-700 font-medium">
+                            Google
+                        </span>
+                    </button>
+                </div>
+
+                <div className="flex items-center my-4">
+                    <div className="flex-grow border-t border-gray-300"></div>
+                    <span className="mx-4 text-gray-500">or</span>
+                    <div className="flex-grow border-t border-gray-300"></div>
+                </div>
+
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <InputField
+                        type="email"
+                        placeholder="Email Address"
+                        icon="envelope"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
-                    Google
-                </button>
+                    <InputField
+                        type="password"
+                        placeholder="Password"
+                        icon="lock"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+
+                    <Link
+                        to="/account/forgot-password"
+                        className="block text-sm text-blue-600 hover:underline"
+                    >
+                        Forgot Password?
+                    </Link>
+
+                    <button
+                        className={`w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition ${
+                            loading ? "opacity-70 cursor-not-allowed" : ""
+                        }`}
+                        disabled={loading}
+                    >
+                        {loading ? "Logging in..." : "Log in"}
+                    </button>
+                </form>
+
+                <p className="text-center text-md mt-4">
+                    Don&apos;t have an account?{" "}
+                    <Link
+                        to="/account/register"
+                        className="text-blue-600 hover:underline"
+                    >
+                        {" "}
+                        Register now
+                    </Link>
+                </p>
             </div>
-
-            <p className="separator">
-                <span>or</span>
-            </p>
-
-            {error && <p className="error-message">{error}</p>}
-
-            <form onSubmit={handleSubmit} className="login-form">
-                <InputField
-                    type="email"
-                    placeholder="Email Address"
-                    icon="envelope"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <InputField
-                    type="password"
-                    placeholder="Password"
-                    icon="lock"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-
-                <Link
-                    to="/account/forgot-password"
-                    className="forgot-password-link"
-                >
-                    Forgot Password?
-                </Link>
-
-                <button className="login-button" disabled={loading}>
-                    {loading ? "Logging in..." : "Log in"}
-                </button>
-            </form>
-
-            <p className="register-text">
-                Don&apos;t have an account?{" "}
-                <Link to="/account/register"> Register now</Link>
-            </p>
         </div>
     );
 };

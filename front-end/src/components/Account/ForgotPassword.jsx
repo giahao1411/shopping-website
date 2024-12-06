@@ -75,51 +75,65 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="forgot-container">
-            <h2 className="form-title">Forgot Password</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-center text-2xl font-semibold mb-6">
+                    Forgot Password
+                </h2>
 
-            {error && <p className="error-message">{error}</p>}
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-            {step === 1 && (
-                <form onSubmit={handleCheckEmail} className="forgot-form">
-                    <InputField
-                        type="email"
-                        placeholder="Registered Email"
-                        icon="envelope"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                {step === 1 && (
+                    <form onSubmit={handleCheckEmail} className="space-y-2">
+                        <InputField
+                            type="email"
+                            placeholder="Registered Email"
+                            icon="envelope"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
 
-                    <button className="forgot-button">Check Email</button>
-                </form>
-            )}
+                        <button className="w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                            Check Email
+                        </button>
+                    </form>
+                )}
 
-            {step === 2 && (
-                <form onSubmit={handleUpdatePassword} className="forgot-form">
-                    <InputField
-                        type="password"
-                        placeholder="New Password"
-                        icon="lock"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                    />
+                {step === 2 && (
+                    <form onSubmit={handleUpdatePassword} className="space-y-4">
+                        <InputField
+                            type="password"
+                            placeholder="New Password"
+                            icon="lock"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        />
 
-                    <InputField
-                        type="password"
-                        placeholder="Confirm new password"
-                        icon="lock"
-                        value={newCfPassword}
-                        onChange={(e) => setNewCfPassword(e.target.value)}
-                    />
+                        <InputField
+                            type="password"
+                            placeholder="Confirm new password"
+                            icon="lock"
+                            value={newCfPassword}
+                            onChange={(e) => setNewCfPassword(e.target.value)}
+                        />
 
-                    <button className="forgot-button">Update Password</button>
-                </form>
-            )}
+                        <button className="w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                            Reset Password
+                        </button>
+                    </form>
+                )}
 
-            <p className="back-text">
-                <i className="fa fa-arrow-left" aria-hidden="true"></i>
-                <Link to="/account/login"> Get back</Link>
-            </p>
+                <p className="text-center text-md mt-6">
+                    <i className="fa fa-arrow-left" aria-hidden="true"></i>
+                    <Link
+                        to="/account/login"
+                        className="text-blue-600 hover:underline hover:text-black/75"
+                    >
+                        {" "}
+                        Get back
+                    </Link>
+                </p>
+            </div>
         </div>
     );
 };

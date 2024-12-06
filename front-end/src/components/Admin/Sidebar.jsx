@@ -1,7 +1,7 @@
 import React from "react";
 import {
     BiHome,
-    BiSolidUserRectangle,
+    BiSolidUserCircle,
     BiUserCircle,
     BiTask,
     BiBox,
@@ -11,51 +11,66 @@ import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
     return (
-        <div className="menu">
-            <div className="logo">
-                <BiSolidUserRectangle className="logo-icon" />
-                <h2>Admin</h2>
+        <div className="flex flex-col gap-9 h-[94vh]">
+            <div className="flex justify-center gap-x-2 p-5 text-gray-800">
+                <h2 className="text-3xl font-bold">Admin</h2>
             </div>
 
-            <div className="menu-list">
+            <div className="flex flex-col gap-5">
                 <NavLink
                     to="/admin"
                     end
                     className={({ isActive }) =>
-                        `item ${isActive ? "admin-active" : ""}`
+                        `flex items-center gap-5 text-lg font-semibold px-3 py-2 rounded-lg transition ${
+                            isActive
+                                ? "bg-gray-800 text-gray-200"
+                                : "text-gray-800 hover:bg-gray-800 hover:text-gray-200"
+                        }`
                     }
                 >
-                    <BiHome className="icon" />
+                    <BiHome className="text-xl" />
                     Dashboard
                 </NavLink>
 
                 <NavLink
                     to="/admin/user"
                     className={({ isActive }) =>
-                        `item ${isActive ? "admin-active" : ""}`
+                        `flex items-center gap-5 text-lg font-semibold px-3 py-2 rounded-lg transition ${
+                            isActive
+                                ? "bg-gray-800 text-gray-200"
+                                : "text-gray-800 hover:bg-gray-800 hover:text-gray-200"
+                        }`
                     }
                 >
-                    <BiUserCircle className="icon" />
+                    <BiUserCircle className="text-xl" />
                     Users
                 </NavLink>
 
                 <NavLink
                     to="/admin/product"
                     className={({ isActive }) =>
-                        `item ${isActive ? "admin-active" : ""}`
+                        `flex items-center gap-5 text-lg font-semibold px-3 py-2 rounded-lg transition ${
+                            isActive
+                                ? "bg-gray-800 text-gray-200"
+                                : "text-gray-800 hover:bg-gray-800 hover:text-gray-200"
+                        }`
                     }
                 >
-                    <BiBox className="icon" />
+                    <BiBox className="text-xl" />
                     Products
                 </NavLink>
 
                 <NavLink
                     to="/admin/order"
                     className={({ isActive }) =>
-                        `item ${isActive ? "admin-active" : ""}`
+                        `flex items-center gap-5 text-lg font-semibold px-3 py-2 rounded-lg transition ${
+                            isActive
+                                ? "bg-gray-800 text-gray-200"
+                                : "text-gray-800 hover:bg-gray-800 hover:text-gray-200"
+                        }`
                     }
                 >
-                    <BiTask className="icon" />
+                    <BiTask className="text-xl" />
                     Orders
                 </NavLink>
             </div>

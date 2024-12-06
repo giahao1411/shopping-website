@@ -1,4 +1,4 @@
-/* Import Google Fonts - Montserrat */
+/* Import Google Fonts - Montserrat
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
@@ -13,7 +13,6 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: #5f41e4;
 }
 
 #root {
@@ -195,4 +194,4 @@ body {
 
 .login-container a:hover {
     text-decoration: underline;
-}
+} */

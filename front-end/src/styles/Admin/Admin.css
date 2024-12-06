@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
     margin: 0;
@@ -7,7 +7,6 @@
 }
 
 body {
-    padding: 20px;
     background: #dde6ed;
 }
 
@@ -18,6 +17,7 @@ body::-webkit-scrollbar {
 .dashboard {
     display: flex;
     gap: 20px;
+    padding: 20px;
 }
 
 .dashboard-content {
@@ -28,4 +28,4 @@ body::-webkit-scrollbar {
     display: flex;
     gap: 1.5rem;
     justify-content: space-between;
-}
+} */

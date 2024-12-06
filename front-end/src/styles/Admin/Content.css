@@ -1,8 +1,7 @@
-.content {
+/* .content {
     width: 75%;
 }
 
-/* ContentHeader component*/
 .content-header {
     display: flex;
     align-items: center;
@@ -39,7 +38,6 @@
     transform: scale(1.1);
 }
 
-/* Card component */
 .product-card-container {
     display: flex;
     gap: 20px;
@@ -81,4 +79,4 @@
     font-size: 14px;
     color: #526d82;
     border-radius: 10px;
-}
+} */

@@ -54,52 +54,68 @@ const Register = () => {
     };
 
     return (
-        <div className="register-container">
-            <h2 className="form-title">Register</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-center text-2xl font-semibold mb-6">
+                    Register
+                </h2>
 
-            {error && <p className="error-message">{error}</p>}
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-            <form onSubmit={handleSubmit} className="register-form">
-                <InputField
-                    type="text"
-                    placeholder="Username"
-                    icon="user"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <InputField
+                        type="text"
+                        placeholder="Username"
+                        icon="user"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
 
-                <InputField
-                    type="email"
-                    placeholder="Email Address"
-                    icon="envelope"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                    <InputField
+                        type="email"
+                        placeholder="Email Address"
+                        icon="envelope"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
 
-                <InputField
-                    type="password"
-                    placeholder="Password"
-                    icon="lock"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                    <InputField
+                        type="password"
+                        placeholder="Password"
+                        icon="lock"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
 
-                <InputField
-                    type="password"
-                    placeholder="Confirm Password"
-                    icon="lock"
-                    value={cfPassword}
-                    onChange={(e) => setCfPassword(e.target.value)}
-                />
+                    <InputField
+                        type="password"
+                        placeholder="Confirm Password"
+                        icon="lock"
+                        value={cfPassword}
+                        onChange={(e) => setCfPassword(e.target.value)}
+                    />
 
-                <button className="register-button" disabled={loading}>
-                    {loading ? "Registering..." : "Register"}
-                </button>
-            </form>
+                    <button
+                        className={`w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition ${
+                            loading ? "opacity-70 cursor-not-allowed" : ""
+                        }`}
+                        disabled={loading}
+                    >
+                        {loading ? "Registering in..." : "Register"}
+                    </button>
+                </form>
 
-            <p className="login-text">
-                Already have an account?<Link to="/account/login"> Log in</Link>
-            </p>
+                <p className="text-center text-md mt-4">
+                    Already have an account?
+                    <Link
+                        to="/account/login"
+                        className="text-indigo-600 hover:underline ml-1"
+                    >
+                        {" "}
+                        Log in
+                    </Link>
+                </p>
+            </div>
         </div>
     );
 };
