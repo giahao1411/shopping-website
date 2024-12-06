@@ -3,9 +3,9 @@ import { BiSolidPencil, BiSolidUserCircle, BiPlus } from "react-icons/bi";
 
 const UserProfile = () => {
     return (
-        <div className="flex justify-start space-x-8 mt-2 ml-2">
+        <div className="min-h-screen flex justify-start space-x-8 mt-2 ml-2">
             {/* Left card */}
-            <div className="mt-10 mb-10 ml-20 max-w-sm max-h-dvh rounded overflow-hidden shadow-md">
+            <div className="mt-20 mb-10 ml-20 max-w-sm max-h-dvh rounded overflow-hidden shadow-md">
                 <div className="px-6 py-4">
                     <div className="flex justify-between items-center">
                         <div className="font-bold text-2xl text-center w-full">
@@ -34,7 +34,7 @@ const UserProfile = () => {
             </div>
 
             {/* Right Card */}
-            <div className="mt-10 pl-8 pr-10">
+            <div className="mt-20 pl-8 pr-10">
                 <p className="font-bold text-2xl">Experience</p>
 
                 {/* First Box - Projects */}

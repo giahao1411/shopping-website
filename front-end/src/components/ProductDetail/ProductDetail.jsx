@@ -17,9 +17,9 @@ const ProductDetail = () => {
                     `http://localhost:8080/api/product/products/${productId}`
                 );
                 if (response.status === 200) {
-                    console.log("Product quantity:", response.data.product.quantity); 
+                    console.log("Product quantity:", response.data.product.quantity);
                     setProduct(response.data.product);
-                    setQuantity(1); 
+                    setQuantity(1);
                 }
             } catch (error) {
                 if (error.response) {
@@ -30,10 +30,11 @@ const ProductDetail = () => {
             }
         };
 
+        // Scroll to top whenever the page is visited or the productId changes
+        window.scrollTo(0, 0);
+        
         fetchProductDetails();
     }, [productId]);
-
-
 
     if (!product) {
         return <div>Loading...</div>;
@@ -60,8 +61,6 @@ const ProductDetail = () => {
         }
     };
 
-
-
     return (
         <div className="product-detail">
             <div className="product-content">
@@ -78,7 +77,6 @@ const ProductDetail = () => {
                     <p><strong>Category:</strong> {product.category}</p>
                     <p><strong>Description:</strong> {product.description}</p>
                     <p><strong>Price:</strong> ${product.price}</p>
-                    <p><strong>Quantity Available:</strong> {product.quantity}</p>
                     <p><strong>Most Sold: </strong> {product.most_sale || "Not Available"}</p>
 
                     <div className="quantity-controls">
@@ -87,10 +85,11 @@ const ProductDetail = () => {
                         <button className="increment" onClick={incrementQuantity}>+</button>
                     </div>
 
-
                     <div className="action-buttons">
                         <button className="add-to-cart" onClick={handleAddToCart}>
-                            <FaCartPlus style={{ marginRight: "8px" }} /> Add to Cart
+                            <span className="flex items-center">
+                                <FaCartPlus className="mr-2" /> Add to Cart
+                            </span>
                         </button>
                         <button className="buy-now" onClick={handleBuyNow}>
                             Buy Now

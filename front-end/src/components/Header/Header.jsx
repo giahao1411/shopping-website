@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Header.css";
 import { SESSION } from "../../libs/constant";
 
@@ -9,12 +9,18 @@ const Header = () => {
     const [user, setUser] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem(SESSION));
         if (storedUser) {
             setUser(storedUser);
         }
     }, []);
+
+    const redirectHome = () => {
+        navigate("/")
+    }
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -38,7 +44,7 @@ const Header = () => {
     return (
         <header className={`header ${menuOpen ? "nav-open" : ""}`}>
             <div className="header-main">
-                <div className="logo">
+                <div className="logo" onClick={redirectHome}>
                     <img
                         src="https://cdn.haitrieu.com/wp-content/uploads/2021/09/Logo-DH-Ton-Duc-Thang-TDT.png"
                         alt="Logo"
@@ -46,7 +52,7 @@ const Header = () => {
                     />
                     <h1>BAANHEM</h1>
                 </div>
-
+ 
                 <div className="hamburger-menu" onClick={toggleMenu}>
                     <div></div>
                     <div></div>
@@ -140,19 +146,6 @@ const Header = () => {
                                 </Link>
                             </li>
                         )}
-
-                        <li>
-                            <Link
-                                to="/about"
-                                className={
-                                    location.pathname === "/about"
-                                        ? "header-active"
-                                        : ""
-                                }
-                            >
-                                About Us
-                            </Link>
-                        </li>
                     </ul>
                 </nav>
             </div>
