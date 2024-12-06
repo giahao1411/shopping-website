@@ -108,7 +108,7 @@ const Header = () => {
                                     {user.username}
                                 </span>
                                 {dropdownOpen && (
-                                    <div className="dropdown-menu px-5">
+                                    <div className="dropdown-menu text-left">
                                         <Link
                                             to="/profile"
                                             className="dropdown-item"
