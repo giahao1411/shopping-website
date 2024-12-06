@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../../../styles/Admin/Profile.css";
 import userImage from "../../../assets/image.jpg";
 import { BiBook } from "react-icons/bi";
 import ProfileHeader from "./ProfileHeader";
@@ -68,30 +67,38 @@ const Profile = () => {
     }, []);
 
     return (
-        <div className="profile">
+        <div className="flex-1">
             <ProfileHeader createTask={createTask} />
 
-            <div className="user-profile">
-                <div className="user-detail">
-                    <img src={userImage} alt="" />
-                    <h3 className="username">Admin</h3>
-                    <span className="profession">Administrator</span>
+            <div className="lg:h-[90%] sm:h-[55%] mt-4 bg-gray-200 rounded-lg p-3 flex flex-col">
+                <div className="mb-4 w-full h-[250px] flex flex-col items-center justify-center">
+                    <img
+                        src={userImage}
+                        alt="Profile"
+                        className="bg-white rounded-full w-[150px] my-2"
+                    />
+                    <h3 className="text-2xl text-gray-700 font-semibold">
+                        Admin
+                    </h3>
+                    <span className="text-gray-500">Administrator</span>
                 </div>
 
-                <div className="admin-tasks">
+                <div className="bg-white flex-1 rounded-lg p-3 flex flex-col gap-2 max-w-full max-h-max">
                     {tasks.map((task, index) => (
                         <div
-                            className="task"
+                            className="bg-gray-200 p-3 flex items-center justify-between rounded-lg shadow-md hover:bg-gray-300 cursor-pointer w-full"
                             key={task._id || index}
                             onClick={() => deleteTask(task._id)}
                         >
-                            <div className="task-detail">
-                                <div className="task-cover">
+                            <div className="flex gap-5 items-center w-full">
+                                <div className="bg-white w-10 h-10 flex items-center justify-center rounded-full text-lg flex-shrink-0">
                                     <BiBook />
                                 </div>
-                                <div className="task-name">
-                                    <h5 className="title">{task.taskName}</h5>
-                                    <span className="importance">
+                                <div className="truncate w-[150px]">
+                                    <h5 className="text-md font-semibold text-gray-700 truncate">
+                                        {task.taskName}
+                                    </h5>
+                                    <span className="text-sm text-gray-500">
                                         {task.importance}
                                     </span>
                                 </div>
