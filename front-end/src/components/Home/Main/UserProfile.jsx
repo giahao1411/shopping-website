@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { BiSolidPencil, BiSolidUserCircle, BiPlus } from "react-icons/bi";
+import ProfileModal from "../Partials/ProfileModal";
 
 const UserProfile = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleModal = () => {
+        setIsOpen((prevState) => !prevState);
+    };
+
     return (
-        <div className="min-h-screen flex justify-start space-x-8 mt-2 ml-2">
+        <div className="min-h-screen flex justify-start pt-10">
             {/* Left card */}
-            <div className="mt-20 mb-10 ml-20 max-w-sm max-h-dvh rounded overflow-hidden shadow-md">
+            <div className="mt-20 mb-10 ml-20 max-w-sm max-h-dvh rounded overflow-hidden shadow">
                 <div className="px-6 py-4">
                     <div className="flex justify-between items-center">
                         <div className="font-bold text-2xl text-center w-full">
                             Personal
                         </div>
-                        <BiSolidPencil className="text-2xl -mr-5 -mt-3 cursor-pointer" />
+                        <BiSolidPencil
+                            className="text-2xl -mr-5 -mt-3 cursor-pointer"
+                            onClick={toggleModal}
+                        />
                     </div>
                     <BiSolidUserCircle className="text-5xl size-4/6 m-auto" />
                     <div className="font-bold text-xl text-center align-middle">
@@ -38,7 +48,7 @@ const UserProfile = () => {
                 <p className="font-bold text-2xl">Experience</p>
 
                 {/* First Box - Projects */}
-                <div className="max-w-90 max-h-80 rounded overflow-hidden shadow-md mt-1">
+                <div className="max-w-90 max-h-80 rounded overflow-hidden shadow mt-1">
                     <div className="px-6 py-4">
                         <div className="font-bold text-xl text-left">
                             Projects
@@ -59,7 +69,7 @@ const UserProfile = () => {
 
                 {/* New Box Below Experience */}
                 <p className="font-bold text-2xl mt-10">Education</p>
-                <div className="max-w-90 max-h-80 rounded overflow-hidden shadow-md mt-1">
+                <div className="max-w-90 max-h-80 rounded overflow-hidden shadow mt-1">
                     <div className="px-6 py-4">
                         <div className="font-bold text-xl text-left">
                             Credentials
@@ -77,6 +87,8 @@ const UserProfile = () => {
                     </div>
                 </div>
             </div>
+
+            <ProfileModal isOpen={isOpen} onClose={toggleModal} />
         </div>
     );
 };
