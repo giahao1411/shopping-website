@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { SESSION } from "../../../libs/constant";
-// import "../../../styles/Cart/Cart.css";
 import { Link } from "react-router-dom";
+import { FaShoppingCart } from "react-icons/fa";
+import { formatMoney } from "../../../libs/utilities";
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([
@@ -25,9 +26,6 @@ const Cart = () => {
             price: 15.49,
         },
     ]);
-
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchCartItems = async () => {
@@ -59,6 +57,10 @@ const Cart = () => {
         // fetchCartItems();
     }, []);
 
+    const totalPricePerItem = (quantity, price) => {
+        return quantity * price;
+    };
+
     const handleRemoveItem = async (itemId) => {
         const storedUser = JSON.parse(localStorage.getItem(SESSION));
         if (!storedUser) return;
@@ -79,32 +81,38 @@ const Cart = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-
     return (
-        <div className="mt-5">
-            <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
-                <h2 className="text-center text-2xl font-bold text-gray-800 mb-5">
-                    Shopping Cart
-                </h2>
+        <div className="py-20 mt-10">
+            <div className="max-w-5xl mx-auto p-6">
+                <div className="flex items-center space-x-4">
+                    <FaShoppingCart className="text-4xl" />
+                    <h2 className="text-2xl font-bold text-gray-800">
+                        Shopping Cart
+                    </h2>
+                </div>
                 {cartItems.length === 0 ? (
                     <p className="text-center text-gray-600">
                         Your cart is empty.
                     </p>
                 ) : (
-                    <table className="w-full border-collapse mb-5">
+                    <table className="w-full border-none mb-5">
                         <thead>
-                            <tr className="bg-blue-500 text-white">
-                                <th className="py-3 px-4 text-left">Select</th>
-                                <th className="py-3 px-4 text-left">
+                            <tr className="bg-blue-500 text-gray-700">
+                                <th className="py-3 px-4 text-center border-none">
+                                    Select
+                                </th>
+                                <th className="py-3 px-4 text-center border-none">
                                     Product Name
                                 </th>
-                                <th className="py-3 px-4 text-left">
+                                <th className="py-3 px-4 text-center border-none">
                                     Quantity
                                 </th>
-                                <th className="py-3 px-4 text-left">Price</th>
-                                <th className="py-3 px-4 text-left">Action</th>
+                                <th className="py-3 px-4 text-center border-none">
+                                    Price
+                                </th>
+                                <th className="py-3 px-4 text-center border-none">
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -113,14 +121,16 @@ const Cart = () => {
                                     key={item._id || index}
                                     className="odd:bg-white even:bg-gray-50"
                                 >
-                                    <td className="py-3 px-4">
+                                    <td className="py-3 px-4 text-center border-none">
                                         <input
                                             type="checkbox"
                                             className="scale-125"
                                         />
                                     </td>
-                                    <td className="py-3 px-4">{item.name}</td>
-                                    <td className="py-3 px-4">
+                                    <td className="py-3 px-4 text-center border-none">
+                                        {item.name}
+                                    </td>
+                                    <td className="py-3 px-4 text-center border-none">
                                         <input
                                             type="number"
                                             value={item.quantity}
@@ -128,16 +138,23 @@ const Cart = () => {
                                             onChange={(e) => {
                                                 // Handle quantity change logic
                                             }}
-                                            className="w-16 p-2 border rounded text-center focus:outline-none focus:ring focus:ring-blue-200"
+                                            className="w-16 p-2 bg-gray-50 text-center focus:outline-none"
                                         />
                                     </td>
-                                    <td className="py-3 px-4">${item.price}</td>
-                                    <td className="py-3 px-4">
+                                    <td className="py-3 px-4 text-center border-none">
+                                        {formatMoney(
+                                            totalPricePerItem(
+                                                item.quantity,
+                                                item.price
+                                            )
+                                        )}
+                                    </td>
+                                    <td className="py-3 px-4 text-center border-none">
                                         <button
                                             onClick={() =>
                                                 handleRemoveItem(item._id)
                                             }
-                                            className="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                                            className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-700"
                                         >
                                             Remove
                                         </button>
@@ -147,12 +164,15 @@ const Cart = () => {
                         </tbody>
                     </table>
                 )}
-                <Link
-                    to="/checkout"
-                    className="inline-block px-6 py-3 bg-green-600 text-white text-center rounded hover:bg-green-700"
-                >
-                    Proceed to Checkout
-                </Link>
+
+                <div className="text-right">
+                    <Link
+                        to="/checkout"
+                        className="inline-block px-6 py-3 bg-white text-green-600 border border-green-600 text-center rounded hover:bg-green-600 hover:text-white"
+                    >
+                        Proceed to Checkout
+                    </Link>
+                </div>
             </div>
         </div>
     );
