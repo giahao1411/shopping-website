@@ -6,11 +6,11 @@ import { Link } from "react-router-dom";
 const MainContent = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("all");
-    const [products, setProducts] = useState([]); // Sản phẩm lấy từ API
+    const [products, setProducts] = useState([]); 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(""); // Để lưu lỗi khi gọi API
+    const [error, setError] = useState("");
+    const [newProducts, setNewProducts] = useState([]); 
 
-    // Gọi API để lấy sản phẩm
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
@@ -19,7 +19,18 @@ const MainContent = () => {
                 const response = await axios.get(
                     "http://localhost:8080/api/product/products"
                 );
-                setProducts(response.data.products); // Lưu sản phẩm vào state
+                const allProducts = response.data.products;
+                setProducts(allProducts); 
+
+                // Filter new products (added in the last 7 days)
+                const newProductsList = allProducts.filter(product => {
+                    const createdAt = new Date(product.createdAt);
+                    const today = new Date();
+                    const diffTime = Math.abs(today - createdAt);
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+                    return diffDays <= 7; // Products added within 7 days are "new"
+                });
+                setNewProducts(newProductsList); // Set new products
             } catch (error) {
                 setError("Failed to fetch products.");
             } finally {
@@ -28,7 +39,7 @@ const MainContent = () => {
         };
 
         fetchProducts();
-    }, []); // Chạy 1 lần khi component được mount
+    }, []); 
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -43,7 +54,7 @@ const MainContent = () => {
         console.log("Search: ", searchQuery, "Filter: ", selectedFilter);
     };
 
-    // Lọc các sản phẩm theo category và search query
+    // Filter products by search query and category
     const filteredProducts = products.filter((product) => {
         const matchesSearchQuery = product.name
             .toLowerCase()
@@ -52,6 +63,23 @@ const MainContent = () => {
             selectedFilter === "all" || product.category === selectedFilter;
         return matchesSearchQuery && matchesCategory;
     });
+
+    const getTopProducts = (category) => {
+        const categoryProducts = products.filter(product => product.category === category);
+        return categoryProducts.slice(0, 5); // Return first 5 products as representative
+    };
+
+    // Get the top 5 best selling products
+    const getBestSellingProducts = () => {
+        const sortedBySales = [...products].sort((a, b) => b.sales - a.sales);
+        return sortedBySales.slice(0, 5);
+    };
+
+    // Get the top 5 most viewed products
+    const getMostViewedProducts = () => {
+        const sortedByViews = [...products].sort((a, b) => b.views - a.views);
+        return sortedByViews.slice(0, 5);
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -71,7 +99,7 @@ const MainContent = () => {
             <div className="search-container">
                 <form onSubmit={handleSearchSubmit} className="search-form">
                     <input
-                        type="text1"
+                        type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="Search..."
@@ -97,28 +125,110 @@ const MainContent = () => {
                 </form>
             </div>
 
-            <hr className="divider" />
+            {/* <hr className="divider" /> */}
 
-            {/* Cards Section */}
-            <div className="cards">
-                {filteredProducts.map((product) => (
-                    <Link
-                        to={`/details/product/${product._id}`}
-                        key={product._id}
-                        className="card-link"
-                    >
-                        <div className="card">
-                            <img
-                                src={product.images[0]}
-                                alt={product.name}
-                                className="card-image"
-                            />
-                            <h3>{product.name}</h3>
-                            <p className="price">${product.price}</p>
-                        </div>
-                    </Link>
-                ))}
+            {/* New Products Section */}
+            {newProducts.length > 0 && (
+                <div className="category-section">
+                    <h2 className="category-title">New Products</h2>
+                    <div className="cards">
+                        {newProducts.slice(0, 5).map((product) => (
+                            <Link
+                                to={`/details/product/${product._id}`}
+                                key={product._id}
+                                className="card-link"
+                            >
+                                <div className="card">
+                                    <img
+                                        src={product.images[0]}
+                                        alt={product.name}
+                                        className="card-image"
+                                    />
+                                    <h3>{product.name}</h3>
+                                    <p className="price">${product.price}</p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+<div className="category-section">
+                <h2 className="category-title">Best Selling</h2>
+                <div className="cards">
+                    {getBestSellingProducts().map((product) => (
+                        <Link
+                            to={`/details/product/${product._id}`}
+                            key={product._id}
+                            className="card-link"
+                        >
+                            <div className="card">
+                                <img
+                                    src={product.images[0]}
+                                    alt={product.name}
+                                    className="card-image"
+                                />
+                                <h3>{product.name}</h3>
+                                <p className="price">${product.price}</p>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
             </div>
+
+            {/* Most Viewed Products */}
+            <div className="category-section">
+                <h2 className="category-title">Most Viewed</h2>
+                <div className="cards">
+                    {getMostViewedProducts().map((product) => (
+                        <Link
+                            to={`/details/product/${product._id}`}
+                            key={product._id}
+                            className="card-link"
+                        >
+                            <div className="card">
+                                <img
+                                    src={product.images[0]}
+                                    alt={product.name}
+                                    className="card-image"
+                                />
+                                <h3>{product.name}</h3>
+                                <p className="price">${product.price}</p>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+
+            {/* Category Sections */}
+            {["Phone", "Laptop", "Television", "Smart Watch", "Screen"].map((category) => (
+                <div key={category} className="category-section">
+                    <h2 className="category-title">{category}</h2>
+                    <div className="cards">
+                        {getTopProducts(category).map((product) => (
+                            <Link
+                                to={`/details/product/${product._id}`}
+                                key={product._id}
+                                className="card-link"
+                            >
+                                <div className="card">
+                                    <img
+                                        src={product.images[0]}
+                                        alt={product.name}
+                                        className="card-image"
+                                    />
+                                    <h3>{product.name}</h3>
+                                    <p className="price">${product.price}</p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            ))}
+
+            {/* Best Selling Products */}
+            
+
         </main>
     );
 };

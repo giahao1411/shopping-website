@@ -61,9 +61,9 @@ const Header = () => {
                     className="block md:hidden space-y-1 cursor-pointer"
                     onClick={toggleMenu}
                 >
-                    <div className="w-8 h-1 bg-blue-500"></div>
-                    <div className="w-8 h-1 bg-blue-500"></div>
-                    <div className="w-8 h-1 bg-blue-500"></div>
+                    <div className="w-8 h-1 bg-orange-500"></div>
+                    <div className="w-8 h-1 bg-orange-500"></div>
+                    <div className="w-8 h-1 bg-orange-500"></div>
                 </div>
 
                 <nav className={`${menuOpen ? "block" : "hidden"} md:flex`}>
@@ -93,12 +93,12 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/sales"
-                                className={`${location.pathname === "/sales"
+                                className={`${location.pathname === "/order-tracking"
                                     ? "text-orange-500 font-semibold"
                                     : ""
                                     } hover:text-blue-400`}
                             >
-                                Sales
+                                Order Tracking
                             </Link>
                         </li>
 

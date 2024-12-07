@@ -5,7 +5,7 @@ const Footer = () => {
         <div className="bg-gray-900 text-white py-2">
             <div className="flex flex-wrap justify-between mx-10">
                 <div className="flex-1 m-5 min-w-[200px] pl-14">
-                    <h3 className="text-lg">ELECTRONIC DEVICES STORE</h3>
+                    <h3 className="text-lg">BAANHEM STORE</h3>
                     <p className="text-sm">
                         <i className="fas fa-phone-alt mr-2"></i> Hotline:
                         1900213645 - Phone: 0283839999
