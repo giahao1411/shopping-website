@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "./InputField";
 import Swal from "sweetalert2"; // Import SweetAlert2
-import "../../styles/Account/Login.css";
 import { SESSION } from "../../libs/constant";
 
 const Login = () => {

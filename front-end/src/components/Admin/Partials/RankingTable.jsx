@@ -1,5 +1,4 @@
 import React from "react";
-// import "../../../styles/Admin/TeacherList.css";
 import Image1 from "../../../assets/image.jpg";
 import { BiInfoCircle } from "react-icons/bi";
 
@@ -37,7 +36,7 @@ const teachers = [
     },
 ];
 
-const TeacherList = () => {
+const RankingTable = () => {
     return (
         <div>
             <h2 className="text-3xl text-left font-semibold text-gray-700">
@@ -96,4 +95,4 @@ const TeacherList = () => {
     );
 };
 
-export default TeacherList;
+export default RankingTable;

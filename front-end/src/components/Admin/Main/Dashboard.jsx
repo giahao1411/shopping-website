@@ -1,9 +1,8 @@
 import React from "react";
-// import "../../../styles/Admin/Content.css";
-import ContentHeader from "./ContentHeader";
-import Card from "./Card";
-import Profile from "../Profile/Profile";
-import TeacherList from "./TeacherList";
+import ContentHeader from "../Partials/ContentHeader";
+import Card from "../Partials/Card";
+import Profile from "../Partials/Profile";
+import RankingTable from "../Partials/RankingTable";
 
 const Dashboard = () => {
     return (
@@ -11,7 +10,7 @@ const Dashboard = () => {
             <div className="w-3/4 mx-auto space-y-8">
                 <ContentHeader title="Dashboard" />
                 <Card />
-                <TeacherList />
+                <RankingTable />
             </div>
             <Profile />
         </>

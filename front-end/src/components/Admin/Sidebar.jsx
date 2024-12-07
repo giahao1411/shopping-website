@@ -1,12 +1,5 @@
 import React from "react";
-import {
-    BiHome,
-    BiSolidUserCircle,
-    BiUserCircle,
-    BiTask,
-    BiBox,
-} from "react-icons/bi";
-import "../../styles/Admin/Sidebar.css";
+import { BiHome, BiUserCircle, BiTask, BiBox } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {

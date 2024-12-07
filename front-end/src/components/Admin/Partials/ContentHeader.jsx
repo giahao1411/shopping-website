@@ -1,6 +1,5 @@
 import React from "react";
 import { BiNotification } from "react-icons/bi";
-// import "../../../styles/Admin/Content.css";
 
 const ContentHeader = ({ title }) => {
     return (

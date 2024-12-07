@@ -1,23 +1,8 @@
-import React, { useState, useEffect } from "react";
-import "../../../styles/Admin/Modals/TaskModal.css";
+import React, { useState } from "react";
 
 const TaskModal = ({ isTaskOpen, taskClose, createTask }) => {
     const [taskName, setTaskName] = useState("");
     const [importance, setImportance] = useState("Low");
-
-    useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === "Escape") {
-                taskClose();
-            }
-        };
-
-        document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -32,39 +17,59 @@ const TaskModal = ({ isTaskOpen, taskClose, createTask }) => {
 
     return (
         isTaskOpen && (
-            <div className="task-modal-overlay" onClick={taskClose}>
+            <div
+                className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+                onClick={taskClose}
+            >
                 <div
-                    className="task-modal-content"
+                    className="bg-white p-6 rounded-lg shadow-lg w-96 relative"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <h2>Create Task</h2>
+                    <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
+                        Create Task
+                    </h2>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="task-name">Task name</label>
+                        <label
+                            htmlFor="task-name"
+                            className="block mb-2 text-sm font-semibold text-gray-600"
+                        >
+                            Task name
+                        </label>
                         <input
                             type="text"
                             id="task-name"
                             value={taskName}
                             onChange={(e) => setTaskName(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                         />
 
-                        <label htmlFor="importance">Importance</label>
+                        <label
+                            htmlFor="importance"
+                            className="block mb-2 text-sm font-semibold text-gray-600"
+                        >
+                            Importance
+                        </label>
                         <select
                             id="importance"
                             value={importance}
                             onChange={(e) => setImportance(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                         >
                             <option value="Low">Low</option>
                             <option value="Medium">Medium</option>
                             <option value="High">High</option>
                         </select>
 
-                        <div className="task-action">
-                            <button type="submit" className="task-create-btn">
+                        <div className="flex justify-between mt-4">
+                            <button
+                                type="submit"
+                                className="w-1/2 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
+                            >
                                 Create
                             </button>
                             <button
                                 type="button"
-                                className="task-close-btn"
+                                className="w-1/2 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 ml-2"
                                 onClick={taskClose}
                             >
                                 Close
