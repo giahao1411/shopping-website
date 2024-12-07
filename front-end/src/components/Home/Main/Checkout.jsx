@@ -109,7 +109,7 @@ const Checkout = () => {
                             </select>
                         </div>
 
-                        <div className="mt-7">
+                        <div className="pt-2">
                             <h3 className="text-2xl font-semibold mb-2">
                                 Payment methods
                             </h3>
@@ -119,6 +119,7 @@ const Checkout = () => {
                                     name="payment"
                                     id="paypal"
                                     className="mr-2"
+                                    checked
                                 />
                                 <label
                                     htmlFor="paypal"
@@ -129,12 +130,12 @@ const Checkout = () => {
                             </div>
                         </div>
 
-
-
-                        {/* Pay button */}
-                        <button className="rounded-md ml-auto bg-blue-500 text-white px-14 py-2 mt-4 hover:bg-blue-600">
-                            Confirm
-                        </button>
+                        <div className="py-2">
+                            {/* Pay button */}
+                            <button className="rounded-md bg-blue-500 text-white px-14 py-2 mt-4 hover:bg-blue-600">
+                                Confirm
+                            </button>
+                        </div>
 
                         {/* Terms and policies links */}
                         <p className="mt-3">
