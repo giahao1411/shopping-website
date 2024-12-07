@@ -96,7 +96,7 @@ const Cart = () => {
     };
 
     return (
-        <div className="py-20 mt-10">
+        <div className="py-20 mt-10 min-h-screen">
             <div className="max-w-5xl mx-auto p-6">
                 <div className="flex items-center space-x-4">
                     <FaShoppingCart className="text-4xl" />

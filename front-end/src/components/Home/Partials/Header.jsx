@@ -36,6 +36,11 @@ const Header = () => {
         setDropdownOpen(false);
     };
 
+    // Hàm đóng dropdown khi người dùng chọn mục
+    const closeDropdown = () => {
+        setDropdownOpen(false);
+    };
+
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
             <div className="flex justify-between items-center h-16 px-5 md:px-20">
@@ -90,7 +95,7 @@ const Header = () => {
                         </li>
                         <li>
                             <Link
-                                to="/sales"
+                                to="/order-tracking"
                                 className={`${
                                     location.pathname === "/order-tracking"
                                         ? "text-orange-500 font-semibold"
@@ -114,6 +119,7 @@ const Header = () => {
                                         isOpen={dropdownOpen}
                                         storedUser={user}
                                         handleLogout={handleLogout}
+                                        closeDropdown={closeDropdown} // Truyền hàm vào
                                     />
                                 )}
                             </li>
