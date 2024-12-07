@@ -86,12 +86,16 @@ const Product = () => {
                     />
                 </div>
             </div>
-            <Link
-                to="/admin/product/create"
-                className="text-left text-blue-600 hover:text-blue-700 hover:underline"
-            >
-                Create product
-            </Link>
+
+            <div className="my-5">
+                <Link
+                    to="/admin/product/create"
+                    className="text-left text-blue-600 hover:text-blue-700 hover:underline"
+                >
+                    Create product
+                </Link>
+            </div>
+
             <div>
                 <table className="w-full border-collapse border border-gray-200">
                     <thead>

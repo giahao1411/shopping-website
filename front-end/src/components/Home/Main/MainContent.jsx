@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import "../../../styles/Home/MainContent.css";
 import { Link } from "react-router-dom";
 import { formatMoney } from "../../../libs/utilities";
 
@@ -140,27 +139,31 @@ const MainContent = () => {
                 </form>
             </div>
 
-            {/* <hr className="divider" /> */}
-
             {/* New Products Section */}
             {newProducts.length > 0 && (
-                <div className="category-section">
-                    <h2 className="category-title">New Products</h2>
-                    <div className="cards">
+                <div className="mt-10">
+                    <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
+                        New Arrival
+                    </h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 p-5 mx-[auto] max-w-7xl justify-items-center">
                         {newProducts.slice(0, 5).map((product) => (
                             <Link
                                 to={`/details/product/${product._id}`}
                                 key={product._id}
-                                className="card-link"
+                                className="block"
                             >
-                                <div className="card">
+                                <div className="bg-white rounded-lg shadow-md px-5 pt-5 border-2 border-black text-center flex flex-col justify-start items-center hover:translate-y-[-5px] hover:shadow-lg transition-all h-[350px]">
                                     <img
                                         src={product.images[0]}
                                         alt={product.name}
-                                        className="card-image"
+                                        className="w-[300px] h-[200px] rounded-lg object-cover mb-4"
                                     />
-                                    <h3>{product.name}</h3>
-                                    <p className="price">${product.price}</p>
+                                    <h3 className="text-lg font-bold overflow-hidden overflow-ellipsis line-clamp-2 w-40 h-[50px]">
+                                        {product.name}
+                                    </h3>
+                                    <p className="text-md font-bold text-orange-500 mt-4">
+                                        {formatMoney(product.price)}
+                                    </p>
                                 </div>
                             </Link>
                         ))}
@@ -168,84 +171,105 @@ const MainContent = () => {
                 </div>
             )}
 
-            <div className="category-section">
-                <h2 className="category-title">Best Selling</h2>
-                <div className="cards">
-                    {getBestSellingProducts().map((product) => (
-                        <Link
-                            to={`/details/product/${product._id}`}
-                            key={product._id}
-                            className="card-link"
-                        >
-                            <div className="card">
-                                <img
-                                    src={product.images[0]}
-                                    alt={product.name}
-                                    className="card-image"
-                                />
-                                <h3>{product.name}</h3>
-                                <p className="price">${product.price}</p>
-                            </div>
-                        </Link>
-                    ))}
+            {/* Best Selling Products */}
+            <div className="mt-10">
+                <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
+                    Best selling
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 p-5 mx-[100px] justify-items-center">
+                    {getBestSellingProducts()
+                        .slice(0, 3)
+                        .map((product) => (
+                            <Link
+                                to={`/details/product/${product._id}`}
+                                key={product._id}
+                                className="block"
+                            >
+                                <div className="bg-white rounded-lg shadow-md p-5 border-2 border-black text-center flex flex-col justify-start items-center hover:translate-y-[-5px] hover:shadow-lg transition-all">
+                                    <img
+                                        src={product.images[0]}
+                                        alt={product.name}
+                                        className="w-[300px] h-[300px] rounded-lg object-cover mb-4"
+                                    />
+                                    <h3 className="text-lg font-bold overflow-hidden overflow-ellipsis line-clamp-2">
+                                        {product.name}
+                                    </h3>
+                                    <p className="text-md font-bold text-orange-500 mt-4">
+                                        {formatMoney(product.price)}
+                                    </p>
+                                </div>
+                            </Link>
+                        ))}
                 </div>
             </div>
 
             {/* Most Viewed Products */}
-            <div className="category-section">
-                <h2 className="category-title">Most Viewed</h2>
-                <div className="cards">
-                    {getMostViewedProducts().map((product) => (
-                        <Link
-                            to={`/details/product/${product._id}`}
-                            key={product._id}
-                            className="card-link"
-                        >
-                            <div className="card">
-                                <img
-                                    src={product.images[0]}
-                                    alt={product.name}
-                                    className="card-image"
-                                />
-                                <h3>{product.name}</h3>
-                                <p className="price">${product.price}</p>
-                            </div>
-                        </Link>
-                    ))}
+            <div className="mt-10">
+                <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
+                    Most Viewed
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5 p-5 mx-[auto] max-w-7xl justify-items-center">
+                    {getMostViewedProducts()
+                        .slice(0, 4)
+                        .map((product) => (
+                            <Link
+                                to={`/details/product/${product._id}`}
+                                key={product._id}
+                                className="block"
+                            >
+                                <div className="bg-white rounded-lg shadow-md p-5 border-2 border-black text-center flex flex-col justify-start items-center hover:translate-y-[-5px] hover:shadow-lg transition-all">
+                                    <img
+                                        src={product.images[0]}
+                                        alt={product.name}
+                                        className="w-[300px] h-[300px] rounded-lg object-cover mb-4"
+                                    />
+                                    <h3 className="text-lg font-bold overflow-hidden overflow-ellipsis line-clamp-2">
+                                        {product.name}
+                                    </h3>
+                                    <p className="text-md font-bold text-orange-500 mt-4">
+                                        {formatMoney(product.price)}
+                                    </p>
+                                </div>
+                            </Link>
+                        ))}
                 </div>
             </div>
 
             {/* Category Sections */}
             {["Phone", "Laptop", "Television", "Smart Watch", "Screen"].map(
                 (category) => (
-                    <div key={category} className="category-section">
-                        <h2 className="category-title">{category}</h2>
-                        <div className="cards">
-                            {getTopProducts(category).map((product) => (
-                                <Link
-                                    to={`/details/product/${product._id}`}
-                                    key={product._id}
-                                    className="card-link"
-                                >
-                                    <div className="card">
-                                        <img
-                                            src={product.images[0]}
-                                            alt={product.name}
-                                            className="card-image"
-                                        />
-                                        <h3>{product.name}</h3>
-                                        <p className="price">
-                                            ${product.price}
-                                        </p>
-                                    </div>
-                                </Link>
-                            ))}
+                    <div key={category} className="mt-10">
+                        <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
+                            {category}
+                        </h2>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 p-5 mx-[auto] max-w-7xl justify-items-center">
+                            {getMostViewedProducts()
+                                .slice(0, 5)
+                                .map((product) => (
+                                    <Link
+                                        to={`/details/product/${product._id}`}
+                                        key={product._id}
+                                        className="block"
+                                    >
+                                        <div className="bg-white rounded-lg shadow-md px-5 pt-5 border-2 border-black text-center flex flex-col justify-start items-center hover:translate-y-[-5px] hover:shadow-lg transition-all h-[350px]">
+                                            <img
+                                                src={product.images[0]}
+                                                alt={product.name}
+                                                className="w-[300px] h-[200px] rounded-lg object-cover mb-4"
+                                            />
+                                            <h3 className="text-lg font-bold overflow-hidden overflow-ellipsis line-clamp-2 w-40 h-[50px]">
+                                                {product.name}
+                                            </h3>
+                                            <p className="text-md font-bold text-orange-500 mt-4">
+                                                {formatMoney(product.price)}
+                                            </p>
+                                        </div>
+                                    </Link>
+                                ))}
                         </div>
                     </div>
                 )
             )}
-
-            {/* Best Selling Products */}
         </main>
     );
 };

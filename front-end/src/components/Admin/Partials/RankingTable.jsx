@@ -42,10 +42,10 @@ const RankingTable = () => {
             <h2 className="text-3xl text-left font-semibold text-gray-700">
                 Top 5 customers
             </h2>
-            <div className="overflow-x-auto">
+            <div className="pt-10">
                 <table className="table-auto w-full border-none">
                     <thead>
-                        <tr className="bg-gray-200">
+                        <tr>
                             <th className="px-4 py-2 text-center border-none">
                                 #
                             </th>
@@ -57,9 +57,6 @@ const RankingTable = () => {
                             </th>
                             <th className="px-4 py-2 text-center border-none">
                                 Items bought
-                            </th>
-                            <th className="px-4 py-2 text-center border-none">
-                                Info
                             </th>
                         </tr>
                     </thead>
@@ -80,11 +77,6 @@ const RankingTable = () => {
                                 </td>
                                 <td className="px-4 py-5 text-center border-none">
                                     {teacher.items} products bought
-                                </td>
-                                <td className="px-4 py-5 border-none">
-                                    <div className="flex justify-center">
-                                        <BiInfoCircle className="text-xl text-gray-700 cursor-pointer" />
-                                    </div>
                                 </td>
                             </tr>
                         ))}

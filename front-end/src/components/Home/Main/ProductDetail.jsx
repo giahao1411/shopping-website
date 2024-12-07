@@ -66,7 +66,7 @@ const ProductDetail = () => {
     return (
         <div className="flex flex-col items-center py-8 mt-20 min-h-screen">
             <div className="flex justify-between w-full max-w-5xl bg-gray-100 p-5 rounded-md">
-                <div className="relative w-full max-w-sm">
+                <div className="relative w-full max-w-md">
                     {/* Main Image */}
                     <img
                         src={selectedImg}
@@ -75,7 +75,7 @@ const ProductDetail = () => {
                     />
 
                     {/* Thumbnails */}
-                    <div className="mt-4 flex justify-start gap-5">
+                    <div className="mt-4 flex justify-start gap-3">
                         {product.images.map((image, index) => (
                             <img
                                 key={index}
@@ -87,14 +87,14 @@ const ProductDetail = () => {
                         ))}
                     </div>
                 </div>
-                <div className="max-w-xl text-gray-800">
+                <div className="pl-10 w-full max-w-lg text-gray-800">
                     <div className="text-2xl font-bold text-gray-800 mb-5 text-left">
                         {product.name}
                     </div>
 
                     <hr className="border-t-2 border-orange-500 my-5" />
 
-                    <div className="flex flex-col gap-y-5 text-xl">
+                    <div className=" flex flex-col gap-y-5 text-xl">
                         <p className="">
                             <strong>Category: </strong>
                             {product.category}
