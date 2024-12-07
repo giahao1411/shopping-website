@@ -6,6 +6,7 @@ import ProductDetail from "../components/Home/Main/ProductDetail";
 import Cart from "../components/Home/Main/Cart";
 import OrderHistory from "../components/Home/Main/OrderHistory";
 import UserProfile from "../components/Home/Main/UserProfile";
+import Checkout from "../components/Home/Main/Checkout";
 
 const HomeRoutes = [
     <Route key="home" path="/" element={<Home />}>
@@ -22,6 +23,7 @@ const HomeRoutes = [
             element={<OrderHistory />}
         />
         <Route key="home-profile" path="/profile" element={<UserProfile />} />
+        <Route key="home-checkout" path="/checkout" element={<Checkout />} />
     </Route>,
 ];
 
