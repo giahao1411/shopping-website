@@ -71,11 +71,10 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/"
-                                className={`${
-                                    location.pathname === "/"
-                                        ? "text-orange-500 font-semibold"
-                                        : ""
-                                } hover:text-blue-400`}
+                                className={`${location.pathname === "/"
+                                    ? "text-orange-500 font-semibold"
+                                    : ""
+                                    } hover:text-blue-400`}
                             >
                                 Home
                             </Link>
@@ -83,11 +82,10 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/cart"
-                                className={`${
-                                    location.pathname === "/cart"
-                                        ? "text-orange-500 font-semibold"
-                                        : ""
-                                } hover:text-blue-400`}
+                                className={`${location.pathname === "/cart"
+                                    ? "text-orange-500 font-semibold"
+                                    : ""
+                                    } hover:text-blue-400`}
                             >
                                 Cart
                             </Link>
@@ -95,18 +93,17 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/sales"
-                                className={`${
-                                    location.pathname === "/sales"
-                                        ? "text-orange-500 font-semibold"
-                                        : ""
-                                } hover:text-blue-400`}
+                                className={`${location.pathname === "/sales"
+                                    ? "text-orange-500 font-semibold"
+                                    : ""
+                                    } hover:text-blue-400`}
                             >
                                 Sales
                             </Link>
                         </li>
 
                         {user ? (
-                            <li className="relative">
+                            <li className="relative flex items-center">
                                 <span
                                     className="cursor-pointer font-semibold hover:text-blue-400"
                                     onClick={toggleDropdown}
@@ -114,24 +111,24 @@ const Header = () => {
                                     {user.username}
                                 </span>
                                 {dropdownOpen && (
-                                    <div className="absolute right-0 top-8 bg-gray-900 border border-blue-500 rounded-lg shadow-lg">
+                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 border border-blue-500 rounded-lg shadow-lg overflow-hidden">
                                         <Link
                                             to="/profile"
-                                            className="block px-4 py-2 text-white hover:bg-orange-500"
+                                            className="block px-6 py-3 text-white hover:bg-orange-500 whitespace-nowrap"
                                             onClick={handleProfileClick}
                                         >
                                             Profile
                                         </Link>
                                         <Link
                                             to="/order-history"
-                                            className="block px-4 py-2 text-white hover:bg-orange-500"
+                                            className="block px-6 py-3 text-white hover:bg-orange-500 whitespace-nowrap"
                                             onClick={handleProfileClick}
                                         >
                                             Order History
                                         </Link>
                                         <span
                                             onClick={handleLogout}
-                                            className="block px-4 py-2 text-white cursor-pointer hover:bg-orange-500"
+                                            className="block px-6 py-3 text-white cursor-pointer hover:bg-orange-500 whitespace-nowrap"
                                         >
                                             Log Out
                                         </span>
@@ -142,16 +139,16 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/account/login"
-                                    className={`${
-                                        location.pathname === "/account/login"
-                                            ? "text-orange-500 font-semibold"
-                                            : ""
-                                    } hover:text-blue-400`}
+                                    className={`${location.pathname === "/account/login"
+                                        ? "text-orange-500 font-semibold"
+                                        : ""
+                                        } hover:text-blue-400`}
                                 >
                                     Log In
                                 </Link>
                             </li>
                         )}
+
                     </ul>
                 </nav>
             </div>

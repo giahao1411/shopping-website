@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
     return (
-        <div className="bg-black text-white py-2">
+        <div className="bg-gray-900 text-white py-2">
             <div className="flex flex-wrap justify-around">
                 <div className="flex-1 m-5 min-w-[200px]">
                     <h3 className="text-lg">ELECTRONIC DEVICES STORE</h3>
@@ -51,7 +51,7 @@ const Footer = () => {
             </div>
 
             {/* Copyright Section */}
-            <footer className="bg-black py-1">
+            <footer className="bg-gray-900 py-1">
                 <div className="max-w-7xl mx-auto text-center text-gray-600">
                     <p className="text-sm text-white">
                         &copy; 2024 BAANHEM. All rights reserved.
