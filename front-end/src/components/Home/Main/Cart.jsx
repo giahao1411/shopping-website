@@ -3,7 +3,7 @@ import axios from "axios";
 import { SESSION } from "../../../libs/constant";
 import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
-import { formatMoney } from "../../../libs/utilities";
+import { formatMoney, formatNumber } from "../../../libs/utilities";
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([
@@ -57,6 +57,18 @@ const Cart = () => {
         // fetchCartItems();
     }, []);
 
+    const incrementQuantity = () => {
+        // if (quantity < product.quantity) {
+        //     setQuantity((prevQuantity) => prevQuantity + 1);
+        // }
+    };
+
+    const decrementQuantity = () => {
+        // if (quantity > 1) {
+        //     setQuantity((prevQuantity) => prevQuantity - 1);
+        // }
+    };
+
     const totalPricePerItem = (quantity, price) => {
         return quantity * price;
     };
@@ -97,7 +109,7 @@ const Cart = () => {
                 ) : (
                     <table className="w-full border-none mb-5">
                         <thead>
-                            <tr className="bg-blue-500 text-gray-700">
+                            <tr className="text-gray-700">
                                 <th className="py-3 px-4 text-center border-none">
                                     Select
                                 </th>
@@ -117,10 +129,7 @@ const Cart = () => {
                         </thead>
                         <tbody>
                             {cartItems.map((item, index) => (
-                                <tr
-                                    key={item._id || index}
-                                    className="odd:bg-white even:bg-gray-50"
-                                >
+                                <tr key={item._id || index}>
                                     <td className="py-3 px-4 text-center border-none">
                                         <input
                                             type="checkbox"
@@ -130,16 +139,24 @@ const Cart = () => {
                                     <td className="py-3 px-4 text-center border-none">
                                         {item.name}
                                     </td>
-                                    <td className="py-3 px-4 text-center border-none">
-                                        <input
-                                            type="number"
-                                            value={item.quantity}
-                                            min="1"
-                                            onChange={(e) => {
-                                                // Handle quantity change logic
-                                            }}
-                                            className="w-16 p-2 bg-gray-50 text-center focus:outline-none"
-                                        />
+                                    <td className="py-3 px-4 border-none">
+                                        <div className="flex items-center justify-center py-5">
+                                            <button
+                                                className="text-black text-2xl disabled:bg-gray-400 border border-gray-600 px-[10px] rounded-l-md"
+                                                onClick={decrementQuantity}
+                                            >
+                                                -
+                                            </button>
+                                            <span className="text-1xl font-semibold border-t border-b border-gray-600 px-5 py-1">
+                                                {formatNumber(item.quantity)}
+                                            </span>
+                                            <button
+                                                className="text-black text-2xl disabled:bg-gray-400 border border-gray-600 px-2 rounded-r-md"
+                                                onClick={incrementQuantity}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
                                     </td>
                                     <td className="py-3 px-4 text-center border-none">
                                         {formatMoney(
