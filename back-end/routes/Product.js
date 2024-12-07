@@ -57,7 +57,7 @@ router.get("/products/:id", async (req, res) => {
     }
 });
 
-router.post("/products", upload.array("images", 3), async (req, res) => {
+router.post("/products", upload.array("images", 4), async (req, res) => {
     try {
         const { category, name, description, quantity, price } = req.body;
         const images = req.files;
@@ -90,7 +90,7 @@ router.post("/products", upload.array("images", 3), async (req, res) => {
 
 router.patch(
     "products/edit/:id",
-    upload.array("images", 3),
+    upload.array("images", 4),
     async (req, res) => {
         const productId = req.params.id;
         const { category, name, description, quantity, price } = req.body;
