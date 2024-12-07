@@ -24,31 +24,27 @@ const calculateTotal = () => {
 };
 
 const Checkout = () => {
-    const [cardNumber, setCardNumber] = useState("");
-    const [expirationDate, setExpirationDate] = useState("");
-    const [securityCode, setSecurityCode] = useState("");
+    const [phone, setPhone] = useState("");
 
-    const handleCardNumberChange = (e) => {
+    const handlePhoneNumberChange = (e) => {
         let value = e.target.value.replace(/\D/g, "");
-        value = value.match(/.{1,4}/g)?.join(" ") || "";
-        setCardNumber(value);
-    };
 
-    const handleExpirationDateChange = (e) => {
-        let value = e.target.value.replace(/\D/g, "");
-        if (value.length > 2) {
-            value = value.slice(0, 2) + " / " + value.slice(2, 4);
+        if (value.length <= 3) {
+            value = value.replace(/(\d{3})(\d{0,})/, "$1-$2");
+        } else if (value.length <= 6) {
+            value = value.replace(/(\d{3})(\d{3})(\d{0,})/, "$1-$2-$3");
+        } else {
+            value = value.replace(/(\d{3})(\d{4})(\d{3})/, "$1-$2-$3");
         }
-        setExpirationDate(value);
+
+        if (value.endsWith("-")) {
+            value = value.slice(0, -1);
+        }
+
+        setPhone(value);
     };
 
-    const handleSecurityCodeChange = (e) => {
-        let value = e.target.value.replace(/\D/g, "");
-        if (value.length > 3) {
-            value = value.slice(0, 3);
-        }
-        setSecurityCode(value);
-    };
+
 
     return (
         <main className="min-h-screen bg-white py-20">
@@ -85,7 +81,10 @@ const Checkout = () => {
                             <input
                                 type="text"
                                 id="phone"
-                                placeholder="Enter your phone number"
+                                value={phone}
+                                onChange={handlePhoneNumberChange}
+                                placeholder="012-3456-789"
+                                maxLength="12"
                                 className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
                             />
                         </div>
@@ -102,6 +101,7 @@ const Checkout = () => {
                                 id="address"
                                 className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
                             >
+                                <option>Select your address</option>
                                 <option>Ha Noi</option>
                                 <option>Thanh Hoa</option>
                                 <option>Long An</option>
