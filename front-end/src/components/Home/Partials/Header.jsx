@@ -105,7 +105,6 @@ const Header = () => {
                             </Link>
                         </li>
 
-                        {/* Hiển thị tên người dùng hoặc "Log In" */}
                         {user ? (
                             <li className="relative">
                                 <span

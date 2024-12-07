@@ -17,14 +17,13 @@ const AdminRoutes = [
             element={<Product />}
         />
         ,
-        <Route key="admin-order" path="/admin/order" element={<Order />} />,
-        <Route
-            key="admin-create-product"
-            path="/admin/product/create"
-            element={<CreateProduct />}
-        />
-        ,
+        <Route key="admin-order" path="/admin/order" element={<Order />} />, ,
     </Route>,
+    <Route
+        key="admin-create-product"
+        path="/admin/product/create"
+        element={<CreateProduct />}
+    />,
 ];
 
 export default AdminRoutes;
