@@ -1,6 +1,5 @@
 import React from "react";
 import Image1 from "../../../assets/image.jpg";
-import { BiInfoCircle } from "react-icons/bi";
 
 // temporary for testing UI
 const teachers = [

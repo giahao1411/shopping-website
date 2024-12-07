@@ -7,18 +7,14 @@ const MainContent = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("all");
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const [newProducts, setNewProducts] = useState([]);
+
+    const api = import.meta.env.VITE_APP_URL;
 
     useEffect(() => {
         const fetchProducts = async () => {
-            setLoading(true);
-            setError("");
             try {
-                const response = await axios.get(
-                    "http://localhost:8080/api/product/products"
-                );
+                const response = await axios.get(`${api}/api/product/products`);
                 const allProducts = response.data.products;
                 setProducts(allProducts);
 
@@ -34,9 +30,11 @@ const MainContent = () => {
                 });
                 setNewProducts(newProductsList); // Set new products
             } catch (error) {
-                setError("Failed to fetch products.");
-            } finally {
-                setLoading(false);
+                if (error.response) {
+                    alert(error.response.data.message);
+                } else {
+                    console.error(error);
+                }
             }
         };
 
@@ -84,14 +82,6 @@ const MainContent = () => {
         const sortedByViews = [...products].sort((a, b) => b.views - a.views);
         return sortedByViews.slice(0, 5);
     };
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>{error}</div>;
-    }
 
     return (
         <main className="py-8 px-20 mt-20">

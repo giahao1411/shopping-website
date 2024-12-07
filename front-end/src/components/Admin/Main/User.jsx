@@ -12,11 +12,13 @@ const User = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPage] = useState(1);
 
+    const api = import.meta.env.VITE_APP_URL;
+
     // get users by page
     const fetchUsers = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8080/api/user/users?page=${page}&limit=8`
+                `${api}/api/user/users?page=${page}&limit=8`
             );
 
             if (response.status === 200) {
@@ -61,7 +63,7 @@ const User = () => {
     const changeUserStatus = async (userID) => {
         try {
             const response = await axios.patch(
-                `http://localhost:8080/api/user/users/status/${userID}`
+                `${api}/api/user/users/status/${userID}`
             );
 
             if (response.status === 200) {

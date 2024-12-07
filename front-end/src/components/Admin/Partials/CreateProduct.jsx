@@ -13,7 +13,9 @@ const CreateProduct = () => {
     });
 
     const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
+    const api = import.meta.env.VITE_APP_URL;
 
     // Categories available for selection
     const categories = [
@@ -58,7 +60,7 @@ const CreateProduct = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8080/api/product/products",
+                `${api}/api/product/products`,
                 formData,
                 {
                     headers: {

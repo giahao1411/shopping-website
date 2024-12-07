@@ -9,7 +9,9 @@ const ForgotPassword = () => {
     const [newCfPassword, setNewCfPassword] = useState("");
     const [error, setError] = useState("");
     const [step, setStep] = useState(1); // step 1: check email, step 2: update password
+
     const navigate = useNavigate();
+    const api = import.meta.env.VITE_APP_URL;
 
     // check email function
     const handleCheckEmail = async (e) => {
@@ -22,10 +24,9 @@ const ForgotPassword = () => {
         }
 
         try {
-            const response = await axios.post(
-                "http://localhost:8080/account/check-email",
-                { email }
-            );
+            const response = await axios.post(`${api}/account/check-email`, {
+                email,
+            });
 
             if (response.data.existed) {
                 setStep(2); // email existed, move to step 2
@@ -56,7 +57,7 @@ const ForgotPassword = () => {
 
         try {
             const response = await axios.patch(
-                "http://localhost:8080/account/update-password",
+                `${api}/account/update-password`,
                 { email, newPassword }
             );
 

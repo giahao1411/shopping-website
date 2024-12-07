@@ -6,7 +6,7 @@ import User from "../components/Admin/Main/User";
 import Product from "../components/Admin/Main/Product";
 import Order from "../components/Admin/Main/Order";
 import CreateProduct from "../components/Admin/Partials/CreateProduct";
-import Category from "../components/Home/Main/Category";
+import Category from "../components/Admin/Main/Category";
 
 const AdminRoutes = [
     <Route key="admin-dashboard" path="/admin" element={<Admin />}>

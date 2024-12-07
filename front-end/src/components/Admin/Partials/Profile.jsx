@@ -7,12 +7,12 @@ import ProfileHeader from "./ProfileHeader";
 const Profile = () => {
     const [tasks, setTasks] = useState([]);
 
+    const api = import.meta.env.VITE_APP_URL;
+
     // get tasks
     const fetchTasks = async () => {
         try {
-            const response = await axios.get(
-                "http://localhost:8080/api/task/tasks"
-            );
+            const response = await axios.get(`${api}/api/task/tasks`);
 
             if (response.status === 200) {
                 setTasks(response.data);
@@ -28,7 +28,7 @@ const Profile = () => {
     const deleteTask = async (taskID) => {
         try {
             const response = await axios.delete(
-                `http://localhost:8080/api/task/delete/${taskID}`
+                `${api}/api/task/delete/${taskID}`
             );
 
             if (response.status === 200) {
@@ -45,10 +45,7 @@ const Profile = () => {
 
     const createTask = async (newTask) => {
         try {
-            const response = await axios.post(
-                "http://localhost:8080/api/task/tasks",
-                newTask
-            );
+            const response = await axios.post(`${api}/api/task/tasks`, newTask);
 
             if (response.status === 200) {
                 setTasks((prevTask) => [...prevTask, response.data.task]);

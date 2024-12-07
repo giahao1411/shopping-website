@@ -14,10 +14,12 @@ const Product = () => {
     const [page, setPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
 
+    const api = import.meta.env.VITE_APP_URL;
+
     const fetchProducts = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8080/api/product/products?page=${page}&limit=8`
+                `${api}/api/product/products?page=${page}&limit=8`
             );
 
             if (response.status === 200) {

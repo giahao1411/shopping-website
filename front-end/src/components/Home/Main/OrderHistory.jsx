@@ -26,6 +26,7 @@ const OrderHistory = () => {
     ]);
 
     const navigate = useNavigate();
+    const api = import.meta.env.VITE_APP_URL;
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -38,7 +39,7 @@ const OrderHistory = () => {
 
             try {
                 const response = await axios.get(
-                    `http://localhost:8080/api/orders/${storedUser._id}`,
+                    `${api}/api/orders/${storedUser._id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${storedUser.token}`,

@@ -27,6 +27,8 @@ const Cart = () => {
         },
     ]);
 
+    const api = import.meta.env.VITE_APP_URL;
+
     useEffect(() => {
         const fetchCartItems = async () => {
             const storedUser = JSON.parse(localStorage.getItem(SESSION));
@@ -39,7 +41,7 @@ const Cart = () => {
             try {
                 // Giả sử API trả về danh sách sản phẩm trong giỏ hàng của người dùng
                 const response = await axios.get(
-                    `http://localhost:8080/api/cart/${storedUser._id}`,
+                    `${api}/api/cart/${storedUser._id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${storedUser.token}`,
@@ -80,7 +82,7 @@ const Cart = () => {
         try {
             // Giả sử API xóa sản phẩm khỏi giỏ hàng
             await axios.delete(
-                `http://localhost:8080/api/cart/${storedUser._id}/item/${itemId}`,
+                `${api}/api/cart/${storedUser._id}/item/${itemId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${storedUser.token}`,

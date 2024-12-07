@@ -9,13 +9,15 @@ const ProductDetail = () => {
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [selectedImg, setSelectedImg] = useState("");
+
     const navigate = useNavigate();
+    const api = import.meta.env.VITE_APP_URL;
 
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8080/api/product/products/${productId}`
+                    `${api}/api/product/products/${productId}`
                 );
                 if (response.status === 200) {
                     const data = response.data.product;

@@ -10,10 +10,12 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
+    const api = import.meta.env.VITE_APP_URL;
 
     const googleLogin = () => {
-        window.location.href = "http://localhost:8080/social/google/auth";
+        window.location.href = `${api}/social/google/auth`;
     };
 
     // handle submit for login
@@ -31,10 +33,10 @@ const Login = () => {
 
         try {
             // fetch data to back-end
-            const response = await axios.post(
-                "http://localhost:8080/account/login",
-                { email, password }
-            );
+            const response = await axios.post(`${api}/account/login`, {
+                email,
+                password,
+            });
 
             const { message, user } = response.data; // Lấy username từ backend
 

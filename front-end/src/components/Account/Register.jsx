@@ -10,7 +10,9 @@ const Register = () => {
     const [cfPassword, setCfPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
+    const api = import.meta.env.VITE_APP_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,10 +31,11 @@ const Register = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(
-                "http://localhost:8080/account/register",
-                { username, email, password }
-            );
+            const response = await axios.post(`${api}/account/register`, {
+                username,
+                email,
+                password,
+            });
 
             if (response.status === 200) {
                 alert(response.data.message);
@@ -100,7 +103,7 @@ const Register = () => {
                         }`}
                         disabled={loading}
                     >
-                        {loading ? "Registering in..." : "Register"}
+                        {loading ? "Registering..." : "Register"}
                     </button>
                 </form>
 
