@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SESSION } from "../../../libs/constant";
+import HomeDropdown from "./HomeDropdown";
 
 const Header = () => {
     const location = useLocation();
@@ -22,11 +23,11 @@ const Header = () => {
     };
 
     const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
+        setMenuOpen((prevState) => !prevState);
     };
 
     const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
+        setDropdownOpen((prevState) => !prevState);
     };
 
     const handleLogout = () => {
@@ -35,14 +36,9 @@ const Header = () => {
         setDropdownOpen(false);
     };
 
-    const handleProfileClick = () => {
-        history.push("/profile");
-        setMenuOpen(false);
-    };
-
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
-            <div className="flex justify-between items-center h-16 px-5 md:px-10">
+            <div className="flex justify-between items-center h-16 px-5 md:px-20">
                 <div
                     className="flex items-center cursor-pointer"
                     onClick={redirectHome}
@@ -71,10 +67,11 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/"
-                                className={`${location.pathname === "/"
-                                    ? "text-orange-500 font-semibold"
-                                    : ""
-                                    } hover:text-blue-400`}
+                                className={`${
+                                    location.pathname === "/"
+                                        ? "text-orange-500 font-semibold"
+                                        : ""
+                                } hover:text-blue-400`}
                             >
                                 Home
                             </Link>
@@ -82,10 +79,11 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/cart"
-                                className={`${location.pathname === "/cart"
-                                    ? "text-orange-500 font-semibold"
-                                    : ""
-                                    } hover:text-blue-400`}
+                                className={`${
+                                    location.pathname === "/cart"
+                                        ? "text-orange-500 font-semibold"
+                                        : ""
+                                } hover:text-blue-400`}
                             >
                                 Cart
                             </Link>
@@ -93,10 +91,11 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/sales"
-                                className={`${location.pathname === "/order-tracking"
-                                    ? "text-orange-500 font-semibold"
-                                    : ""
-                                    } hover:text-blue-400`}
+                                className={`${
+                                    location.pathname === "/order-tracking"
+                                        ? "text-orange-500 font-semibold"
+                                        : ""
+                                } hover:text-blue-400`}
                             >
                                 Order Tracking
                             </Link>
@@ -111,44 +110,27 @@ const Header = () => {
                                     {user.username}
                                 </span>
                                 {dropdownOpen && (
-                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 border border-blue-500 rounded-lg shadow-lg overflow-hidden">
-                                        <Link
-                                            to="/profile"
-                                            className="block px-6 py-3 text-white hover:bg-orange-500 whitespace-nowrap"
-                                            onClick={handleProfileClick}
-                                        >
-                                            Profile
-                                        </Link>
-                                        <Link
-                                            to="/order-history"
-                                            className="block px-6 py-3 text-white hover:bg-orange-500 whitespace-nowrap"
-                                            onClick={handleProfileClick}
-                                        >
-                                            Order History
-                                        </Link>
-                                        <span
-                                            onClick={handleLogout}
-                                            className="block px-6 py-3 text-white cursor-pointer hover:bg-orange-500 whitespace-nowrap"
-                                        >
-                                            Log Out
-                                        </span>
-                                    </div>
+                                    <HomeDropdown
+                                        isOpen={dropdownOpen}
+                                        storedUser={user}
+                                        handleLogout={handleLogout}
+                                    />
                                 )}
                             </li>
                         ) : (
                             <li>
                                 <Link
                                     to="/account/login"
-                                    className={`${location.pathname === "/account/login"
-                                        ? "text-orange-500 font-semibold"
-                                        : ""
-                                        } hover:text-blue-400`}
+                                    className={`${
+                                        location.pathname === "/account/login"
+                                            ? "text-orange-500 font-semibold"
+                                            : ""
+                                    } hover:text-blue-400`}
                                 >
                                     Log In
                                 </Link>
                             </li>
                         )}
-
                     </ul>
                 </nav>
             </div>

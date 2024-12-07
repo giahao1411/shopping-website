@@ -6,6 +6,7 @@ import User from "../components/Admin/Main/User";
 import Product from "../components/Admin/Main/Product";
 import Order from "../components/Admin/Main/Order";
 import CreateProduct from "../components/Admin/Partials/CreateProduct";
+import Category from "../components/Home/Main/Category";
 
 const AdminRoutes = [
     <Route key="admin-dashboard" path="/admin" element={<Admin />}>
@@ -17,7 +18,13 @@ const AdminRoutes = [
             element={<Product />}
         />
         ,
-        <Route key="admin-order" path="/admin/order" element={<Order />} />, ,
+        <Route key="admin-order" path="/admin/order" element={<Order />} />,
+        <Route
+            key="admin-category"
+            path="/admin/category"
+            element={<Category />}
+        />
+        ,
     </Route>,
     <Route
         key="admin-create-product"
