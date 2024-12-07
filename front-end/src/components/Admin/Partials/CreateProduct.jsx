@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const CreateProduct = () => {
+    const [categories, setCategories] = useState([]);
     const [productData, setProductData] = useState({
         name: "",
         category: "",
@@ -12,19 +14,27 @@ const CreateProduct = () => {
         images: null,
     });
 
-    const [loading, setLoading] = useState(false);
-
     const navigate = useNavigate();
     const api = import.meta.env.VITE_APP_URL;
 
     // Categories available for selection
-    const categories = [
-        "Phone",
-        "Laptop",
-        "Screen",
-        "Smart Watch",
-        "Television",
-    ];
+    const getAllCategories = async () => {
+        try {
+            const response = await axios.get(
+                `${api}/api/category/categories/all`
+            );
+
+            if (response.status === 200) {
+                setCategories(response.data.categories);
+            }
+        } catch (error) {
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -43,7 +53,6 @@ const CreateProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
 
         const formData = new FormData();
         formData.append("name", productData.name);
@@ -70,7 +79,12 @@ const CreateProduct = () => {
             );
 
             if (response.status === 200) {
-                alert(response.data.message);
+                Swal.fire({
+                    icon: "success",
+                    title: response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
                 navigate("/admin/product");
             }
         } catch (error) {
@@ -79,13 +93,15 @@ const CreateProduct = () => {
             } else {
                 console.error("Error creating product:", error);
             }
-        } finally {
-            setLoading(false);
         }
     };
 
+    useEffect(() => {
+        getAllCategories();
+    }, []);
+
     return (
-        <div className="max-w-lg mx-auto mt-10 p-6 bg-gray-100 rounded-lg shadow-lg">
+        <div className="max-w-lg mx-auto my-10 p-6 bg-gray-100 rounded-lg shadow-lg">
             <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
                 Create New Product
             </h1>
@@ -122,9 +138,9 @@ const CreateProduct = () => {
                     className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
                 >
                     <option value="">Select Category</option>
-                    {categories.map((cat, index) => (
-                        <option key={index} value={cat}>
-                            {cat}
+                    {categories.map((category, index) => (
+                        <option key={index} value={category.type}>
+                            {category.type}
                         </option>
                     ))}
                 </select>
@@ -191,14 +207,9 @@ const CreateProduct = () => {
 
                 <button
                     type="submit"
-                    disabled={loading}
-                    className={`w-full py-3 text-white font-semibold rounded ${
-                        loading
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700"
-                    }`}
+                    className="w-full py-3 text-white font-semibold rounded bg-blue-600 hover:bg-blue-700"
                 >
-                    {loading ? "Creating..." : "Create Product"}
+                    Create Product
                 </button>
             </form>
 

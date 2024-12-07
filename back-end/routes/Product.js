@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require("fs");
 
 const Product = require("../models/ProductModel");
+const Category = require("../models/CategoryModel");
 
 const upload = require("../middlewares/multer");
 
@@ -17,7 +18,7 @@ router.get("/products", async (req, res) => {
         const productsWithFullImages = products.map((product) => ({
             ...product.toObject(),
             images: product.images.map(
-                (image) => `http://localhost:8080/${image}`
+                (image) => `${process.env.HOST}/${image}`
             ), // Đảm bảo trả về URL đầy đủ cho ảnh
         }));
 
@@ -32,6 +33,7 @@ router.get("/products", async (req, res) => {
     }
 });
 
+// get product by id
 router.get("/products/:id", async (req, res) => {
     const productID = req.params.id;
 
@@ -78,18 +80,29 @@ router.post("/products", upload.array("images", 4), async (req, res) => {
             price,
             most_sale: 0,
         });
-
         await newProduct.save();
-        return res
-            .status(200)
-            .json({ message: "Add product successfully", product: newProduct });
+
+        const updateCategory = await Category.findOneAndUpdate(
+            { type: category },
+            { $inc: { amount: 1 } },
+            { new: true }
+        );
+        if (!updateCategory) {
+            return res.status(400).json({ message: "Category not found!" });
+        }
+
+        return res.status(200).json({
+            message: "Add product successfully",
+            product: newProduct,
+            category: updateCategory,
+        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 });
 
 router.patch(
-    "products/edit/:id",
+    "/products/edit/:id",
     upload.array("images", 4),
     async (req, res) => {
         const productId = req.params.id;
@@ -110,10 +123,10 @@ router.patch(
                 },
                 { new: true }
             );
-
             if (!product) {
                 return res.status(404).json({ message: "Product not found" });
             }
+
             return res.status(200).json({
                 message: "Edit product successfully",
                 product: product,
@@ -124,7 +137,7 @@ router.patch(
     }
 );
 
-router.delete("products/delete/:id", async (req, res) => {
+router.delete("/products/delete/:id", async (req, res) => {
     const productId = req.params.id;
 
     try {
@@ -142,11 +155,22 @@ router.delete("products/delete/:id", async (req, res) => {
             });
         }
 
+        const updateCategory = await Category.findOneAndUpdate(
+            { type: product.category },
+            { $inc: { amount: -1 } },
+            { new: true }
+        );
+        if (!updateCategory) {
+            return res.status(400).json({ message: "Category not found!" });
+        }
+
         await Product.findByIdAndDelete(productId);
 
-        return res
-            .status(200)
-            .json({ message: "Delete product successfully", product: product });
+        return res.status(200).json({
+            message: "Delete product successfully",
+            product: product,
+            category: updateCategory,
+        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
