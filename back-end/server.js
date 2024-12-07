@@ -18,6 +18,7 @@ const TaskRouter = require("./routes/Task");
 const UserRouter = require("./routes/User");
 const ProductRouter = require("./routes/Product");
 const GoogleAuth = require("./routes/GoogleAuth");
+const OrderRouter = require("./routes/Order");
 
 const app = express();
 database.connection();
@@ -52,6 +53,7 @@ app.use("/social", GoogleAuth);
 app.use("/api/task", TaskRouter);
 app.use("/api/user", UserRouter);
 app.use("/api/product", ProductRouter);
+app.use("/api/order", OrderRouter);
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
