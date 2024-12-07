@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import "../../../styles/Admin/CreateProduct.css";
 
 const CreateProduct = () => {
     const [productData, setProductData] = useState({
@@ -17,7 +16,13 @@ const CreateProduct = () => {
     const navigate = useNavigate();
 
     // Categories available for selection
-    const categories = ["Phone", "Laptop", "Screen", "Smart Watch", "Television"];
+    const categories = [
+        "Phone",
+        "Laptop",
+        "Screen",
+        "Smart Watch",
+        "Television",
+    ];
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -78,25 +83,41 @@ const CreateProduct = () => {
     };
 
     return (
-        <div className="create-product-container">
-            <h1>Create New Product</h1>
+        <div className="max-w-lg mx-auto mt-10 p-6 bg-gray-100 rounded-lg shadow-lg">
+            <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+                Create New Product
+            </h1>
 
-            <form className="create-product-form" onSubmit={handleSubmit}>
-                <label>Name:</label>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+                <label
+                    htmlFor="name"
+                    className="block text-gray-700 font-semibold mb-2"
+                >
+                    Name:
+                </label>
                 <input
+                    id="name"
                     type="text"
                     name="name"
                     value={productData.name}
                     onChange={handleInputChange}
                     required
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
                 />
 
-                <label>Category:</label>
+                <label
+                    htmlFor="category"
+                    className="block text-gray-700 font-semibold mb-2"
+                >
+                    Category:
+                </label>
                 <select
+                    id="category"
                     name="category"
                     value={productData.category}
                     onChange={handleInputChange}
                     required
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
                 >
                     <option value="">Select Category</option>
                     {categories.map((cat, index) => (
@@ -106,40 +127,83 @@ const CreateProduct = () => {
                     ))}
                 </select>
 
-                <label>Description:</label>
+                <label
+                    htmlFor="description"
+                    className="block text-gray-700 font-semibold mb-2"
+                >
+                    Description:
+                </label>
                 <textarea
+                    id="description"
                     name="description"
                     value={productData.description}
                     onChange={handleInputChange}
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
                 ></textarea>
 
-                <label>Quantity:</label>
+                <label
+                    htmlFor="quantity"
+                    className="block text-gray-700 font-semibold mb-2"
+                >
+                    Quantity:
+                </label>
                 <input
+                    id="quantity"
                     type="number"
                     name="quantity"
                     value={productData.quantity}
                     onChange={handleInputChange}
                     required
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
                 />
 
-                <label>Price:</label>
+                <label
+                    htmlFor="price"
+                    className="block text-gray-700 font-semibold mb-2"
+                >
+                    Price:
+                </label>
                 <input
+                    id="price"
                     type="number"
                     name="price"
                     value={productData.price}
                     onChange={handleInputChange}
                     required
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
                 />
 
-                <label>Images:</label>
-                <input type="file" multiple onChange={handleFileChange} />
+                <label
+                    htmlFor="images"
+                    className="block text-gray-700 font-semibold mb-2"
+                >
+                    Images:
+                </label>
+                <input
+                    id="images"
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
+                />
 
-                <button type="submit" disabled={loading}>
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className={`w-full py-3 text-white font-semibold rounded ${
+                        loading
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                >
                     {loading ? "Creating..." : "Create Product"}
                 </button>
             </form>
 
-            <Link to="/admin/product" className="create-product-link">
+            <Link
+                to="/admin/product"
+                className="block mt-6 text-center text-blue-600 hover:underline"
+            >
                 Back to Product List
             </Link>
         </div>
