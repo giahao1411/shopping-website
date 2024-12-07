@@ -4,14 +4,14 @@ import { SESSION } from "../../../libs/constant";
 import { useNavigate } from "react-router-dom";
 
 const OrderHistory = () => {
-    const [orders, setOrders] = useState([]); // Dữ liệu đơn hàng
-    const [loading, setLoading] = useState(true); // Đang tải dữ liệu
-    const [error, setError] = useState(null); // Lỗi khi tải dữ liệu
-    const [searchQuery, setSearchQuery] = useState(""); // Tìm kiếm
+    const [orders, setOrders] = useState([]); 
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null); 
+    const [searchQuery, setSearchQuery] = useState(""); 
+    const [filteredOrders, setFilteredOrders] = useState([]); 
     const navigate = useNavigate();
     const api = import.meta.env.VITE_APP_URL;
 
-    // Dữ liệu giả lập trước khi gọi API
     const simulatedOrders = [
         {
             _id: "1",
@@ -54,30 +54,26 @@ const OrderHistory = () => {
     ];
 
     useEffect(() => {
-        // Mô phỏng việc tải dữ liệu từ API
         setTimeout(() => {
-            // Giả lập tải dữ liệu
             setOrders(simulatedOrders);
             setLoading(false);
-        }, 1000); // Giả lập thời gian tải dữ liệu
+            setFilteredOrders(simulatedOrders); 
+        }, 1000); 
     }, []);
 
     const handleBack = () => {
         navigate(-1);
     };
 
-    // Hàm để lọc theo tìm kiếm
     const handleSearch = () => {
-        setSearchQuery(searchQuery.toLowerCase());
+        const filtered = orders.filter((order) =>
+            order._id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            order.items.some((item) =>
+                item.name.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        );
+        setFilteredOrders(filtered);
     };
-
-    // Lọc đơn hàng theo ID hoặc tên sản phẩm
-    const filteredOrders = orders.filter((order) =>
-        order._id.toLowerCase().includes(searchQuery) ||
-        order.items.some((item) =>
-            item.name.toLowerCase().includes(searchQuery)
-        )
-    );
 
     const getStatusClass = (status) => {
         switch (status) {
@@ -109,7 +105,6 @@ const OrderHistory = () => {
                 Order History
             </h2>
 
-            {/* Tìm kiếm đơn hàng */}
             <div className="flex mb-6 max-w-7xl mx-auto">
                 <div className="flex w-full max-w-xs">
                     <input

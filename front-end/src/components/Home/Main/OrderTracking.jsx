@@ -9,7 +9,6 @@ const OrderHistory = () => {
     const [filteredOrders, setFilteredOrders] = useState([]);
     const navigate = useNavigate();
 
-    // Giả lập dữ liệu trước khi gọi API
     const simulatedOrders = [
         {
             _id: "1",
@@ -81,7 +80,6 @@ const OrderHistory = () => {
     };
 
     const handleSearch = () => {
-        // Tìm kiếm theo Order ID hoặc Product Name
         const result = orders.filter(order =>
             order._id.toLowerCase().includes(searchQuery) ||
             order.items.some(item => item.name.toLowerCase().includes(searchQuery))
