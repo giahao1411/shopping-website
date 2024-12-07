@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { SESSION } from "../../libs/constant";
+import { SESSION } from "../../../libs/constant";
 import { useNavigate } from "react-router-dom";
-import "../../styles/OrderHistory/OrderHistory.css";
+import "../../../styles/Home/OrderHistory.css";
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
@@ -28,7 +28,7 @@ const OrderHistory = () => {
                         },
                     }
                 );
-                setOrders(response.data.orders); 
+                setOrders(response.data.orders);
             } catch (err) {
                 setError("Failed to load order history.");
             } finally {
@@ -62,10 +62,14 @@ const OrderHistory = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.map(order => (
+                        {orders.map((order) => (
                             <tr key={order._id}>
                                 <td>{order._id}</td>
-                                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                                <td>
+                                    {new Date(
+                                        order.createdAt
+                                    ).toLocaleDateString()}
+                                </td>
                                 <td>${order.totalPrice}</td>
                                 <td>{order.status}</td>
                             </tr>
@@ -73,7 +77,9 @@ const OrderHistory = () => {
                     </tbody>
                 </table>
             )}
-            <button className="back-button" onClick={handleBack}>Back</button>
+            <button className="back-button" onClick={handleBack}>
+                Back
+            </button>
         </div>
     );
 };

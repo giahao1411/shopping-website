@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../../styles/Home/MainContent.css";
+import "../../../styles/Home/MainContent.css";
 import { Link } from "react-router-dom";
 
 const MainContent = () => {
@@ -16,7 +16,9 @@ const MainContent = () => {
             setLoading(true);
             setError("");
             try {
-                const response = await axios.get("http://localhost:8080/api/product/products");
+                const response = await axios.get(
+                    "http://localhost:8080/api/product/products"
+                );
                 setProducts(response.data.products); // Lưu sản phẩm vào state
             } catch (error) {
                 setError("Failed to fetch products.");
@@ -101,13 +103,13 @@ const MainContent = () => {
             <div className="cards">
                 {filteredProducts.map((product) => (
                     <Link
-                        to={`/details/product/${product._id}`} 
+                        to={`/details/product/${product._id}`}
                         key={product._id}
                         className="card-link"
                     >
                         <div className="card">
                             <img
-                                src={product.images[0]} 
+                                src={product.images[0]}
                                 alt={product.name}
                                 className="card-image"
                             />

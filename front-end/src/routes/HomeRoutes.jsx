@@ -1,11 +1,11 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import Home from "../components/Home/Home";
-import MainContent from "../components/Home/MainContent";
-import ProductDetail from "../components/ProductDetail/ProductDetail";
-import Cart from "../components/Cart/Cart";
-import OrderHistory from "../components/OrderHistory/OrderHistory";
-import UserProfile from "../components/Home/UserProfile";
+import MainContent from "../components/Home/Main/MainContent";
+import ProductDetail from "../components/Home/Main/ProductDetail";
+import Cart from "../components/Home/Main/Cart";
+import OrderHistory from "../components/Home/Main/OrderHistory";
+import UserProfile from "../components/Home/Main/UserProfile";
 
 const HomeRoutes = [
     <Route key="home" path="/" element={<Home />}>

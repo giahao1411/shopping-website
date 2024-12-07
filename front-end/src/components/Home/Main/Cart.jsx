@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { SESSION } from "../../libs/constant";
-import "../../styles/Cart/Cart.css";
+import { SESSION } from "../../../libs/constant";
+import "../../../styles/Cart/Cart.css";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
@@ -53,7 +53,7 @@ const Cart = () => {
                     },
                 }
             );
-            setCartItems(cartItems.filter(item => item._id !== itemId)); // Cập nhật lại giỏ hàng
+            setCartItems(cartItems.filter((item) => item._id !== itemId)); // Cập nhật lại giỏ hàng
         } catch (err) {
             setError("Failed to remove item.");
         }
@@ -80,25 +80,31 @@ const Cart = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {cartItems.map(item => (
+                            {cartItems.map((item) => (
                                 <tr key={item._id}>
                                     <td>
                                         <input type="checkbox" />
                                     </td>
                                     <td>{item.name}</td>
                                     <td>
-                                        <input 
-                                            type="number" 
-                                            value={item.quantity} 
-                                            min="1" 
+                                        <input
+                                            type="number"
+                                            value={item.quantity}
+                                            min="1"
                                             onChange={(e) => {
                                                 // Handle quantity change logic
-                                            }} 
+                                            }}
                                         />
                                     </td>
                                     <td>${item.price}</td>
                                     <td>
-                                        <button onClick={() => handleRemoveItem(item._id)}>Remove</button>
+                                        <button
+                                            onClick={() =>
+                                                handleRemoveItem(item._id)
+                                            }
+                                        >
+                                            Remove
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

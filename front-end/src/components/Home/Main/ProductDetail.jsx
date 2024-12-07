@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaCartPlus } from "react-icons/fa";
-import "../../styles/ProductDetail/ProductDetail.css";
+import "../../../styles/Home/ProductDetail.css";
 
 const ProductDetail = () => {
     const { productId } = useParams();
@@ -17,7 +17,10 @@ const ProductDetail = () => {
                     `http://localhost:8080/api/product/products/${productId}`
                 );
                 if (response.status === 200) {
-                    console.log("Product quantity:", response.data.product.quantity);
+                    console.log(
+                        "Product quantity:",
+                        response.data.product.quantity
+                    );
                     setProduct(response.data.product);
                     setQuantity(1);
                 }
@@ -32,7 +35,7 @@ const ProductDetail = () => {
 
         // Scroll to top whenever the page is visited or the productId changes
         window.scrollTo(0, 0);
-        
+
         fetchProductDetails();
     }, [productId]);
 
@@ -51,13 +54,13 @@ const ProductDetail = () => {
 
     const incrementQuantity = () => {
         if (quantity < product.quantity) {
-            setQuantity(prevQuantity => prevQuantity + 1);
+            setQuantity((prevQuantity) => prevQuantity + 1);
         }
     };
 
     const decrementQuantity = () => {
         if (quantity > 1) {
-            setQuantity(prevQuantity => prevQuantity - 1);
+            setQuantity((prevQuantity) => prevQuantity - 1);
         }
     };
 
@@ -66,27 +69,46 @@ const ProductDetail = () => {
             <div className="product-content">
                 <div className="product-image">
                     <div className="product-name">{product.name}</div>
-                    <img
-                        src={product.images[0]}
-                        alt={product.name}
-                    />
+                    <img src={product.images[0]} alt={product.name} />
                 </div>
                 <div className="product-info">
                     <h2>Product Information</h2>
                     <hr className="divider" />
-                    <p><strong>Category:</strong> {product.category}</p>
-                    <p><strong>Description:</strong> {product.description}</p>
-                    <p><strong>Price:</strong> ${product.price}</p>
-                    <p><strong>Most Sold: </strong> {product.most_sale || "Not Available"}</p>
+                    <p>
+                        <strong>Category:</strong> {product.category}
+                    </p>
+                    <p>
+                        <strong>Description:</strong> {product.description}
+                    </p>
+                    <p>
+                        <strong>Price:</strong> ${product.price}
+                    </p>
+                    <p>
+                        <strong>Most Sold: </strong>{" "}
+                        {product.most_sale || "Not Available"}
+                    </p>
 
                     <div className="quantity-controls">
-                        <button className="decrement" onClick={decrementQuantity}>-</button>
+                        <button
+                            className="decrement"
+                            onClick={decrementQuantity}
+                        >
+                            -
+                        </button>
                         <span className="quantity">{quantity}</span>
-                        <button className="increment" onClick={incrementQuantity}>+</button>
+                        <button
+                            className="increment"
+                            onClick={incrementQuantity}
+                        >
+                            +
+                        </button>
                     </div>
 
                     <div className="action-buttons">
-                        <button className="add-to-cart" onClick={handleAddToCart}>
+                        <button
+                            className="add-to-cart"
+                            onClick={handleAddToCart}
+                        >
                             <span className="flex items-center">
                                 <FaCartPlus className="mr-2" /> Add to Cart
                             </span>

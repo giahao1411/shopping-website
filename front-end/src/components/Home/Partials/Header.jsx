@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "./Header.css";
-import { SESSION } from "../../libs/constant";
+import { SESSION } from "../../../libs/constant";
 
 const Header = () => {
     const location = useLocation();
@@ -19,8 +18,8 @@ const Header = () => {
     }, []);
 
     const redirectHome = () => {
-        navigate("/")
-    }
+        navigate("/");
+    };
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -42,33 +41,41 @@ const Header = () => {
     };
 
     return (
-        <header className={`header ${menuOpen ? "nav-open" : ""}`}>
-            <div className="header-main">
-                <div className="logo ml-10" onClick={redirectHome}>
+        <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white">
+            <div className="flex justify-between items-center h-16 px-5 md:px-10">
+                <div
+                    className="flex items-center cursor-pointer"
+                    onClick={redirectHome}
+                >
                     <img
                         src="https://cdn.haitrieu.com/wp-content/uploads/2021/09/Logo-DH-Ton-Duc-Thang-TDT.png"
                         alt="Logo"
-                        className="logo-img"
+                        className="w-12 h-8 mr-2"
                     />
-                    <h1>BAANHEM</h1>
+                    <h1 className="text-lg font-bold text-orange-500 uppercase">
+                        BAANHEM
+                    </h1>
                 </div>
 
-                <div className="hamburger-menu" onClick={toggleMenu}>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                <div
+                    className="block md:hidden space-y-1 cursor-pointer"
+                    onClick={toggleMenu}
+                >
+                    <div className="w-8 h-1 bg-blue-500"></div>
+                    <div className="w-8 h-1 bg-blue-500"></div>
+                    <div className="w-8 h-1 bg-blue-500"></div>
                 </div>
 
-                <nav className="mr-10">
-                    <ul>
+                <nav className={`${menuOpen ? "block" : "hidden"} md:flex`}>
+                    <ul className="flex flex-col md:flex-row items-center md:space-x-6 space-y-3 md:space-y-0">
                         <li>
                             <Link
                                 to="/"
-                                className={
+                                className={`${
                                     location.pathname === "/"
-                                        ? "header-active"
+                                        ? "text-orange-500 font-semibold"
                                         : ""
-                                }
+                                } hover:text-blue-400`}
                             >
                                 Home
                             </Link>
@@ -76,11 +83,11 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/cart"
-                                className={
+                                className={`${
                                     location.pathname === "/cart"
-                                        ? "header-active"
+                                        ? "text-orange-500 font-semibold"
                                         : ""
-                                }
+                                } hover:text-blue-400`}
                             >
                                 Cart
                             </Link>
@@ -88,11 +95,11 @@ const Header = () => {
                         <li>
                             <Link
                                 to="/sales"
-                                className={
+                                className={`${
                                     location.pathname === "/sales"
-                                        ? "header-active"
+                                        ? "text-orange-500 font-semibold"
                                         : ""
-                                }
+                                } hover:text-blue-400`}
                             >
                                 Sales
                             </Link>
@@ -100,32 +107,32 @@ const Header = () => {
 
                         {/* Hiển thị tên người dùng hoặc "Log In" */}
                         {user ? (
-                            <li className="user-menu">
+                            <li className="relative">
                                 <span
-                                    className="username"
+                                    className="cursor-pointer font-semibold hover:text-blue-400"
                                     onClick={toggleDropdown}
                                 >
                                     {user.username}
                                 </span>
                                 {dropdownOpen && (
-                                    <div className="dropdown-menu text-left">
+                                    <div className="absolute right-0 top-8 bg-gray-900 border border-blue-500 rounded-lg shadow-lg">
                                         <Link
                                             to="/profile"
-                                            className="dropdown-item"
+                                            className="block px-4 py-2 text-white hover:bg-orange-500"
                                             onClick={handleProfileClick}
                                         >
                                             Profile
                                         </Link>
                                         <Link
                                             to="/order-history"
-                                            className="dropdown-item"
+                                            className="block px-4 py-2 text-white hover:bg-orange-500"
                                             onClick={handleProfileClick}
                                         >
                                             Order History
                                         </Link>
                                         <span
                                             onClick={handleLogout}
-                                            className="dropdown-item logout"
+                                            className="block px-4 py-2 text-white cursor-pointer hover:bg-orange-500"
                                         >
                                             Log Out
                                         </span>
@@ -136,11 +143,11 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/account/login"
-                                    className={
+                                    className={`${
                                         location.pathname === "/account/login"
-                                            ? "header-active"
+                                            ? "text-orange-500 font-semibold"
                                             : ""
-                                    }
+                                    } hover:text-blue-400`}
                                 >
                                     Log In
                                 </Link>

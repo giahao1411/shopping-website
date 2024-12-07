@@ -1,7 +1,8 @@
 /* .create-product-container - Tạo một container bao quanh toàn bộ trang tạo sản phẩm */
 .create-product-container {
     width: 100%;
-    max-width: 600px; /* Giới hạn chiều rộng tối đa của container */
+    max-width: 600px;
+    /* Giới hạn chiều rộng tối đa của container */
     margin: 40px auto;
     padding: 30px;
     background-color: #f9f9f9;
@@ -23,7 +24,8 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 600px; /* Giới hạn chiều rộng của form */
+    max-width: 600px;
+    /* Giới hạn chiều rộng của form */
     margin: 0 auto;
 }
 
@@ -99,7 +101,8 @@
 
     .create-product-form {
         width: 100%;
-        gap: 15px; /* Giảm khoảng cách giữa các trường */
+        gap: 15px;
+        /* Giảm khoảng cách giữa các trường */
     }
 
     .create-product-container h1 {
