@@ -7,90 +7,100 @@ import { formatMoney, formatNumber } from "../../../libs/utilities";
 import Swal from "sweetalert2";
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([
-        // {
-        //     _id: "1",
-        //     name: "Product 1",
-        //     quantity: 2,
-        //     price: 25.99,
-        // },
-        // {
-        //     _id: "2",
-        //     name: "Product 2",
-        //     quantity: 1,
-        //     price: 45.99,
-        // },
-        // {
-        //     _id: "3",
-        //     name: "Product 3",
-        //     quantity: 3,
-        //     price: 15.49,
-        // },
-    ]);
+    const storedUser = JSON.parse(localStorage.getItem(SESSION));
+    if (!storedUser) {
+        Swal.fire({
+            icon: "error",
+            title: "You need to login to view cart",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        return;
+    }
+
+    const [cartItems, setCartItems] = useState([]);
 
     const api = import.meta.env.VITE_APP_URL;
 
     useEffect(() => {
-        // const fetchCartItems = async () => {
-        //     const storedUser = JSON.parse(localStorage.getItem(SESSION));
-        //     if (!storedUser) {
-        //         setError("You need to log in to view your cart.");
-        //         setLoading(false);
-        //         return;
-        //     }
-        //     try {
-        //         // Giả sử API trả về danh sách sản phẩm trong giỏ hàng của người dùng
-        //         const response = await axios.get(
-        //             `${api}/api/cart/${storedUser._id}`,
-        //             {
-        //                 headers: {
-        //                     Authorization: `Bearer ${storedUser.token}`,
-        //                 },
-        //             }
-        //         );
-        //         setCartItems(response.data.items);
-        //     } catch (err) {
-        //         setError("Failed to load cart items.");
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // };
-        // fetchCartItems();
-    }, []);
+        const fetchCartItems = async () => {
+            try {
+                const response = await axios.get(
+                    `${api}/api/cart/carts/${storedUser.userId}`
+                );
 
-    const incrementQuantity = () => {
-        if (quantity < product.quantity) {
-            setQuantity((prevQuantity) => prevQuantity + 1);
-        }
-    };
-
-    const decrementQuantity = () => {
-        if (quantity > 1) {
-            setQuantity((prevQuantity) => prevQuantity - 1);
-        }
-    };
-
-    const totalPricePerItem = (quantity, price) => {
-        return quantity * price;
-    };
-
-    const handleRemoveItem = async (itemId) => {
-        const storedUser = JSON.parse(localStorage.getItem(SESSION));
-        if (!storedUser) return;
-
-        try {
-            // Giả sử API xóa sản phẩm khỏi giỏ hàng
-            await axios.delete(
-                `${api}/api/cart/${storedUser._id}/item/${itemId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${storedUser.token}`,
-                    },
+                if (response.status === 200) {
+                    const carts = response.data.carts;
+                    setCartItems(carts.items);
                 }
+            } catch (error) {
+                if (error.response) {
+                    alert("Failed to get product");
+                } else {
+                    console.error(error);
+                }
+            }
+        };
+
+        fetchCartItems();
+    }, [cartItems]);
+
+    const updateQuantity = async (productId, newQuantity) => {
+        try {
+            const response = await axios.patch(
+                `${api}/api/cart/carts/${storedUser.userId}/update/${productId}`,
+                { newQuantity }
             );
-            setCartItems(cartItems.filter((item) => item._id !== itemId));
-        } catch (err) {
-            setError("Failed to remove item.");
+
+            if (response.status === 200) {
+                setCartItems((prevItems) =>
+                    prevItems.map((item) =>
+                        item.productId === productId
+                            ? { ...item, quantity: newQuantity }
+                            : item
+                    )
+                );
+            }
+        } catch (error) {
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
+        }
+    };
+
+    const removeItem = async (productId) => {
+        const confirmation = await Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+        });
+
+        if (confirmation.isConfirmed) {
+            try {
+                // Giả sử API xóa sản phẩm khỏi giỏ hàng
+                const response = await axios.delete(
+                    `${api}/api/cart/carts/${storedUser.userId}/delete/${productId}`
+                );
+
+                if (response.status === 200) {
+                    setCartItems((prevItems) =>
+                        prevItems.filter((item) => item.productId !== productId)
+                    );
+                }
+            } catch (error) {
+                if (error.response) {
+                    alert(error.response.data.message);
+                } else {
+                    console.error(error);
+                }
+            }
         }
     };
 
@@ -139,13 +149,21 @@ const Cart = () => {
                                             />
                                         </td>
                                         <td className="py-3 px-4 text-center border-none">
-                                            {item.name}
+                                            {item.productId.name}
                                         </td>
                                         <td className="py-3 px-4 border-none">
                                             <div className="flex items-center justify-center py-5">
                                                 <button
                                                     className="text-black text-2xl disabled:bg-gray-400 border border-gray-600 px-[10px] rounded-l-md"
-                                                    onClick={decrementQuantity}
+                                                    onClick={() =>
+                                                        updateQuantity(
+                                                            item.productId._id,
+                                                            item.quantity - 1
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        item.quantity <= 1
+                                                    }
                                                 >
                                                     -
                                                 </button>
@@ -156,7 +174,16 @@ const Cart = () => {
                                                 </span>
                                                 <button
                                                     className="text-black text-2xl disabled:bg-gray-400 border border-gray-600 px-2 rounded-r-md"
-                                                    onClick={incrementQuantity}
+                                                    onClick={() =>
+                                                        updateQuantity(
+                                                            item.productId._id,
+                                                            item.quantity + 1
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        item.quantity >=
+                                                        item.productId.quantity
+                                                    }
                                                 >
                                                     +
                                                 </button>
@@ -164,18 +191,18 @@ const Cart = () => {
                                         </td>
                                         <td className="py-3 px-4 text-center border-none">
                                             {formatMoney(
-                                                totalPricePerItem(
-                                                    item.quantity,
-                                                    item.price
-                                                )
+                                                item.quantity *
+                                                    item.productId.price
                                             )}
                                         </td>
                                         <td className="py-3 px-4 text-center border-none">
                                             <button
-                                                onClick={() =>
-                                                    handleRemoveItem(item._id)
-                                                }
                                                 className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+                                                onClick={() =>
+                                                    removeItem(
+                                                        item.productId._id
+                                                    )
+                                                }
                                             >
                                                 Remove
                                             </button>

@@ -4,10 +4,10 @@ import axios from "axios";
 import { FaCartPlus } from "react-icons/fa";
 import { formatMoney, formatNumber } from "../../../libs/utilities";
 import { SESSION } from "../../../libs/constant";
+import Swal from "sweetalert2";
 
 const ProductDetail = () => {
     const storedUser = JSON.parse(localStorage.getItem(SESSION));
-    const userId = storedUser.userId;
     const { productId } = useParams();
 
     const [product, setProduct] = useState(null);
@@ -45,12 +45,49 @@ const ProductDetail = () => {
     }, [productId]);
 
     if (!product) {
-        return <div>Loading...</div>;
+        return <div className="py-60 my-5">Loading...</div>;
     }
 
     const handleAddToCart = async () => {
+        if (!storedUser) {
+            Swal.fire({
+                icon: "error",
+                title: "You need to login to add to cart",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
+        const userId = storedUser.userId;
+
         try {
-        } catch (error) {}
+            const response = await axios.post(`${api}/api/cart/carts`, {
+                userId,
+                productId,
+                quantity,
+            });
+
+            if (response.status === 200) {
+                Swal.fire({
+                    icon: "success",
+                    title: response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                navigate("/");
+            }
+        } catch (error) {
+            if (error.response) {
+                Swal.fire({
+                    icon: "error",
+                    title: error.response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                console.error("Error creating product:", error);
+            }
+        }
     };
 
     const handleBuyNow = () => {

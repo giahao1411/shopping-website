@@ -20,6 +20,7 @@ const ProductRouter = require("./routes/Product");
 const GoogleAuth = require("./routes/GoogleAuth");
 const OrderRouter = require("./routes/Order");
 const CategoryRouter = require("./routes/Category");
+const CartRouter = require("./routes/Cart");
 
 const app = express();
 database.connection();
@@ -56,6 +57,7 @@ app.use("/api/user", UserRouter);
 app.use("/api/product", ProductRouter);
 app.use("/api/order", OrderRouter);
 app.use("/api/category", CategoryRouter);
+app.use("/api/cart", CartRouter);
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
