@@ -29,11 +29,7 @@ const HomeRoutes = [
             path="/order-tracking"
             element={<OrderTracking />}
         />
-        <Route
-            key="home-review"
-            path="/review/:orderId"
-            element={<Review />}
-        />
+        <Route key="home-review" path="/review/:orderId" element={<Review />} />
         <Route key="home-profile" path="/profile" element={<UserProfile />} />
         <Route key="home-checkout" path="/checkout" element={<Checkout />} />
     </Route>,

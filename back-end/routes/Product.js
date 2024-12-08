@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
+const path = require("path");
 
 const Product = require("../models/ProductModel");
 const Category = require("../models/CategoryModel");
@@ -47,7 +48,7 @@ router.get("/products/:id", async (req, res) => {
         const productWithFullImages = {
             ...product.toObject(),
             images: product.images.map(
-                (image) => `http://localhost:8080/${image}`
+                (image) => `${process.env.HOST}/${image}`
             ),
         };
 
@@ -59,7 +60,7 @@ router.get("/products/:id", async (req, res) => {
     }
 });
 
-router.post("/products", upload.array("images", 4), async (req, res) => {
+router.post("/products", upload.array("images", 5), async (req, res) => {
     try {
         const { category, name, description, quantity, price } = req.body;
         const images = req.files;
@@ -103,29 +104,41 @@ router.post("/products", upload.array("images", 4), async (req, res) => {
 
 router.patch(
     "/products/edit/:id",
-    upload.array("images", 4),
+    upload.array("images", 5),
     async (req, res) => {
         const productId = req.params.id;
         const { category, name, description, quantity, price } = req.body;
+        const images = req.files;
 
         try {
-            const images = req.files;
-
-            const product = await Product.findByIdAndUpdate(
-                productId,
-                {
-                    category,
-                    name,
-                    images: images.map((image) => image.path),
-                    description,
-                    quantity,
-                    price,
-                },
-                { new: true }
-            );
+            const product = await Product.findById(productId);
             if (!product) {
                 return res.status(404).json({ message: "Product not found" });
             }
+
+            // get current and new images
+            const existingImages = product.images || [];
+            const newImages = images.map((image) => image.path);
+
+            // check total images
+            if (existingImages.length + newImages.length > 5) {
+                return res.status(400).json({
+                    message: `Cannot upload more than 5 images. Current: ${existingImages.length}, Adding: ${newImages.length}`,
+                });
+            }
+
+            // combine old and new images
+            const updatedImages = [...existingImages, ...newImages];
+
+            // update information
+            product.category = category || product.category;
+            product.name = name || product.name;
+            product.description = description || product.description;
+            product.quantity = quantity || product.quantity;
+            product.price = price || product.price;
+            product.images = updatedImages;
+
+            await product.save();
 
             return res.status(200).json({
                 message: "Edit product successfully",
@@ -171,6 +184,32 @@ router.delete("/products/delete/:id", async (req, res) => {
             product: product,
             category: updateCategory,
         });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+router.delete("/products/delete/images/:id/:filename", async (req, res) => {
+    const { id, filename } = req.params;
+    const dbImg = path.join("uploads", filename);
+
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        const filePath = path.join(__dirname, "..", "uploads", filename);
+
+        // delete on backend uploads
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+
+        product.images = product.images.filter((img) => img !== dbImg);
+        await product.save();
+
+        return res.status(200).json({ message: "Image deleted successfully" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
