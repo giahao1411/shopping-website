@@ -59,8 +59,12 @@ app.use("/api/category", CategoryRouter);
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
+    if (err.name === "MulterError") {
+        return res.status(400).json({ message: err.message });
+    }
+
     console.error(err.stack);
-    res.status(500).json({ message: "Something went wrong.." });
+    return res.status(500).json({ message: "Something went wrong.." });
 });
 
 // Start the server

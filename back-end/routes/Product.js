@@ -19,7 +19,7 @@ router.get("/products", async (req, res) => {
             ...product.toObject(),
             images: product.images.map(
                 (image) => `${process.env.HOST}/${image}`
-            ), 
+            ),
         }));
 
         const totalProducts = await Product.countDocuments();
@@ -59,9 +59,16 @@ router.get("/products/:id", async (req, res) => {
 });
 
 router.post("/products", upload.array("images", 5), async (req, res) => {
+    const { category, name, description, quantity, price } = req.body;
+    const images = req.files;
+
     try {
-        const { category, name, description, quantity, price } = req.body;
-        const images = req.files;
+        if (images.length > 5) {
+            images.forEach((file) => fs.unlinkSync(file.path));
+            return res.status(400).json({
+                message: `Cannot upload more than 5 images. Current: ${images.length}`,
+            });
+        }
 
         if (!category || !name || !quantity || !price) {
             return res

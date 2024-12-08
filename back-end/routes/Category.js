@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Category = require("../models/CategoryModel");
+const Product = require("../models/ProductModel");
 
 // get categories by pagination
 router.get("/categories", async (req, res) => {
@@ -57,6 +58,31 @@ router.post("/categories", async (req, res) => {
         return res
             .status(200)
             .json({ message: "Category created successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+router.delete("/categories/delete/:type", async (req, res) => {
+    const { type } = req.params;
+
+    try {
+        const associatedProducts = await Product.find({ category: type });
+        if (associatedProducts.length > 0) {
+            return res.status(400).json({
+                message: `Cannot delete category "${type}" because it is associated with ${associatedProducts.length} product(s)`,
+            });
+        }
+
+        const category = await Category.findOneAndDelete({ type });
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        return res.status(200).json({
+            message: "Category delete successfully",
+            category: category,
+        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

@@ -89,7 +89,12 @@ const CreateProduct = () => {
             }
         } catch (error) {
             if (error.response) {
-                alert("Failed to create product.");
+                Swal.fire({
+                    icon: "error",
+                    title: error.response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
             } else {
                 console.error("Error creating product:", error);
             }

@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 
 const ProductDetail = () => {
     const { productId } = useParams();
-    console.log();
 
     const [categories, setCategories] = useState([]);
     const [productData, setProductData] = useState({
@@ -158,8 +157,46 @@ const ProductDetail = () => {
     };
 
     // delete product api
-    const deleteProduct = async (req, res) => {
-        
+    const deleteProduct = async () => {
+        const confirmation = await Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+        });
+
+        if (confirmation.isConfirmed) {
+            try {
+                const response = await axios.delete(
+                    `${api}/api/product/products/delete/${productId}`
+                );
+
+                if (response.status === 200) {
+                    Swal.fire({
+                        icon: "success",
+                        title: response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    navigate("/admin/product");
+                }
+            } catch (error) {
+                if (error.response) {
+                    Swal.fire({
+                        icon: "error",
+                        title: error.response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                } else {
+                    console.error("Error creating product:", error);
+                }
+            }
+        }
     };
 
     useEffect(() => {
@@ -311,6 +348,7 @@ const ProductDetail = () => {
             <button
                 type="button"
                 className="w-full mt-4 py-3 text-white font-semibold rounded bg-red-600 hover:bg-red-700"
+                onClick={deleteProduct}
             >
                 Delete Product
             </button>

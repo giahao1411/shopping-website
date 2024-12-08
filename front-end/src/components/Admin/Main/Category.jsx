@@ -4,6 +4,7 @@ import { formatNumber } from "../../../libs/utilities";
 import { BiSolidChevronRight, BiSolidChevronLeft } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Category = () => {
     const [categories, setCategories] = useState([]);
@@ -47,6 +48,48 @@ const Category = () => {
             setPage(totalPage);
         } else {
             setPage(1);
+        }
+    };
+
+    const deleteCategory = async (type) => {
+        const confirmation = await Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+        });
+
+        if (confirmation.isConfirmed) {
+            try {
+                const response = await axios.delete(
+                    `${api}/api/category/categories/delete/${type}`
+                );
+
+                if (response.status === 200) {
+                    Swal.fire({
+                        icon: "success",
+                        title: response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    navigate("/admin/category");
+                }
+            } catch (error) {
+                if (error.response) {
+                    Swal.fire({
+                        icon: "error",
+                        title: error.response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                } else {
+                    console.error("Error creating product:", error);
+                }
+            }
         }
     };
 
@@ -121,7 +164,12 @@ const Category = () => {
                                 </td>
                                 <td className="px-4 py-3 border border-gray-200">
                                     <div className="flex justify-center">
-                                        <FaRegTrashAlt className="text-xl cursor-pointer hover:text-blue-500" />
+                                        <FaRegTrashAlt
+                                            className="text-xl cursor-pointer hover:text-blue-500"
+                                            onClick={() =>
+                                                deleteCategory(category.type)
+                                            }
+                                        />
                                     </div>
                                 </td>
                             </tr>
