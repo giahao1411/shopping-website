@@ -9,6 +9,8 @@ import OrderTracking from "../components/Home/Main/OrderTracking";
 import UserProfile from "../components/Home/Main/UserProfile";
 import Review from "../components/Home/Main/Review";
 import Checkout from "../components/Home/Main/Checkout";
+import SearchResult from "../components/Home/Main/SearchResult";
+
 
 const HomeRoutes = [
     <Route key="home" path="/" element={<Home />}>
@@ -28,6 +30,11 @@ const HomeRoutes = [
             key="home-order-tracking"
             path="/order-tracking"
             element={<OrderTracking />}
+        />
+        <Route
+            key="home-search-results"
+            path="/searchresults"
+            element={<SearchResult />}
         />
         <Route key="home-review" path="/review/:orderId" element={<Review />} />
         <Route key="home-profile" path="/profile" element={<UserProfile />} />

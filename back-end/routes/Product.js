@@ -15,12 +15,11 @@ router.get("/products", async (req, res) => {
     try {
         const products = await Product.find().skip(skip).limit(parseInt(limit));
 
-        // Thêm URL đầy đủ vào hình ảnh
         const productsWithFullImages = products.map((product) => ({
             ...product.toObject(),
             images: product.images.map(
                 (image) => `${process.env.HOST}/${image}`
-            ), // Đảm bảo trả về URL đầy đủ cho ảnh
+            ), 
         }));
 
         const totalProducts = await Product.countDocuments();
@@ -44,7 +43,6 @@ router.get("/products/:id", async (req, res) => {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        // Thêm URL đầy đủ vào hình ảnh
         const productWithFullImages = {
             ...product.toObject(),
             images: product.images.map(
