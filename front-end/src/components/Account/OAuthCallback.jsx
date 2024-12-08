@@ -11,6 +11,7 @@ const OAuthCallback = () => {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const username = params.get("username");
+                const userId = params.get("userId");
                 const email = params.get("email");
                 const role = params.get("role");
                 const error = params.get("error");
@@ -25,7 +26,7 @@ const OAuthCallback = () => {
 
                     localStorage.setItem(
                         SESSION,
-                        JSON.stringify({ username, email })
+                        JSON.stringify({ userId, username, email })
                     );
 
                     navigate(role === "user" ? "/" : "/admin");

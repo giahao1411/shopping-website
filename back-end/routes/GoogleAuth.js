@@ -16,6 +16,7 @@ router.get(
     (req, res) => {
         const user = req.user;
         const queryParams = new URLSearchParams({
+            userId: user._id,
             username: user.username,
             email: user.email,
             role: user.role,

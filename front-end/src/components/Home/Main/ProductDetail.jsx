@@ -3,9 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaCartPlus } from "react-icons/fa";
 import { formatMoney, formatNumber } from "../../../libs/utilities";
+import { SESSION } from "../../../libs/constant";
 
 const ProductDetail = () => {
+    const storedUser = JSON.parse(localStorage.getItem(SESSION));
+    const userId = storedUser.userId;
     const { productId } = useParams();
+
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [selectedImg, setSelectedImg] = useState("");
@@ -44,8 +48,9 @@ const ProductDetail = () => {
         return <div>Loading...</div>;
     }
 
-    const handleAddToCart = () => {
-        alert(`Added ${quantity} ${product.name}(s) to the cart!`);
+    const handleAddToCart = async () => {
+        try {
+        } catch (error) {}
     };
 
     const handleBuyNow = () => {
