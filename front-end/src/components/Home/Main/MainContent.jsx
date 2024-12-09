@@ -1,110 +1,133 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { formatMoney } from "../../../libs/utilities";
+import { Search, Filter, Star } from "lucide-react";
+
+const ProductCard = ({ product, api }) => (
+    <Link
+        to={`/details/product/${product._id}`}
+        className="group transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+    >
+        <div className="bg-white border-2 border-gray-500 rounded-xl shadow-md overflow-hidden">
+            <div className="relative">
+                <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-70 object-cover group-hover:scale-105 transition-transform"
+                />
+                {product.discount > 0 && (
+                    <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs">
+                        {product.discount}% OFF
+                    </span>
+                )}
+            </div>
+            <div className="p-4">
+                <h3 className="font-bold text-lg mb-2 line-clamp-2 text-gray-800">
+                    {product.name}
+                </h3>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <p className="text-orange-500 font-bold">
+                            {formatMoney(product.price)}
+                        </p>
+                        {product.originalPrice && (
+                            <p className="text-gray-400 line-through text-sm">
+                                {formatMoney(product.originalPrice)}
+                            </p>
+                        )}
+                    </div>
+                    <div className="flex items-center text-yellow-500">
+                        {[...Array(5)].map((_, index) => (
+                            <Star
+                                key={index}
+                                fill={index < Math.floor(product.rating) ? 'currentColor' : 'none'}
+                                size={16}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Link>
+);
 
 const MainContent = () => {
-    const [searchQuery, setSearchQuery] = useState(""); // Trạng thái tìm kiếm
-    const [selectedFilter, setSelectedFilter] = useState("all"); // Bộ lọc danh mục
-    const [products, setProducts] = useState([]); // Tất cả sản phẩm
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedFilter, setSelectedFilter] = useState("all");
+    const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [newProducts, setNewProducts] = useState([]); // Sản phẩm mới
+    const navigate = useNavigate();
 
-    const api = import.meta.env.VITE_APP_URL; // API URL
-    const navigate = useNavigate(); // Hook điều hướng
+    const api = import.meta.env.VITE_APP_URL;
 
-    // Lấy sản phẩm từ API
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get(`${api}/api/product/products`);
-                const allProducts = response.data.products;
-                setProducts(allProducts);
-
-                // Lọc sản phẩm mới (thêm trong vòng 7 ngày)
-                const newProductsList = allProducts.filter((product) => {
-                    const createdAt = new Date(product.createdAt);
-                    const today = new Date();
-                    const diffTime = Math.abs(today - createdAt);
-                    const diffDays = Math.floor(
-                        diffTime / (1000 * 60 * 60 * 24)
-                    ); // Tính số ngày
-                    return diffDays <= 7; // Sản phẩm thêm vào trong 7 ngày qua
-                });
-                setNewProducts(newProductsList);
+                const [productsResponse, categoriesResponse] = await Promise.all([
+                    axios.get(`${api}/api/product/products`),
+                    axios.get(`${api}/api/category/categories/all`)
+                ]);
+                
+                setProducts(productsResponse.data.products);
+                setCategories(categoriesResponse.data.categories);
             } catch (error) {
-                console.error(error);
-                if (error.response) {
-                    alert(error.response.data.message);
-                }
+                console.error("Data fetching error:", error);
             }
         };
 
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get(
-                    `${api}/api/category/categories/all`
-                );
-
-                if (response.status === 200) {
-                    setCategories(response.data.categories);
-                }
-            } catch (error) {
-                console.error(error);
-                if (error.response) {
-                    alert(error.response.data.message);
-                }
-            }
-        };
-
-        fetchProducts();
-        fetchCategories();
+        fetchData();
     }, []);
 
-    // Hàm xử lý thay đổi input tìm kiếm
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
+    const filteredProducts = useMemo(() => {
+        let filtered = products;
+
+        if (selectedFilter !== "all") {
+            filtered = filtered.filter((product) => product.category === selectedFilter);
+        }
+
+        if (searchQuery) {
+            filtered = filtered.filter((product) =>
+                product.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+
+        return filtered;
+    }, [products, selectedFilter, searchQuery]);
+
+    const bestSellingProducts = useMemo(() => 
+        [...products].sort((a, b) => b.sales - a.sales).slice(0, 5), 
+        [products]
+    );
+
+    const newArrivals = useMemo(() => {
+        const today = new Date();
+        return products.filter((product) => {
+            const createdAt = new Date(product.createdAt);
+            const diffDays = Math.floor(Math.abs(today - createdAt) / (1000 * 60 * 60 * 24));
+            return diffDays <= 7;
+        });
+    }, [products]);
+
+    const handleCategoryFilter = (category) => {
+        setSelectedFilter(category);
     };
 
-    // Hàm xử lý thay đổi bộ lọc
-    const handleFilterChange = (e) => {
-        setSelectedFilter(e.target.value);
-    };
-
-    const handleSearchSubmit = (e) => {
+    const handleSearch = (e) => {
         e.preventDefault();
-
-        navigate(
-            `/searchresults?query=${searchQuery}&filter=${selectedFilter}`
-        );
+        if (searchQuery.trim()) {
+            // Navigate to search results page with query as URL parameter
+            navigate(`/search-results/${encodeURIComponent(searchQuery.trim())}`);
+        }
     };
 
-    // Lọc sản phẩm theo tên và bộ lọc danh mục
-    const filteredProducts = products.filter((product) => {
-        const matchesSearchQuery = product.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
-        const matchesCategory =
-            selectedFilter === "all" || product.category === selectedFilter;
-        return matchesSearchQuery && matchesCategory;
-    });
-
-    // Hàm lấy sản phẩm theo danh mục
-    const getProductsByCategory = (category) => {
-        return products.filter((product) => product.category === category);
-    };
-
-    // Hàm lấy top 5 sản phẩm theo danh mục
-    const getTopProducts = (category) => {
-        const categoryProducts = getProductsByCategory(category);
-        return categoryProducts.slice(0, 5); // Lấy 5 sản phẩm đầu tiên
-    };
-
-    // Hàm lấy sản phẩm bán chạy
-    const getBestSellingProducts = () => {
-        const sortedBySales = [...products].sort((a, b) => b.sales - a.sales);
-        return sortedBySales.slice(0, 5);
-    };
+    const renderProductGrid = (productsToRender) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 p-5 mx-[auto] max-w-7xl justify-items-center">
+            {productsToRender.map((product) => (
+                <ProductCard key={product._id} product={product} />
+            ))}
+        </div>
+    );
 
     return (
         <main className="py-8 px-20 mt-20">
@@ -118,159 +141,82 @@ const MainContent = () => {
                 </p>
             </div>
 
-            {/* Tìm kiếm và bộ lọc */}
-            <div className="flex justify-center items-center py-8">
-                {/* Tìm kiếm và bộ lọc */}
-                <div className="flex justify-center items-center py-8">
-                    <form
-                        onSubmit={handleSearchSubmit} // Khi submit form, sẽ gọi hàm handleSearchSubmit
-                        className="inline-flex items-center bg-gray-200 border border-orange-500 rounded-full max-w-full py-2 px-4 shadow-md"
+            {/* Search Bar */}
+            <form onSubmit={handleSearch} className="flex justify-center items-center py-4">
+                <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="px-6 py-3 text-xl rounded-full border-2 border-gray-300 w-80"
+                />
+                <button
+                    type="submit"
+                    className="ml-4 px-6 py-3 bg-orange-500 text-white rounded-full text-xl font-semibold hover:bg-orange-600 transition"
+                >
+                    Search
+                </button>
+            </form>
+
+            {/* Rest of the component remains the same */}
+            {/* Category Filters and Product Sections */}
+            <div className="flex justify-center items-center py-4 gap-6">
+                <button
+                    onClick={() => handleCategoryFilter("all")}
+                    className={`px-6 py-3 text-xl font-semibold rounded-full ${selectedFilter === "all" ? "bg-orange-500 text-white" : "bg-gray-200 text-gray-800"}`}
+                >
+                    All Categories
+                </button>
+
+                {categories.map((category) => (
+                    <button
+                        key={category._id}
+                        onClick={() => handleCategoryFilter(category.type)}
+                        className={`px-6 py-3 text-xl font-semibold rounded-full ${selectedFilter === category.type ? "bg-orange-500 text-white" : "bg-gray-200 text-gray-800"}`}
                     >
-                        <input
-                            type="text"
-                            value={searchQuery} // Trạng thái tìm kiếm
-                            onChange={handleSearchChange} // Cập nhật trạng thái tìm kiếm khi người dùng nhập
-                            placeholder="Search..."
-                            className="border-none px-4 py-3 text-xl w-60 rounded-full focus:outline-none shadow-sm"
-                        />
-
-                        <select
-                            value={selectedFilter} // Trạng thái bộ lọc
-                            onChange={handleFilterChange} // Cập nhật bộ lọc khi người dùng thay đổi
-                            className="ml-2 px-4 py-3 text-xl border border-orange-500 rounded-full bg-white text-gray-800"
-                        >
-                            <option value="all">All Categories</option>
-                            {categories
-                                .filter(
-                                    (category) =>
-                                        getProductsByCategory(category).length >
-                                        0 // Lọc danh mục có sản phẩm
-                                )
-                                .map((category) => (
-                                    <option key={category} value={category}>
-                                        {category}
-                                    </option>
-                                ))}
-                        </select>
-
-                        <button
-                            type="submit" // Khi nhấn nút này sẽ gọi handleSearchSubmit
-                            className="bg-orange-500 text-white rounded-full py-3 px-6 text-xl hover:bg-orange-600 ml-2"
-                        >
-                            Search
-                        </button>
-                    </form>
-                </div>
+                        {category.type}
+                    </button>
+                ))}
             </div>
 
-            {/* Sản phẩm mới */}
-            {newProducts.length > 0 && (
-                <div className="mt-10">
-                    <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
-                        New Arrival
-                    </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 p-5 mx-[auto] max-w-7xl justify-items-center">
-                        {newProducts.slice(0, 5).map((product) => {
-                            return (
-                                <Link
-                                    to={`/details/product/${product._id}`}
-                                    key={product._id}
-                                    className="block"
-                                >
-                                    <div className="bg-white rounded-lg shadow-md px-5 pt-5 border-2 border-black text-center flex flex-col justify-start items-center hover:translate-y-[-5px] hover:shadow-lg transition-all h-[350px]">
-                                        <img
-                                            src={product.images[0]}
-                                            alt={product.name}
-                                            className="w-[300px] h-[200px] rounded-lg object-cover mb-4"
-                                        />
-                                        <h3 className="text-lg font-bold overflow-hidden overflow-ellipsis line-clamp-2 w-40 h-[50px]">
-                                            {product.name}
-                                        </h3>
-                                        <p className="text-md font-bold text-orange-500 mt-4">
-                                            {formatMoney(product.price)}
-                                        </p>
-                                    </div>
-                                </Link>
-                            );
-                        })}
-                    </div>
-                </div>
-            )}
-
-            {/* Sản phẩm bán chạy */}
-            {getBestSellingProducts().length > 0 && (
-                <div className="mt-10">
-                    <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
-                        Best Selling
-                    </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 p-5 mx-[auto] max-w-7xl justify-items-center">
-                        {getBestSellingProducts()
-                            .slice(0, 5) // Giới hạn 5 sản phẩm
-                            .map((product) => {
-                                return (
-                                    <Link
-                                        to={`/details/product/${product._id}`}
-                                        key={product._id}
-                                        className="block"
-                                    >
-                                        <div className="bg-white rounded-lg shadow-md px-5 pt-5 border-2 border-black text-center flex flex-col justify-start items-center hover:translate-y-[-5px] hover:shadow-lg transition-all h-[350px]">
-                                            <img
-                                                src={product.images[0]}
-                                                alt={product.name}
-                                                className="w-[300px] h-[200px] rounded-lg object-cover mb-4"
-                                            />
-                                            <h3 className="text-lg font-bold overflow-hidden overflow-ellipsis line-clamp-2 w-40 h-[50px]">
-                                                {product.name}
-                                            </h3>
-                                            <p className="text-md font-bold text-orange-500 mt-4">
-                                                {formatMoney(product.price)}
-                                            </p>
-                                        </div>
-                                    </Link>
-                                );
-                            })}
-                    </div>
-                </div>
-            )}
-
-            {/* Danh mục sản phẩm */}
-            {categories
-                .filter(
-                    (category) =>
-                        getProductsByCategory(category.type).length > 0
-                )
-                .map((category, index) => (
-                    <div key={category._id || index} className="mt-10">
+            {/* Existing product sections */}
+            {selectedFilter === "all" ? (
+                <>
+                    {/* New Arrivals */}
+                    <div className="mt-10">
                         <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
-                            {category.type}
+                            New Arrival
                         </h2>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 p-5 mx-[auto] max-w-7xl justify-items-center">
-                            {getTopProducts(category.type).map((product) => {
-                                return (
-                                    <Link
-                                        to={`/details/product/${product._id}`}
-                                        key={product._id}
-                                        className="block"
-                                    >
-                                        <div className="bg-white rounded-lg shadow-md px-5 pt-5 border-2 border-black text-center flex flex-col justify-start items-center hover:translate-y-[-5px] hover:shadow-lg transition-all h-[350px]">
-                                            <img
-                                                src={product.images[0]}
-                                                alt={product.name}
-                                                className="w-[300px] h-[200px] rounded-lg object-cover mb-4"
-                                            />
-                                            <h3 className="text-lg font-bold overflow-hidden overflow-ellipsis line-clamp-2 w-40 h-[50px]">
-                                                {product.name}
-                                            </h3>
-                                            <p className="text-md font-bold text-orange-500 mt-4">
-                                                {formatMoney(product.price)}
-                                            </p>
-                                        </div>
-                                    </Link>
-                                );
-                            })}
-                        </div>
+                        {renderProductGrid(newArrivals.slice(0, 5))}
                     </div>
-                ))}
+
+                    {/* Best Selling */}
+                    <div className="mt-10">
+                        <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
+                            Best Selling
+                        </h2>
+                        {renderProductGrid(bestSellingProducts)}
+                    </div>
+
+                    {categories.map((category) => (
+                        <div key={category._id} className="mt-10">
+                            <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
+                                {category.type}
+                            </h2>
+                            {renderProductGrid(
+                                products.filter((product) => product.category === category.type)
+                            )}
+                        </div>
+                    ))}
+                </>
+            ) : (
+                <div className="mt-10">
+                    <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
+                        {selectedFilter} Products
+                    </h2>
+                    {renderProductGrid(filteredProducts)}
+                </div>
+            )}
         </main>
     );
 };

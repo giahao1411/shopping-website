@@ -11,6 +11,11 @@ const CartSchema = new Schema({
             },
             quantity: { type: Number, required: true },
             totalPrice: { type: Number, required: true },
+            isCheckout: {
+                type: String,
+                enum: ["inCart", "checkout"],
+                default: "inCart",
+            },
         },
     ],
 });
