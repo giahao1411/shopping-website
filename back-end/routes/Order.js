@@ -78,33 +78,56 @@ router.post("/orders", async (req, res) => {
 });
 
 // Cập nhật đơn hàng (chỉ admin mới có thể thay đổi trạng thái orderstatus)
-router.put("/orders/edit/:id", async (req, res) => {
+// Cập nhật đơn hàng (chỉ admin mới có thể thay đổi trạng thái orderstatus)
+router.patch("/orders/edit/:id", async (req, res) => {
     try {
-        const { orderstatus } = req.body;
+        const { orderstatus } = req.body; // Lấy giá trị orderstatus từ body request
+        console.log("Updating order status:", orderstatus); // Log để kiểm tra orderstatus nhận được
 
-        // Kiểm tra nếu chỉ có `orderstatus` được cập nhật
-        const allowedFields = ["orderstatus"];
-        const fieldsToUpdate = Object.keys(req.body);
-
-        const invalidFields = fieldsToUpdate.filter(
-            (field) => !allowedFields.includes(field)
-        );
-        if (invalidFields.length > 0) {
-            return res
-                .status(400)
-                .json({ message: "Only orderstatus can be updated" });
+        if (!orderstatus) {
+            return res.status(400).json({ message: "Order status is required" });
         }
 
-        const order = await Order.findOne({ orderid: req.params.id });
+        // Tìm đơn hàng theo ID
+        const order = await Order.findById(req.params.id);
 
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
 
-        // Cập nhật trạng thái của đơn hàng
+        // Reset các giá trị ngày
+        order.expectedAt = null;
+        order.deliveredAt = null;
+
+        // Lấy ngày hiện tại
+        const currentDate = new Date();
+
+        // Áp dụng các điều kiện dựa trên trạng thái
+        switch (orderstatus) {
+            case "Confirmed":
+                order.expectedAt = new Date(currentDate.setDate(currentDate.getDate() + 3));
+                break;
+            case "Cancelled":
+                order.expectedAt = null;
+                break;
+            case "Delivering":
+                order.expectedAt = new Date(currentDate.setDate(currentDate.getDate() + 2));
+                break;
+            case "Delivered":
+                order.expectedAt = currentDate;
+                order.deliveredAt = currentDate;
+                break;
+            case "Pending":
+                order.expectedAt = null;
+                break;
+            default:
+                return res.status(400).json({ message: "Invalid order status provided" });
+        }
+
+        // Cập nhật trạng thái đơn hàng
         order.orderstatus = orderstatus;
 
-        // Lưu lại thông tin thay đổi
+        // Lưu lại thay đổi
         await order.save();
 
         res.status(200).json({
@@ -112,9 +135,11 @@ router.put("/orders/edit/:id", async (req, res) => {
             order,
         });
     } catch (error) {
-        res.status(500).json({ message: "Error updating order", error });
+        console.error("Error updating order:", error);
+        res.status(500).json({ message: error.message });
     }
 });
+
 
 // Xóa đơn hàng (chỉ admin mới có thể xóa)
 router.delete("/orders/delete/:id", async (req, res) => {
