@@ -122,12 +122,10 @@ router.delete("/coupons/delete/:code", async (req, res) => {
     const { code } = req.params;
 
     try {
-        const coupon = await Coupon.findOne({ code });
+        const coupon = await Coupon.findOneAndDelete({ code });
         if (!coupon) {
             return res.status(404).json({ message: "Coupon not found" });
         }
-
-        await coupon.remove(); // Xóa coupon khỏi database
 
         return res.status(200).json({
             message: `Coupon with code ${code} deleted successfully`,

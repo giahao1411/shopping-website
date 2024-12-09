@@ -166,11 +166,13 @@ const Coupon = () => {
 										<option value="disabled">Disabled</option>
 									</select>
 								</td>
-								<td className="px-4 py-3 border border-gray-200 text-center">
-									<FaRegTrashAlt
-										className="text-xl cursor-pointer hover:text-blue-500 text-center"
-										onClick={() => deleteCoupon(coupon.code)}
-									/>
+								<td className="px-4 py-3 border border-gray-200 r">
+									<div className="flex justify-center items-center">
+										<FaRegTrashAlt
+											className="text-xl cursor-pointer hover:text-blue-500 text-center"
+											onClick={() => deleteCoupon(coupon.code)}
+										/>
+									</div>
 								</td>
 							</tr>
 						))}
