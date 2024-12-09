@@ -14,7 +14,7 @@ const Order = () => {
 			case "Pending":
 				return "text-yellow-500";
 			case "Confirmed":
-			case "Shipping":
+			case "Delivering":
 				return "text-green-500";
 			case "Delivered":
 				return "text-blue-500";
@@ -146,8 +146,8 @@ const Order = () => {
 											<option value="Confirmed" className="text-green-500">
 												Confirmed
 											</option>
-											<option value="Shipping" className="text-green-500">
-												Shipping
+											<option value="Delivering" className="text-green-500">
+												Delivering
 											</option>
 											<option value="Delivered" className="text-blue-500">
 												Delivered
