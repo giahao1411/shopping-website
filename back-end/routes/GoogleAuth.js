@@ -15,12 +15,12 @@ router.get(
     passport.authenticate("google", { session: false }),
     (req, res) => {
         const user = req.user;
+
         const queryParams = new URLSearchParams({
             userId: user._id,
             username: user.username,
             email: user.email,
             role: user.role,
-            userHasPassword: user.password === "google_auth" ? "true" : "false",
         });
 
         if (user.status === "banned") {
