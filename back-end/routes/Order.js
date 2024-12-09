@@ -5,10 +5,10 @@ const User = require("../models/UserModel");
 
 router.get("/orders", async (req, res) => {
     try {
-        const { page = 1, limit = 8 } = req.query; 
+        const { page = 1, limit = 8 } = req.query;
         const skip = (page - 1) * limit;
 
-        const orders = await Order.find().skip(skip).limit(parseInt(limit)); 
+        const orders = await Order.find().skip(skip).limit(parseInt(limit));
 
         const totalOrders = await Order.countDocuments();
 
@@ -52,9 +52,9 @@ router.post("/orders", async (req, res) => {
         }
 
         const order = new Order({
-            email, 
+            email,
             username: user.username,
-            phone: user.phone, 
+            phone: user.phone,
             totalPrice,
             expectedAt,
             deliveredAt,
@@ -71,7 +71,7 @@ router.post("/orders", async (req, res) => {
 
 router.patch("/orders/edit/:id", async (req, res) => {
     try {
-        const { orderstatus } = req.body; 
+        const { orderstatus } = req.body;
         console.log("Updating order status:", orderstatus);
 
         if (!orderstatus) {
