@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 
 const Cart = () => {
     const storedUser = JSON.parse(localStorage.getItem(SESSION));
-    const [isRedirecting, setIsRedirecting] = useState(false);  // Trạng thái để kiểm tra xem popup đã được xử lý hay chưa
+    const [isRedirecting, setIsRedirecting] = useState(false); // Trạng thái để kiểm tra xem popup đã được xử lý hay chưa
 
     const navigate = useNavigate(); // Khởi tạo navigate
 
@@ -26,15 +26,15 @@ const Cart = () => {
                 cancelButtonText: "No, stay on Home",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    setIsRedirecting(true);  // Đặt trạng thái redirect thành true để chuyển trang sau
+                    setIsRedirecting(true); // Đặt trạng thái redirect thành true để chuyển trang sau
                     navigate("/account/login"); // Chuyển hướng đến trang login bằng useNavigate
                 } else {
-                    setIsRedirecting(true);  // Cập nhật trạng thái khi người dùng chọn "No"
-                    navigate("/");  // Quay về trang home bằng useNavigate
+                    setIsRedirecting(true); // Cập nhật trạng thái khi người dùng chọn "No"
+                    navigate("/"); // Quay về trang home bằng useNavigate
                 }
             });
         }
-    }, [storedUser, isRedirecting, navigate]);  // Đảm bảo useEffect chỉ chạy khi storedUser thay đổi hoặc trạng thái redirect thay đổi
+    }, [storedUser, isRedirecting, navigate]); // Đảm bảo useEffect chỉ chạy khi storedUser thay đổi hoặc trạng thái redirect thay đổi
 
     const [cartItems, setCartItems] = useState([]);
     const api = import.meta.env.VITE_APP_URL;
@@ -59,10 +59,36 @@ const Cart = () => {
             }
         };
 
-        if (storedUser) {
-            fetchCartItems();
+        fetchCartItems();
+    }, [cartItems]);
+
+    const toggleCheckout = async (productId, isChecked) => {
+        try {
+            const newStatus = isChecked ? "checkout" : "inCart";
+            const response = await axios.patch(
+                `${api}/api/cart/carts/${storedUser.userId}/update-status/${productId}`,
+                { newStatus }
+            );
+
+            console.log(response.data.message);
+
+            if (response.status === 200) {
+                setCartItems((prevItems) =>
+                    prevItems.map((item) =>
+                        item.productId._id === productId
+                            ? { ...item, isCheckout: newStatus }
+                            : item
+                    )
+                );
+            }
+        } catch (error) {
+            if (error.response) {
+                alert("Failed to get cart items");
+            } else {
+                console.error(error);
+            }
         }
-    }, [storedUser]);
+    };
 
     const updateQuantity = async (productId, newQuantity) => {
         try {
@@ -164,6 +190,16 @@ const Cart = () => {
                                             <input
                                                 type="checkbox"
                                                 className="scale-125"
+                                                checked={
+                                                    item.isCheckout ===
+                                                    "checkout"
+                                                }
+                                                onChange={(e) => {
+                                                    toggleCheckout(
+                                                        item.productId._id,
+                                                        e.target.checked
+                                                    );
+                                                }}
                                             />
                                         </td>
                                         <td className="py-3 px-4 text-center border-none">
@@ -179,12 +215,16 @@ const Cart = () => {
                                                             item.quantity - 1
                                                         )
                                                     }
-                                                    disabled={item.quantity <= 1}
+                                                    disabled={
+                                                        item.quantity <= 1
+                                                    }
                                                 >
                                                     -
                                                 </button>
                                                 <span className="text-1xl font-semibold border-t border-b border-gray-600 px-5 py-1">
-                                                    {formatNumber(item.quantity)}
+                                                    {formatNumber(
+                                                        item.quantity
+                                                    )}
                                                 </span>
                                                 <button
                                                     className="text-black text-2xl disabled:bg-gray-400 border border-gray-600 px-2 rounded-r-md"
@@ -194,7 +234,10 @@ const Cart = () => {
                                                             item.quantity + 1
                                                         )
                                                     }
-                                                    disabled={item.quantity >= item.productId.quantity}
+                                                    disabled={
+                                                        item.quantity >=
+                                                        item.productId.quantity
+                                                    }
                                                 >
                                                     +
                                                 </button>
@@ -202,14 +245,17 @@ const Cart = () => {
                                         </td>
                                         <td className="py-3 px-4 text-center border-none">
                                             {formatMoney(
-                                                item.quantity * item.productId.price
+                                                item.quantity *
+                                                    item.productId.price
                                             )}
                                         </td>
                                         <td className="py-3 px-4 text-center border-none">
                                             <button
                                                 className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-700"
                                                 onClick={() =>
-                                                    removeItem(item.productId._id)
+                                                    removeItem(
+                                                        item.productId._id
+                                                    )
                                                 }
                                             >
                                                 Remove

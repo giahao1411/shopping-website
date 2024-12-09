@@ -21,6 +21,30 @@ router.get("/carts/:userId", async (req, res) => {
     }
 });
 
+router.get("/carts/:userId/checkout", async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const carts = await Cart.findOne({ userId }).populate(
+            "items.productId",
+            "name price quantity images"
+        );
+        if (!carts) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        const checkoutItems = carts.items.filter(
+            (item) => item.isCheckout === "checkout"
+        );
+
+        return res
+            .status(200)
+            .json({ message: "Get carts successfully", carts: checkoutItems });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
 router.post("/carts", async (req, res) => {
     const { userId, productId, quantity } = req.body;
 
@@ -128,6 +152,34 @@ router.patch("/carts/:userId/update/:productId", async (req, res) => {
         return res
             .status(200)
             .json({ message: "Cart update successfully", cart: cart });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+router.patch("/carts/:userId/update-status/:productId", async (req, res) => {
+    const { userId, productId } = req.params;
+    const { newStatus } = req.body;
+
+    try {
+        const cart = await Cart.findOne({ userId });
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        const item = cart.items.find(
+            (item) => item.productId.toString() === productId
+        );
+        if (!item) {
+            return res
+                .status(404)
+                .json({ message: "Product not found in cart" });
+        }
+
+        item.isCheckout = newStatus;
+        await cart.save();
+
+        return res.status(200).json({ message: "Status update successfully" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
