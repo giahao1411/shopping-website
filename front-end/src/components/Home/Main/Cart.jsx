@@ -1,25 +1,42 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { SESSION } from "../../../libs/constant";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { FaShoppingCart } from "react-icons/fa";
 import { formatMoney, formatNumber } from "../../../libs/utilities";
 import Swal from "sweetalert2";
 
 const Cart = () => {
     const storedUser = JSON.parse(localStorage.getItem(SESSION));
-    if (!storedUser) {
-        Swal.fire({
-            icon: "error",
-            title: "You need to login to view cart",
-            showConfirmButton: false,
-            timer: 1500,
-        });
-        return;
-    }
+    const [isRedirecting, setIsRedirecting] = useState(false);  // Trạng thái để kiểm tra xem popup đã được xử lý hay chưa
+
+    const navigate = useNavigate(); // Khởi tạo navigate
+
+    // Kiểm tra xem người dùng có đăng nhập hay không
+    useEffect(() => {
+        if (!storedUser && !isRedirecting) {
+            Swal.fire({
+                title: "You need to login to view the cart",
+                text: "Do you want to log in?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, login",
+                cancelButtonText: "No, stay on Home",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    setIsRedirecting(true);  // Đặt trạng thái redirect thành true để chuyển trang sau
+                    navigate("/account/login"); // Chuyển hướng đến trang login bằng useNavigate
+                } else {
+                    setIsRedirecting(true);  // Cập nhật trạng thái khi người dùng chọn "No"
+                    navigate("/");  // Quay về trang home bằng useNavigate
+                }
+            });
+        }
+    }, [storedUser, isRedirecting, navigate]);  // Đảm bảo useEffect chỉ chạy khi storedUser thay đổi hoặc trạng thái redirect thay đổi
 
     const [cartItems, setCartItems] = useState([]);
-
     const api = import.meta.env.VITE_APP_URL;
 
     useEffect(() => {
@@ -35,15 +52,17 @@ const Cart = () => {
                 }
             } catch (error) {
                 if (error.response) {
-                    alert("Failed to get product");
+                    alert("Failed to get cart items");
                 } else {
                     console.error(error);
                 }
             }
         };
 
-        fetchCartItems();
-    }, [cartItems]);
+        if (storedUser) {
+            fetchCartItems();
+        }
+    }, [storedUser]);
 
     const updateQuantity = async (productId, newQuantity) => {
         try {
@@ -84,7 +103,6 @@ const Cart = () => {
 
         if (confirmation.isConfirmed) {
             try {
-                // Giả sử API xóa sản phẩm khỏi giỏ hàng
                 const response = await axios.delete(
                     `${api}/api/cart/carts/${storedUser.userId}/delete/${productId}`
                 );
@@ -161,16 +179,12 @@ const Cart = () => {
                                                             item.quantity - 1
                                                         )
                                                     }
-                                                    disabled={
-                                                        item.quantity <= 1
-                                                    }
+                                                    disabled={item.quantity <= 1}
                                                 >
                                                     -
                                                 </button>
                                                 <span className="text-1xl font-semibold border-t border-b border-gray-600 px-5 py-1">
-                                                    {formatNumber(
-                                                        item.quantity
-                                                    )}
+                                                    {formatNumber(item.quantity)}
                                                 </span>
                                                 <button
                                                     className="text-black text-2xl disabled:bg-gray-400 border border-gray-600 px-2 rounded-r-md"
@@ -180,10 +194,7 @@ const Cart = () => {
                                                             item.quantity + 1
                                                         )
                                                     }
-                                                    disabled={
-                                                        item.quantity >=
-                                                        item.productId.quantity
-                                                    }
+                                                    disabled={item.quantity >= item.productId.quantity}
                                                 >
                                                     +
                                                 </button>
@@ -191,17 +202,14 @@ const Cart = () => {
                                         </td>
                                         <td className="py-3 px-4 text-center border-none">
                                             {formatMoney(
-                                                item.quantity *
-                                                    item.productId.price
+                                                item.quantity * item.productId.price
                                             )}
                                         </td>
                                         <td className="py-3 px-4 text-center border-none">
                                             <button
                                                 className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-700"
                                                 onClick={() =>
-                                                    removeItem(
-                                                        item.productId._id
-                                                    )
+                                                    removeItem(item.productId._id)
                                                 }
                                             >
                                                 Remove

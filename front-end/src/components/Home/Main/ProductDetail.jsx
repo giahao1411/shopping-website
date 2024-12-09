@@ -91,8 +91,24 @@ const ProductDetail = () => {
     };
 
     const handleBuyNow = () => {
-        alert("Proceeding to checkout...");
-        navigate("/checkout");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You can only buy 1 product at a time.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, proceed",
+            cancelButtonText: "No, cancel",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng chọn Yes, chuyển đến trang checkout
+                navigate("/checkout");
+            } else {
+                // Nếu người dùng chọn No, không làm gì cả
+                console.log("Purchase cancelled");
+            }
+        });
     };
 
     const incrementQuantity = () => {

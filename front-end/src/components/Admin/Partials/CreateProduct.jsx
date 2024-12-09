@@ -45,9 +45,22 @@ const CreateProduct = () => {
     };
 
     const handleFileChange = (e) => {
+        const files = e.target.files;
+
+        // Check if the user selects more than 5 files
+        if (files.length > 5) {
+            Swal.fire({
+                icon: "error",
+                title: "You can only upload a maximum of 5 images.",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
+
         setProductData({
             ...productData,
-            images: e.target.files,
+            images: files,
         });
     };
 
@@ -196,7 +209,7 @@ const CreateProduct = () => {
                     className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
                 />
 
-                <label
+<label
                     htmlFor="images"
                     className="block text-gray-700 font-semibold mb-2"
                 >
