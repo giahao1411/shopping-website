@@ -1,7 +1,101 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BiSolidUserCircle } from "react-icons/bi";
+import { SESSION } from "../../../libs/constant";
+import Swal from "sweetalert2";
+import axios from "axios";
 
-const ProfileModal = ({ isOpen, onClose }) => {
+const ProfileModal = ({ isOpen, onClose, user, setUser }) => {
+    const storedUser = JSON.parse(localStorage.getItem(SESSION));
+    if (!storedUser) {
+        Swal.fire({
+            icon: "error",
+            title: "You need to login to view cart",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        return;
+    }
+
+    const [isChangePassword, setIsChangePassword] = useState(false);
+
+    const api = import.meta.env.VITE_APP_URL;
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(
+                    `${api}/api/user/users/${storedUser.userId}`
+                );
+
+                if (response.status === 200) {
+                    setUser(response.data.user);
+                    console.log(
+                        response.data.user.phone == null
+                            ? "null"
+                            : response.data.user.phone
+                    );
+                }
+            } catch (error) {
+                if (error.response) {
+                    alert(error.response.data.message);
+                } else {
+                    console.error(error);
+                }
+            }
+        };
+
+        fetchUser();
+    }, []);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUser((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleChangePassword = () => {
+        if (isChangePassword) {
+            alert("oke");
+        }
+        setIsChangePassword((prev) => !prev);
+    };
+
+    const handleSave = async () => {
+        const updatedUser = {
+            username: user.username,
+            phone: user.phone,
+        };
+        try {
+            const response = await axios.patch(
+                `${api}/api/user/users/update/${storedUser.userId}`,
+                updatedUser
+            );
+
+            if (response.status === 200) {
+                Swal.fire({
+                    icon: "success",
+                    title: response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                onClose();
+            }
+        } catch (error) {
+            if (error.response) {
+                Swal.fire({
+                    icon: "error",
+                    title: error.response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                console.error(error.message);
+            }
+        }
+    };
+
     return (
         <div
             id="default-modal"
@@ -47,89 +141,101 @@ const ProfileModal = ({ isOpen, onClose }) => {
                 {/* Modal Body */}
                 <div className="p-6 text-center">
                     <BiSolidUserCircle className="text-2xl size-2/3 ml-auto mr-auto -mt-10" />
-                    <div className="pb-3">
-                        <button
-                            type="button"
-                            className="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                        >
-                            Change photo
-                        </button>
-                        <button
-                            type="button"
-                            className="py-2.5 px-5 ms-3 text-blue-500 font-medium rounded-lg border border-blue-200 hover:bg-gray-100 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                        >
-                            Remove photo
-                        </button>
-                    </div>
                     <div className="mb-2">
                         <label
-                            htmlFor="email"
+                            htmlFor="username"
                             className="block mb-2 text-sm font-medium text-black text-left "
                         >
-                            Your email
+                            Your username
                         </label>
                         <input
-                            type="email"
-                            name="email"
-                            id="email"
+                            type="text"
+                            name="username"
+                            id="username"
+                            value={user.username}
+                            onChange={handleInputChange}
+                            placeholder="Enter your user name"
                             className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
-                            placeholder="Enter your full name"
-                            required
                         />
                     </div>
                     <div className="mb-2">
                         <label
-                            htmlFor="location"
-                            className="block mb-2 text-sm font-medium text-black text-left"
+                            htmlFor="phone"
+                            className="block mb-2 text-sm font-medium text-black text-left "
                         >
-                            Location
+                            Your phone
                         </label>
-                        <div className="relative">
-                            <select
-                                name="location"
-                                id="location"
-                                className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 placeholder-gray-400"
-                                required
-                            >
-                                <option value="">Select your location</option>
-                                <option value="New York">New York</option>
-                                <option value="Los Angeles">Los Angeles</option>
-                                <option value="San Francisco">
-                                    San Francisco
-                                </option>
-                                <option value="Chicago">Chicago</option>
-                            </select>
-                        </div>
+                        <input
+                            type="number"
+                            name="phone"
+                            id="phone"
+                            onChange={handleInputChange}
+                            value={user.phone == null ? "null" : user.phone}
+                            placeholder="Enter your phone number"
+                            className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
+                        />
                     </div>
-                    <div className="mb-2">
-                        <label
-                            htmlFor="location"
-                            className="block mb-2 text-sm font-medium text-black text-left"
-                        >
-                            Gender
-                        </label>
-                        <div className="relative">
-                            <select
-                                name="gender"
-                                id="gender"
-                                className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 placeholder-gray-400"
-                                required
-                            >
-                                <option value="">Select your gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
+
+                    {isChangePassword && (
+                        <>
+                            <div className="mb-2">
+                                <label
+                                    htmlFor="phone"
+                                    className="block mb-2 text-sm font-medium text-black text-left "
+                                >
+                                    Your current password
+                                </label>
+                                <input
+                                    type="number"
+                                    name="phone"
+                                    id="phone"
+                                    className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
+                                    placeholder="Enter your current password"
+                                />
+                            </div>
+                            <div className="mb-2">
+                                <label
+                                    htmlFor="phone"
+                                    className="block mb-2 text-sm font-medium text-black text-left "
+                                >
+                                    Your new password
+                                </label>
+                                <input
+                                    type="number"
+                                    name="phone"
+                                    id="phone"
+                                    className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
+                                    placeholder="Enter your new password"
+                                />
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* Modal Footer */}
-                <div className="flex justify-center p-4">
+                <div className="flex justify-center space-x-4">
+                    {isChangePassword ? (
+                        <button
+                            type="button"
+                            className="text-white bg-red-600 hover:bg-red-800 focus:ring-red-300 dark:focus:ring-red-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                            onClick={() => setIsChangePassword((prev) => !prev)}
+                        >
+                            Cancel
+                        </button>
+                    ) : (
+                        ""
+                    )}
                     <button
                         type="button"
-                        className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-blue-300"
-                        onClick={onClose}
+                        className="text-white bg-blue-600 hover:bg-blue-800 focus:ring-blue-300 dark:focus:ring-blue-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                        onClick={handleChangePassword}
+                    >
+                        Change password
+                    </button>
+                    <button
+                        type="button"
+                        className="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-green-300"
+                        onClick={handleSave}
                     >
                         Save
                     </button>

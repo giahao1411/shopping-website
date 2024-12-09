@@ -37,7 +37,7 @@ router.get("/users/:id", async (req, res) => {
     }
 });
 
-router.patch("/users/:id", async (req, res) => {
+router.patch("/users/update/:id", async (req, res) => {
     const userID = req.params.id;
     const { username, email, phone } = req.body;
 
@@ -49,9 +49,12 @@ router.patch("/users/:id", async (req, res) => {
             });
         }
 
-        const phoneExisted = await User.findOne({ phone });
-        if (phoneExisted) {
-            return res.status(400).json({ message: "Phone number existed" });
+        // check if phone belongs to current user
+        const existingUser = await User.findOne({ phone });
+        if (existingUser && existingUser._id.toString() !== userID) {
+            return res
+                .status(400)
+                .json({ message: "Phone number already exists" });
         }
 
         const updateUser = await User.findByIdAndUpdate(userID, {

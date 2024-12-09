@@ -1,30 +1,48 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-
-const cartItems = [
-    {
-        name: "Machine Learning",
-        by: "DeepLearning.AI",
-        price: 20,
-    },
-    {
-        name: "Software Engineer",
-        by: "Google",
-        price: 18.99,
-    },
-    {
-        name: "Design UX/UI",
-        by: "Mr. Ha Le Hoai Trung",
-        price: 15.99,
-    },
-];
-
-const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price, 0).toFixed(2);
-};
+import React, { useState, useEffect } from "react";
+import { NavLink, useFetcher } from "react-router-dom";
+import { SESSION } from "../../../libs/constant";
+import axios from "axios";
+import { formatMoney, formatNumber } from "../../../libs/utilities";
 
 const Checkout = () => {
+    const storedUser = JSON.parse(localStorage.getItem(SESSION));
+    if (!storedUser) {
+        Swal.fire({
+            icon: "error",
+            title: "You need to login to view cart",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        return;
+    }
+
     const [phone, setPhone] = useState("");
+    const [cartItems, setCartItems] = useState([]);
+
+    const api = import.meta.env.VITE_APP_URL;
+
+    useEffect(() => {
+        const fetchCartItems = async () => {
+            try {
+                const response = await axios.get(
+                    `${api}/api/cart/carts/${storedUser.userId}`
+                );
+
+                if (response.status === 200) {
+                    const carts = response.data.carts;
+                    setCartItems(carts.items);
+                }
+            } catch (error) {
+                if (error.response) {
+                    alert("Failed to get product");
+                } else {
+                    console.error(error);
+                }
+            }
+        };
+
+        fetchCartItems();
+    }, []);
 
     const handlePhoneNumberChange = (e) => {
         let value = e.target.value.replace(/\D/g, "");
@@ -36,7 +54,6 @@ const Checkout = () => {
         } else {
             value = value.replace(/(\d{3})(\d{4})(\d{3})/, "$1-$2-$3");
         }
-
         if (value.endsWith("-")) {
             value = value.slice(0, -1);
         }
@@ -44,7 +61,18 @@ const Checkout = () => {
         setPhone(value);
     };
 
+    // Calculate total price
+    const calculateTotalPrice = () => {
+        const subtotal = cartItems.reduce(
+            (sum, item) => sum + item.totalPrice,
+            0
+        );
+        const shippingFee = 2; // fixed shipping fee
+        const vat = subtotal * 0.1; // 10% VAT
+        const discount = subtotal * 0.05; // 5% coupon discount
 
+        return (subtotal + shippingFee + vat - discount).toFixed(2);
+    };
 
     return (
         <main className="min-h-screen bg-white py-20">
@@ -52,7 +80,9 @@ const Checkout = () => {
                 {/* Checkout section */}
                 <div className="">
                     <h1 className="text-3xl font-semibold mb-7">Checkout</h1>
-                    <h3 className="text-2xl font-semibold mb-7">Billing Information</h3>
+                    <h3 className="text-2xl font-semibold mb-7">
+                        Delivery Information
+                    </h3>
 
                     <form>
                         {/* Name input */}
@@ -119,7 +149,7 @@ const Checkout = () => {
                                     name="payment"
                                     id="paypal"
                                     className="mr-2"
-                                    checked
+                                    defaultChecked
                                 />
                                 <label
                                     htmlFor="paypal"
@@ -165,23 +195,48 @@ const Checkout = () => {
                                 className="flex items-center space-x-4 p-4"
                             >
                                 <img
-                                    src="/signal-2024-12-05-002042_002.png"
-                                    alt={item.name}
+                                    src={`${api}/${item.productId.images[0]}`}
+                                    alt={item.productId.name}
                                     className="w-16 h-16"
                                 />
                                 <div className="flex-1">
-                                    <h3 className="font-semibold">{item.name}</h3>
-                                    <p className="text-sm text-gray-500">by {item.by}</p>
+                                    <h3 className="font-semibold">
+                                        {item.productId.name}
+                                    </h3>
+                                    <p className="text-sm text-gray-500">
+                                        Quantity: {formatNumber(item.quantity)}
+                                    </p>
                                     <button className="text-blue-500 hover:underline text-sm mt-2">
                                         Remove from cart
                                     </button>
                                 </div>
-                                <p className="font-semibold">${item.price.toFixed(2)}</p>
+                                <p className="font-semibold">
+                                    {formatMoney(item.totalPrice)}
+                                </p>
                             </div>
                         ))}
 
-                        <p className="text-lg px-4 pt-10 font-semibold">
-                            Total: ${calculateTotal()} USD
+                        <hr className="mx-4" />
+
+                        <div className="space-y-2 px-4 text-sm">
+                            <div className="flex justify-between items-center">
+                                <p className="text-gray-500">Shipping fee:</p>
+                                <p className="text-right font-semibold">$2</p>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-gray-500">VAT:</p>
+                                <p className="text-right font-semibold">10%</p>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-gray-500">Coupon:</p>
+                                <p className="text-right font-semibold">
+                                    5% discount
+                                </p>
+                            </div>
+                        </div>
+
+                        <p className="text-lg px-4 font-semibold">
+                            Total: {formatMoney(calculateTotalPrice())}
                         </p>
                     </div>
                 </div>

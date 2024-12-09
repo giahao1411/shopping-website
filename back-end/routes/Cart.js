@@ -10,7 +10,7 @@ router.get("/carts/:userId", async (req, res) => {
     try {
         const carts = await Cart.findOne({ userId }).populate(
             "items.productId",
-            "name price quantity"
+            "name price quantity images"
         );
 
         return res

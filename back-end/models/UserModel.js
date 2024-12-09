@@ -5,9 +5,14 @@ const UserSchema = new Schema({
     username: { type: String, require: true },
     email: { type: String, require: true, unique: true, lowercase: true },
     password: { type: String, require: true },
-    phone: { type: String },
+    phone: { type: String, default: null },
     role: { type: String, enum: ["admin", "user"], default: "user" },
     status: { type: String, enum: ["active", "banned"], default: "active" },
+    addresses: [
+        {
+            type: String,
+        },
+    ],
 });
 
 // hash password before saving to database
