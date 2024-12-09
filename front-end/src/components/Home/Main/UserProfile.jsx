@@ -1,18 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BiSolidPencil, BiSolidUserCircle, BiPlus } from "react-icons/bi";
 import ProfileModal from "../Partials/ProfileModal";
+import { SESSION } from "../../../libs/constant";
+import Swal from "sweetalert2";
 
 const UserProfile = () => {
+    const storedUser = JSON.parse(localStorage.getItem(SESSION));
+    if (!storedUser) {
+        Swal.fire({
+            icon: "error",
+            title: "You need to login to view cart",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        return;
+    }
+
     const [isOpen, setIsOpen] = useState(false);
+    const [user, setUser] = useState("");
+
+    const api = import.meta.env.VITE_APP_URL;
 
     const toggleModal = () => {
         setIsOpen((prevState) => !prevState);
     };
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(
+                    `${api}/api/user/users/${storedUser.userId}`
+                );
+
+                if (response.status === 200) {
+                    setUser(response.data.user);
+                }
+            } catch (error) {
+                if (error.response) {
+                    alert(error.response.data.message);
+                } else {
+                    console.error(error);
+                }
+            }
+        };
+
+        fetchUser();
+    });
+
     return (
         <div className="min-h-screen flex justify-start pt-10">
             {/* Left card */}
-            <div className="mt-20 mb-10 ml-20 max-w-sm max-h-dvh rounded overflow-hidden shadow">
+            <div className="mt-20 ml-20 w-full h-96 max-w-sm max-h-dvh rounded overflow-hidden shadow">
                 <div className="px-6 py-4">
                     <div className="flex justify-between items-center">
                         <div className="font-bold text-2xl text-center w-full">
@@ -24,22 +62,15 @@ const UserProfile = () => {
                         />
                     </div>
                     <BiSolidUserCircle className="text-5xl size-4/6 m-auto" />
-                    <div className="font-bold text-xl text-center align-middle">
-                        User
+                    <div className="text-center align-middle">
+                        <span className="font-semibold text-xl">
+                            {user.username}
+                        </span>
+                        <br />
+                        <span className="text-lg text-gray-400">
+                            {user.role}
+                        </span>
                     </div>
-                    <div className="mt-2 text-sky-700 text-center underline">
-                        Profile's links
-                    </div>
-                    <p className="text-gray-700 text-base mt-4 text-center">
-                        Help recruiters get to know you better by describing
-                        what makes you a great candidate and sharing other
-                        links.
-                    </p>
-                </div>
-                <div className="px-6 pt-4 pb-2 flex justify-center pb-8">
-                    <button className="place-items-center flex items-center bg-white hover:bg-gray-100 text-sky-600 font-semibold py-2 px-4 border border-blue-600 rounded">
-                        <BiPlus className="text-3xl mr-2" /> Add additional info
-                    </button>
                 </div>
             </div>
 
@@ -88,7 +119,12 @@ const UserProfile = () => {
                 </div>
             </div>
 
-            <ProfileModal isOpen={isOpen} onClose={toggleModal} />
+            <ProfileModal
+                isOpen={isOpen}
+                onClose={toggleModal}
+                user={user}
+                setUser={setUser}
+            />
         </div>
     );
 };
