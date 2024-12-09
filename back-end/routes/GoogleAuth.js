@@ -20,6 +20,7 @@ router.get(
             username: user.username,
             email: user.email,
             role: user.role,
+            userHasPassword: user.password === "google_auth" ? "true" : "false",
         });
 
         if (user.status === "banned") {

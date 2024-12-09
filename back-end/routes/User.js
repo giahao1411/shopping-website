@@ -93,4 +93,102 @@ router.patch("/users/status/:id", async (req, res) => {
     }
 });
 
+// add address
+router.post("/users/:id/add-address", async (req, res) => {
+    const { id } = req.params;
+    let { address } = req.body;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // check if existed address
+        if (user.addresses.includes(address)) {
+            return res.status(400).json({ message: "Address already exists." });
+        }
+
+        user.addresses.push(address);
+        await user.save();
+
+        return res.status(200).json({ message: "Address added successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+// update address
+router.patch("/users/:id/update-address", async (req, res) => {
+    const { id } = req.params;
+    const { oldAddress, newAddress } = req.body;
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: id, addresses: oldAddress },
+            { $set: { "addresses.$": newAddress } },
+            { new: true, runValidators: true }
+        );
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json({
+            message: "Update addresses successfully",
+            user: updatedUser,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+// update addresses
+router.patch("/users/:id/update-addresses", async (req, res) => {
+    const { id } = req.params;
+    const { addresses } = req.body;
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { addresses },
+            { new: true, runValidators: true }
+        );
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json({
+            message: "Update addresses successfully",
+            user: updatedUser,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+// delete specific address
+router.delete("/users/:id/delete-address/:address", async (req, res) => {
+    const { id, address } = req.params;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // check if address existed in array
+        const addressIndex = user.addresses.findIndex((a) => a === address);
+        if (addressIndex === -1) {
+            return res.status(404).json({ message: "Address not found" });
+        }
+
+        user.addresses.splice(addressIndex, 1);
+        await user.save();
+
+        return res
+            .status(200)
+            .json({ message: "Address deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router;

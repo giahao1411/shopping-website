@@ -45,6 +45,7 @@ const Cart = () => {
                 const response = await axios.get(
                     `${api}/api/cart/carts/${storedUser.userId}`
                 );
+                console.log(response.data.carts);
 
                 if (response.status === 200) {
                     const carts = response.data.carts;

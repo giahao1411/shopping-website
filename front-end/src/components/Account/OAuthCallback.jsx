@@ -17,6 +17,8 @@ const OAuthCallback = () => {
                 const error = params.get("error");
 
                 if (username && email) {
+                    const userHasPassword = params.get("userHasPassword");
+
                     Swal.fire({
                         icon: "success",
                         title: "Google login successful",
@@ -28,6 +30,15 @@ const OAuthCallback = () => {
                         SESSION,
                         JSON.stringify({ userId, username, email })
                     );
+
+                    if (userHasPassword) {
+                        Swal.fire({
+                            icon: "info",
+                            title: "Password Created",
+                            text: "A password has been created for you, it is google_auth. Please change it after logging in.",
+                            showConfirmButton: true,
+                        });
+                    }
 
                     navigate(role === "user" ? "/" : "/admin");
                 }

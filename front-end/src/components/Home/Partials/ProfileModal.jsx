@@ -1,51 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { BiSolidUserCircle } from "react-icons/bi";
-import { SESSION } from "../../../libs/constant";
 import Swal from "sweetalert2";
 import axios from "axios";
 
 const ProfileModal = ({ isOpen, onClose, user, setUser }) => {
-    const storedUser = JSON.parse(localStorage.getItem(SESSION));
-    if (!storedUser) {
-        Swal.fire({
-            icon: "error",
-            title: "You need to login to view cart",
-            showConfirmButton: false,
-            timer: 1500,
-        });
-        return;
-    }
-
     const [isChangePassword, setIsChangePassword] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
 
     const api = import.meta.env.VITE_APP_URL;
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await axios.get(
-                    `${api}/api/user/users/${storedUser.userId}`
-                );
-
-                if (response.status === 200) {
-                    setUser(response.data.user);
-                    console.log(
-                        response.data.user.phone == null
-                            ? "null"
-                            : response.data.user.phone
-                    );
-                }
-            } catch (error) {
-                if (error.response) {
-                    alert(error.response.data.message);
-                } else {
-                    console.error(error);
-                }
-            }
-        };
-
-        fetchUser();
-    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -55,11 +18,43 @@ const ProfileModal = ({ isOpen, onClose, user, setUser }) => {
         }));
     };
 
-    const handleChangePassword = () => {
-        if (isChangePassword) {
-            alert("oke");
-        }
+    const handleChangePassword = async () => {
         setIsChangePassword((prev) => !prev);
+        if (isChangePassword) {
+            try {
+                const response = await axios.patch(
+                    `${api}/account/change-password`,
+                    {
+                        email: user.email,
+                        currentPassword: currentPassword,
+                        newPassword: newPassword,
+                    }
+                );
+
+                if (response.status === 200) {
+                    Swal.fire({
+                        icon: "success",
+                        title: response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    onClose();
+                    setCurrentPassword("");
+                    setNewPassword("");
+                }
+            } catch (error) {
+                if (error.response) {
+                    Swal.fire({
+                        icon: "error",
+                        title: error.response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                } else {
+                    console.error(error.message);
+                }
+            }
+        }
     };
 
     const handleSave = async () => {
@@ -69,7 +64,7 @@ const ProfileModal = ({ isOpen, onClose, user, setUser }) => {
         };
         try {
             const response = await axios.patch(
-                `${api}/api/user/users/update/${storedUser.userId}`,
+                `${api}/api/user/users/update/${user._id}`,
                 updatedUser
             );
 
@@ -180,30 +175,38 @@ const ProfileModal = ({ isOpen, onClose, user, setUser }) => {
                         <>
                             <div className="mb-2">
                                 <label
-                                    htmlFor="phone"
+                                    htmlFor="currentPassword"
                                     className="block mb-2 text-sm font-medium text-black text-left "
                                 >
                                     Your current password
                                 </label>
                                 <input
-                                    type="number"
-                                    name="phone"
-                                    id="phone"
+                                    type="text"
+                                    name="currentPassword"
+                                    id="currentPassword"
+                                    value={currentPassword}
+                                    onChange={(e) =>
+                                        setCurrentPassword(e.target.value)
+                                    }
                                     className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
                                     placeholder="Enter your current password"
                                 />
                             </div>
                             <div className="mb-2">
                                 <label
-                                    htmlFor="phone"
+                                    htmlFor="newPassword"
                                     className="block mb-2 text-sm font-medium text-black text-left "
                                 >
                                     Your new password
                                 </label>
                                 <input
-                                    type="number"
-                                    name="phone"
-                                    id="phone"
+                                    type="text"
+                                    name="newPassword"
+                                    id="newPassword"
+                                    value={newPassword}
+                                    onChange={(e) =>
+                                        setNewPassword(e.target.value)
+                                    }
                                     className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
                                     placeholder="Enter your new password"
                                 />
