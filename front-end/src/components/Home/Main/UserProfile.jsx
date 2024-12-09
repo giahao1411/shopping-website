@@ -8,6 +8,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import CreateAddressModal from "../Partials/CreateAddressModal";
 import UpdateAddressModal from "../Partials/UpdateAddressModal";
+import CreatePhoneModal from "../Partials/CreatePhoneModal";
+import UpdatePhoneModal from "../Partials/UpdatePhoneModal";
 
 const UserProfile = () => {
     const storedUser = JSON.parse(localStorage.getItem(SESSION));
@@ -22,8 +24,13 @@ const UserProfile = () => {
     }
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+
+    const [isCreatePhoneOpen, setIsCreatePhoneOpen] = useState(false);
+    const [isUpdatePhoneOpen, setIsUpdatePhoneOpen] = useState(false);
+
     const [user, setUser] = useState("");
 
     const api = import.meta.env.VITE_APP_URL;
@@ -38,6 +45,14 @@ const UserProfile = () => {
 
     const toggleUpdateModal = () => {
         setIsUpdateOpen((prevState) => !prevState);
+    };
+
+    const toggleCreatePhoneModal = () => {
+        setIsCreatePhoneOpen((prevState) => !prevState);
+    };
+
+    const toggleUpdatePhoneModal = () => {
+        setIsUpdatePhoneOpen((prevState) => !prevState);
     };
 
     useEffect(() => {
@@ -87,8 +102,8 @@ const UserProfile = () => {
     const onUpdateAddress = (oldAddress, newAddress) => {
         setUser((prevUser) => ({
             ...prevUser,
-            addresses: prevUser.addresses.map((addr) =>
-                addr === oldAddress ? newAddress : addr
+            addresses: prevUser.addresses.map((address) =>
+                address === oldAddress ? newAddress : address
             ),
         }));
     };
@@ -141,10 +156,87 @@ const UserProfile = () => {
         }
     };
 
+    const onAddPhone = async (newPhone) => {
+        setUser((prevUser) => ({
+            ...prevUser,
+            phones: [...prevUser.phones, newPhone],
+        }));
+
+        try {
+            await axios.patch(
+                `${api}/api/user/users/${storedUser.userId}/update-phones`,
+                {
+                    phones: [...user.phones, newPhone],
+                }
+            );
+        } catch (error) {
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
+        }
+    };
+
+    const onUpdatePhone = (oldPhone, newPhone) => {
+        setUser((prevUser) => ({
+            ...prevUser,
+            phones: prevUser.phones.map((phone) =>
+                phone === oldPhone ? newPhone : phone
+            ),
+        }));
+    };
+
+    const deletePhone = async (phone) => {
+        const confirmation = await Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+        });
+
+        if (confirmation.isConfirmed) {
+            try {
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    phones: prevUser.phones.filter((p) => p !== phone),
+                }));
+
+                const response = await axios.delete(
+                    `${api}/api/user/users/${storedUser.userId}/delete-phone/${phone}`
+                );
+
+                if (response.status === 200) {
+                    Swal.fire({
+                        icon: "success",
+                        title: response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                }
+            } catch (error) {
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    phones: [...prevUser.phones, phone],
+                }));
+
+                if (error.response) {
+                    alert(error.response.data.message);
+                } else {
+                    console.error(error);
+                }
+            }
+        }
+    };
+
     return (
-        <div className="min-h-screen flex justify-start pt-10">
+        <div className="min-h-screen flex justify-start pt-40 mx-40">
             {/* Left card */}
-            <div className="mt-20 ml-20 w-full h-96 max-w-sm max-h-dvh rounded overflow-hidden shadow">
+            <div className="w-full h-96 max-w-sm max-h-dvh rounded overflow-hidden shadow">
                 <div className="px-6 py-4">
                     <div className="flex justify-between items-center">
                         <div className="font-bold text-2xl text-center w-full">
@@ -169,7 +261,7 @@ const UserProfile = () => {
             </div>
 
             {/* Right Card */}
-            <div className="mt-20 pl-8 pr-10">
+            <div className="pl-10 max-w-4xl w-full">
                 <p className="font-bold text-2xl">Location</p>
 
                 {/* First Box - Projects */}
@@ -232,21 +324,57 @@ const UserProfile = () => {
                 </div>
 
                 {/* New Box Below Experience */}
-                <p className="font-bold text-2xl mt-10">Education</p>
+                <p className="font-bold text-2xl mt-10">Contact</p>
                 <div className="max-w-90 max-h-80 rounded overflow-hidden shadow mt-1">
                     <div className="px-6 py-4">
-                        <div className="font-bold text-xl text-left">
-                            Credentials
+                        <div className="flex justify-between items-center">
+                            <span className="font-bold text-xl text-left">
+                                Phone Numbers
+                            </span>
+                            <BiPlus
+                                className="text-2xl text-blue-600 cursor-pointer hover:text-blue-700"
+                                onClick={toggleCreatePhoneModal}
+                            />
                         </div>
-                        <div className="max-w-70 max-h-60 text-gray-700 mt-4 text-center bg-slate-200 text-black p-5 flex">
-                            <p className="text-left w-120">
-                                Add your educational background here to let
-                                employers know where you studied or are
-                                currently studying.
-                            </p>
-                            <p className="text-sky-600 font-semibold py-2 px-4 w-64 text-right">
-                                Add education
-                            </p>
+                        <div className="max-w-90 max-h-80 text-gray-700 text-center text-black p-5">
+                            {user.phones && user.phones.length > 0 ? (
+                                <ul className="list-disc pl-5">
+                                    {user.phones.map((phone, index) => (
+                                        <li key={index} className="mb-2">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex-1 text-left">
+                                                    {phone}
+                                                </div>
+                                                <div className="flex space-x-2 ">
+                                                    <MdModeEditOutline
+                                                        className="text-xl cursor-pointer hover:text-blue-700"
+                                                        onClick={
+                                                            toggleUpdatePhoneModal
+                                                        }
+                                                    />
+                                                    <FaTrash
+                                                        className="text-xl cursor-pointer hover:text-red-700"
+                                                        onClick={() =>
+                                                            deletePhone(phone)
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                            <UpdatePhoneModal
+                                                isOpen={isUpdatePhoneOpen}
+                                                onClose={toggleUpdatePhoneModal}
+                                                userId={storedUser.userId}
+                                                oldPhone={phone}
+                                                onUpdatePhone={onUpdatePhone}
+                                            />
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-center text-black p-5">
+                                    No phone numbers added yet.
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -264,6 +392,13 @@ const UserProfile = () => {
                 onClose={toggleCreateModal}
                 userId={storedUser.userId}
                 onAddAddress={onAddAddresses}
+            />
+
+            <CreatePhoneModal
+                isOpen={isCreatePhoneOpen}
+                onClose={toggleCreatePhoneModal}
+                userId={storedUser.userId}
+                onAddPhone={onAddPhone}
             />
         </div>
     );

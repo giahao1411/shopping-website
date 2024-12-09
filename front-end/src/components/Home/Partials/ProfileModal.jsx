@@ -60,7 +60,6 @@ const ProfileModal = ({ isOpen, onClose, user, setUser }) => {
     const handleSave = async () => {
         const updatedUser = {
             username: user.username,
-            phone: user.phone,
         };
         try {
             const response = await axios.patch(
@@ -150,23 +149,6 @@ const ProfileModal = ({ isOpen, onClose, user, setUser }) => {
                             value={user.username}
                             onChange={handleInputChange}
                             placeholder="Enter your user name"
-                            className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
-                        />
-                    </div>
-                    <div className="mb-2">
-                        <label
-                            htmlFor="phone"
-                            className="block mb-2 text-sm font-medium text-black text-left "
-                        >
-                            Your phone
-                        </label>
-                        <input
-                            type="number"
-                            name="phone"
-                            id="phone"
-                            onChange={handleInputChange}
-                            value={user.phone == null ? "null" : user.phone}
-                            placeholder="Enter your phone number"
                             className="bg-white border border-black-500/75 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
                         />
                     </div>
