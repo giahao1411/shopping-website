@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
 
 const User = require("../models/UserModel");
 
@@ -33,8 +34,7 @@ router.post("/login", async (req, res) => {
             user: user,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: error.message });
     }
 });
 
@@ -81,8 +81,7 @@ router.post("/register", async (req, res) => {
 
         return res.status(200).json({ message: "Register successfully" });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: error.message });
     }
 });
 
@@ -101,8 +100,7 @@ router.post("/check-email", async (req, res) => {
                 .json({ existed: false, message: "Email not found." });
         }
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: error.message });
     }
 });
 
@@ -130,8 +128,46 @@ router.patch("/update-password", async (req, res) => {
             .status(200)
             .json({ message: "Password update successfully" });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+router.patch("/change-password", async (req, res) => {
+    const { email, currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Please fill in all fields." });
+    }
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // check if the current input password is correct
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res
+                .status(400)
+                .json({ message: "Incorrect current password" });
+        }
+
+        if (!validatePassword(newPassword)) {
+            return res.status(406).json({
+                message:
+                    "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number",
+            });
+        } else {
+            user.password = newPassword;
+            await user.save();
+        }
+
+        return res.status(200).json({
+            message: "Password changed successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 });
 

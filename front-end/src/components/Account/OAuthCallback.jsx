@@ -39,7 +39,6 @@ const OAuthCallback = () => {
                         text: error,
                     });
                     navigate("/account/login");
-                    return;
                 }
             } catch (error) {
                 Swal.fire({

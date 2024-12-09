@@ -2,17 +2,16 @@ const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new Schema({
-    username: { type: String, require: true },
-    email: { type: String, require: true, unique: true, lowercase: true },
-    password: { type: String, require: true },
+    username: { type: String, required: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    password: { type: String, required: true },
     phone: { type: String, default: null },
     role: { type: String, enum: ["admin", "user"], default: "user" },
     status: { type: String, enum: ["active", "banned"], default: "active" },
-    addresses: [
-        {
-            type: String,
-        },
-    ],
+    addresses: {
+        type: [String],
+        default: [],
+    },
 });
 
 // hash password before saving to database
