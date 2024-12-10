@@ -1,17 +1,4 @@
 services:
-  db-init:
-    build:
-      context: ./back-end  
-    image: data
-    command: ["node", "config/database.js"]  
-    environment:
-      - MONGO_URI=mongodb://mongodb:27017/shopping-website
-    depends_on:
-      - mongodb
-    networks:
-      - app-network
-    restart: "no"
-
   backend-app:
     build:
       context: ./back-end  # Docker sẽ tìm Dockerfile trong thư mục này
