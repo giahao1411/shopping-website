@@ -34,7 +34,6 @@ const UserProfile = () => {
 	const [isViewCouponOpen, setIsViewCoupon] = useState(false);
 
 	const [user, setUser] = useState("");
-	const [couponCode, setCouponCode] = useState(""); // Coupon state
 
 	const api = import.meta.env.VITE_APP_URL;
 
@@ -67,13 +66,11 @@ const UserProfile = () => {
 	};
 
 	useEffect(() => {
-		const fetchUser = async () => {
+		const fetchUserData = async () => {
 			try {
 				const response = await axios.get(`${api}/api/user/users/${storedUser.userId}`);
-
-				if (response.status === 200) {
-					setUser(response.data.user);
-				}
+				const user = response.data.user;
+				setUser(user);
 			} catch (error) {
 				if (error.response) {
 					alert(error.response.data.message);
@@ -83,7 +80,7 @@ const UserProfile = () => {
 			}
 		};
 
-		fetchUser();
+		fetchUserData();
 	}, [storedUser.userId]);
 
 	const onAddAddresses = async (newAddress) => {
@@ -228,44 +225,46 @@ const UserProfile = () => {
 		}
 	};
 
-	const onAddCoupon = async () => {
-		if (!couponCode.trim()) {
-			Swal.fire({
-				icon: "error",
-				title: "Coupon code cannot be empty",
-				showConfirmButton: true,
-			});
-			return;
-		}
+	const onAddCoupon = async (couponCode) => {
+		// Tạo một mảng coupon mới, thêm couponCode vào mảng hiện tại
+		const updatedCoupons = [...(user.coupons || []), couponCode];
 
 		try {
-			// Send API request to add coupon
-			const response = await axios.post(`${api}/api/user/users/${storedUser.userId}/add-coupon`, {
-				couponCode,
+			// Thực hiện yêu cầu PATCH để thêm coupon mới
+			const response = await axios.patch(`${api}/api/user/users/${storedUser.userId}/update-coupon`, {
+				coupons: updatedCoupons,
 			});
 
-			if (response.status === 200) {
-				// Update the user's coupons list
-				setUser((prevUser) => ({
-					...prevUser,
-					coupons: response.data.user.coupons, // Assuming response contains the updated coupons list
-				}));
+			// Cập nhật lại thông tin người dùng với các coupon mới
+			setUser((prevUser) => ({
+				...prevUser,
+				coupons: response.data.Usercoupons,
+			}));
 
-				Swal.fire({
-					icon: "success",
-					title: response.data.message,
-					showConfirmButton: false,
-					timer: 1500,
-				});
-			}
-		} catch (error) {
-			const errorMessage = error.response?.data?.message || "Something went wrong";
 			Swal.fire({
-				icon: "error",
-				title: errorMessage,
-				showConfirmButton: true,
+				icon: "success",
+				title: "Coupon added successfully!",
+				showConfirmButton: false,
+				timer: 1500,
 			});
-			console.error("Error adding coupon:", error);
+		} catch (error) {
+			if (error.response) {
+				Swal.fire({
+					icon: "error",
+					title: "Failed to add coupon",
+					text: error.response.data.message || "An error occurred while adding the coupon.",
+					showConfirmButton: true,
+				});
+				console.error("Error:", error.response.data.message);
+			} else {
+				Swal.fire({
+					icon: "error",
+					title: "Unexpected Error",
+					text: error.message,
+					showConfirmButton: true,
+				});
+				console.error("Error:", error.message);
+			}
 		}
 	};
 
@@ -292,7 +291,6 @@ const UserProfile = () => {
 						>
 							<BiPlus className="text-2xl mr-2" /> Add coupon
 						</button>
-
 						<AddCouponModal
 							isOpen={isCouponOpen}
 							onClose={toggleAddCouponModal}
@@ -305,10 +303,10 @@ const UserProfile = () => {
 							className="place-items-center flex items-center bg-white hover:bg-gray-100 text-sky-600 font-semibold py-2 px-4 border border-blue-600 rounded "
 							onClick={toggleCouponModal}
 						>
-							<BiPlus className="text-2xl mr-2" /> View
+							View
 						</button>
 
-						<CouponModal isOpen={isViewCouponOpen} onClose={toggleCouponModal} userId={storedUser.userId} />
+						<CouponModal isOpen={isViewCouponOpen} onClose={toggleCouponModal} userCoupons={user.Usercoupons} />
 					</div>
 				</div>
 			</div>
