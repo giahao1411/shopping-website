@@ -2,9 +2,10 @@ const { Schema, model } = require("mongoose");
 const User = require("./UserModel");
 
 const OrderSchema = new Schema({
-    email: { type: String, required: true, ref: "User" }, // Tham chiếu qua email
-    username: { type: String, required: true }, // Thêm trường username
-    phone: { type: String, required: true }, // Thêm trường phone
+    email: { type: String, required: true, ref: "User" },
+    username: { type: String, required: true },
+    phone: { type: String, required: true },
+    address: { type: String, required: true },
     totalPrice: { type: Number },
     createdAt: { type: Date, default: Date.now },
     expectedAt: { type: Date },
@@ -25,8 +26,7 @@ OrderSchema.pre("save", async function (next) {
             throw new Error("User not found");
         }
 
-        this.username = user.username; // Lấy username từ User
-        this.phone = user.phone; // Lấy phone từ User
+        this.username = user.username;
         next();
     } catch (error) {
         next(error);

@@ -37,14 +37,28 @@ router.get("/orders/:id", async (req, res) => {
 });
 
 router.post("/orders", async (req, res) => {
+    const {
+        email,
+        username,
+        phone,
+        address,
+        totalPrice,
+        expectedAt,
+        orderstatus,
+    } = req.body;
+
+    if (
+        !username ||
+        !phone ||
+        !address ||
+        !totalPrice ||
+        !orderstatus ||
+        !expectedAt
+    ) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
+
     try {
-        const { email, totalPrice, expectedAt, deliveredAt, orderstatus } =
-            req.body;
-
-        if (!email || !totalPrice || !orderstatus || !expectedAt) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
-
         const user = await User.findOne({ email });
 
         if (!user) {
@@ -53,11 +67,10 @@ router.post("/orders", async (req, res) => {
 
         const order = new Order({
             email,
-            username: user.username,
-            phone: user.phone,
+            username,
+            phone,
             totalPrice,
             expectedAt,
-            deliveredAt,
             orderstatus,
         });
 
@@ -75,7 +88,9 @@ router.patch("/orders/edit/:id", async (req, res) => {
         console.log("Updating order status:", orderstatus);
 
         if (!orderstatus) {
-            return res.status(400).json({ message: "Order status is required" });
+            return res
+                .status(400)
+                .json({ message: "Order status is required" });
         }
 
         const order = await Order.findById(req.params.id);
@@ -91,13 +106,17 @@ router.patch("/orders/edit/:id", async (req, res) => {
 
         switch (orderstatus) {
             case "Confirmed":
-                order.expectedAt = new Date(currentDate.setDate(currentDate.getDate() + 3));
+                order.expectedAt = new Date(
+                    currentDate.setDate(currentDate.getDate() + 3)
+                );
                 break;
             case "Cancelled":
                 order.expectedAt = null;
                 break;
             case "Delivering":
-                order.expectedAt = new Date(currentDate.setDate(currentDate.getDate() + 2));
+                order.expectedAt = new Date(
+                    currentDate.setDate(currentDate.getDate() + 2)
+                );
                 break;
             case "Delivered":
                 order.expectedAt = currentDate;
@@ -107,7 +126,9 @@ router.patch("/orders/edit/:id", async (req, res) => {
                 order.expectedAt = null;
                 break;
             default:
-                return res.status(400).json({ message: "Invalid order status provided" });
+                return res
+                    .status(400)
+                    .json({ message: "Invalid order status provided" });
         }
 
         order.orderstatus = orderstatus;
@@ -123,7 +144,6 @@ router.patch("/orders/edit/:id", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-
 
 router.delete("/orders/delete/:id", async (req, res) => {
     try {
