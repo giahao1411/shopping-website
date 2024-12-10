@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useFetcher } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { SESSION } from "../../../libs/constant";
 import axios from "axios";
 import { formatMoney, formatNumber } from "../../../libs/utilities";
+import Swal from "sweetalert2";
 
 const Checkout = () => {
     const storedUser = JSON.parse(localStorage.getItem(SESSION));
@@ -16,10 +17,16 @@ const Checkout = () => {
         return;
     }
 
-    const [phone, setPhone] = useState("");
+    const [username, setUsername] = useState("");
+    const [selectedPhone, setSelectedPhone] = useState("");
+    const [selectedAddress, setSelectedAddress] = useState("");
+
+    const [addresses, setAddresses] = useState([]);
+    const [phones, setPhones] = useState([]);
     const [cartItems, setCartItems] = useState([]);
 
     const api = import.meta.env.VITE_APP_URL;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCartItems = async () => {
@@ -40,24 +47,78 @@ const Checkout = () => {
             }
         };
 
+        const getInformation = async () => {
+            try {
+                const response = await axios.get(
+                    `${api}/api/user-information/information/${storedUser.userId}`
+                );
+
+                if (response.status === 200) {
+                    setUsername(response.data.username);
+                    setAddresses(response.data.addresses);
+                    setPhones(response.data.phones);
+                }
+            } catch (error) {
+                if (error.response) {
+                    alert("Failed to get product");
+                } else {
+                    console.error(error);
+                }
+            }
+        };
+
+        getInformation();
         fetchCartItems();
     }, []);
 
-    const handlePhoneNumberChange = (e) => {
-        let value = e.target.value.replace(/\D/g, "");
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-        if (value.length <= 3) {
-            value = value.replace(/(\d{3})(\d{0,})/, "$1-$2");
-        } else if (value.length <= 6) {
-            value = value.replace(/(\d{3})(\d{3})(\d{0,})/, "$1-$2-$3");
-        } else {
-            value = value.replace(/(\d{3})(\d{4})(\d{3})/, "$1-$2-$3");
-        }
-        if (value.endsWith("-")) {
-            value = value.slice(0, -1);
+        if (!selectedAddress || !selectedPhone || cartItems.length === 0) {
+            alert("Please fill in all the required fields.");
+            return;
         }
 
-        setPhone(value);
+        const orderData = {
+            username,
+            phone: selectedPhone,
+            address: selectedAddress,
+            cartItems: cartItems.map((item) => ({
+                productId: item.productId._id,
+                quantity: item.quantity,
+                totalPrice: item.totalPrice,
+            })),
+        };
+
+        try {
+            const response = await axios.post(
+                `${api}/api/order/orders/${storedUser.userId}`,
+                orderData
+            );
+
+            if (response.status === 200) {
+                Swal.fire({
+                    icon: "success",
+                    title: response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                setSelectedAddress("");
+                setSelectedPhone("");
+                navigate("/");
+            }
+        } catch (error) {
+            if (error.response) {
+                Swal.fire({
+                    icon: "error",
+                    title: error.response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                console.error("Error creating product:", error);
+            }
+        }
     };
 
     // Calculate total price
@@ -98,7 +159,7 @@ const Checkout = () => {
                             Delivery Information
                         </h3>
 
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             {/* Name input */}
                             <div className="mb-3">
                                 <label
@@ -111,6 +172,10 @@ const Checkout = () => {
                                     type="text"
                                     id="name"
                                     placeholder="Enter your name"
+                                    value={username}
+                                    onChange={(e) =>
+                                        setUsername(e.target.value)
+                                    }
                                     className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
                                 />
                             </div>
@@ -120,36 +185,60 @@ const Checkout = () => {
                                     htmlFor="phone"
                                     className="block text-sm font-medium text-gray-700 my-2"
                                 >
-                                    Phone number
+                                    Phone
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     id="phone"
-                                    value={phone}
-                                    onChange={handlePhoneNumberChange}
-                                    placeholder="012-3456-789"
-                                    maxLength="12"
+                                    value={selectedPhone}
+                                    onChange={(e) =>
+                                        setSelectedPhone(e.target.value)
+                                    }
                                     className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-                                />
+                                >
+                                    <option value="">Select your phone</option>
+                                    {phones && phones.length > 0 ? (
+                                        phones.map((phone, index) => (
+                                            <option key={index} value={phone}>
+                                                {phone}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option disabled>
+                                            Loading phones...
+                                        </option>
+                                    )}
+                                </select>
                             </div>
 
-                            {/* Country dropdown */}
                             <div className="mb-3">
                                 <label
-                                    htmlFor="country"
+                                    htmlFor="address"
                                     className="block text-sm font-medium text-gray-700 my-2"
                                 >
                                     Address
                                 </label>
                                 <select
                                     id="address"
+                                    value={selectedAddress}
+                                    onChange={(e) =>
+                                        setSelectedAddress(e.target.value)
+                                    }
                                     className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
                                 >
-                                    <option>Select your address</option>
-                                    <option>Ha Noi</option>
-                                    <option>Thanh Hoa</option>
-                                    <option>Long An</option>
-                                    <option>Ho Chi Minh City</option>
+                                    <option value="">
+                                        Select your address
+                                    </option>
+                                    {addresses && addresses.length > 0 ? (
+                                        addresses.map((address, index) => (
+                                            <option key={index} value={address}>
+                                                {address}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option disabled>
+                                            Loading addresses...
+                                        </option>
+                                    )}
                                 </select>
                             </div>
 
@@ -176,7 +265,10 @@ const Checkout = () => {
 
                             <div className="py-2">
                                 {/* Pay button */}
-                                <button className="rounded-md bg-blue-500 text-white px-14 py-2 mt-4 hover:bg-blue-600">
+                                <button
+                                    type="submit"
+                                    className="rounded-md bg-blue-500 text-white px-14 py-2 mt-4 hover:bg-blue-600"
+                                >
                                     Confirm
                                 </button>
                             </div>

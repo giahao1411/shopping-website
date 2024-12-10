@@ -1,12 +1,22 @@
 const { Schema, model } = require("mongoose");
-const User = require("./UserModel");
 
 const OrderSchema = new Schema({
-    email: { type: String, required: true, ref: "User" },
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
     username: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
-    totalPrice: { type: Number },
+    items: [
+        {
+            productId: {
+                type: Schema.Types.ObjectId,
+                required: true,
+                ref: "Product",
+            },
+            quantity: { type: Number, required: true, min: 1 },
+            totalPrice: { type: Number, required: true, min: 0 },
+        },
+    ],
+    totalPrice: { type: Number, required: true, default: 0, min: 0 },
     createdAt: { type: Date, default: Date.now },
     expectedAt: { type: Date },
     deliveredAt: { type: Date },
@@ -17,20 +27,17 @@ const OrderSchema = new Schema({
     },
 });
 
-// Middleware để tự động cập nhật thông tin username và phone khi lưu đơn hàng
-OrderSchema.pre("save", async function (next) {
-    try {
-        const user = await User.findOne({ email: this.email });
+OrderSchema.pre("save", function (next) {
+    const baseTotal = this.items.reduce(
+        (sum, item) => sum + item.totalPrice,
+        0
+    );
 
-        if (!user) {
-            throw new Error("User not found");
-        }
+    const fixedFee = 2; // ship fee $2
+    const vat = 0.1 * (baseTotal + fixedFee); // 10% VAT
+    this.totalPrice = baseTotal + fixedFee + vat;
 
-        this.username = user.username;
-        next();
-    } catch (error) {
-        next(error);
-    }
+    next();
 });
 
 module.exports = model("Order", OrderSchema);

@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
+
 const Order = require("../models/OrderModel");
 const User = require("../models/UserModel");
+const Cart = require("../models/CartModel");
 
 router.get("/orders", async (req, res) => {
     try {
@@ -18,67 +20,64 @@ router.get("/orders", async (req, res) => {
             currentPage: parseInt(page),
         });
     } catch (error) {
-        res.status(500).json({ message: "Error fetching orders", error });
+        res.status(500).json({ message: error.message });
     }
 });
 
 router.get("/orders/:id", async (req, res) => {
     try {
-        const order = await Order.findOne({ orderid: req.params.id });
+        const order = await Order.findById(req.params.id)
+            .populate("items.productId")
+            .exec();
 
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
 
-        res.status(200).json(order);
+        res.status(200).json({ order: order });
     } catch (error) {
-        res.status(500).json({ message: "Error fetching order", error });
+        res.status(500).json({ message: error.message });
     }
 });
 
-router.post("/orders", async (req, res) => {
-    const {
-        email,
-        username,
-        phone,
-        address,
-        totalPrice,
-        expectedAt,
-        orderstatus,
-    } = req.body;
+router.post("/orders/:userId", async (req, res) => {
+    const { userId } = req.params;
+    const { username, phone, address, cartItems } = req.body;
 
-    if (
-        !username ||
-        !phone ||
-        !address ||
-        !totalPrice ||
-        !orderstatus ||
-        !expectedAt
-    ) {
+    if (!username || !phone || !address) {
         return res.status(400).json({ message: "Missing required fields" });
     }
 
     try {
-        const user = await User.findOne({ email });
-
+        // check user
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
+        // get user's cart
+        const cart = await Cart.findOne({ userId });
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({ message: "Cart is empty" });
+        }
+
         const order = new Order({
-            email,
+            userId,
             username,
             phone,
-            totalPrice,
-            expectedAt,
-            orderstatus,
+            address,
+            items: cartItems,
         });
-
         await order.save();
 
-        res.status(201).json({ message: "Order created successfully", order });
+        cart.items = cart.items.filter(
+            (item) => item.isCheckout !== "checkout"
+        );
+        await cart.save();
+
+        res.status(200).json({ message: "Order created successfully", order });
     } catch (error) {
-        res.status(500).json({ message: "Error creating order", error });
+        res.status(500).json({ message: error.message });
     }
 });
 
@@ -155,7 +154,7 @@ router.delete("/orders/delete/:id", async (req, res) => {
 
         res.status(200).json({ message: "Order deleted successfully", order });
     } catch (error) {
-        res.status(500).json({ message: "Error deleting order", error });
+        res.status(500).json({ message: error.message });
     }
 });
 

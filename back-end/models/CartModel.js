@@ -9,8 +9,8 @@ const CartSchema = new Schema({
                 required: true,
                 ref: "Product",
             },
-            quantity: { type: Number, required: true },
-            totalPrice: { type: Number, required: true },
+            quantity: { type: Number, required: true, min: 1 },
+            totalPrice: { type: Number, required: true, min: 0 },
             isCheckout: {
                 type: String,
                 enum: ["inCart", "checkout"],
