@@ -304,12 +304,13 @@ router.delete("/users/:id/delete-phone/:phone", async (req, res) => {
     }
 });
 
+// API backend sửa lại
 router.post("/users/:id/add-coupon", async (req, res) => {
     const { id } = req.params;
-    const { CouponCode } = req.body;
-
+    const { couponCode } = req.body;  // couponCode thay vì CouponCode
+    console.log("Coupon Code Received:", couponCode);
     try {
-        const coupon = await Coupon.findOne({ code: CouponCode, status: "enabled" });
+        const coupon = await Coupon.findOne({ code: couponCode, status: "enabled" });
         if (!coupon) {
             return res.status(404).json({ message: "Coupon not found or disabled" });
         }
@@ -323,16 +324,71 @@ router.post("/users/:id/add-coupon", async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        await user.useCoupon(CouponCode);
+        // Thêm coupon vào User
+        await user.useCoupon(couponCode);
 
         coupon.usesCount += 1;
         await coupon.save();
 
-        return res.status(200).json({ message: "Coupon added successfully", coupons: user.coupons });
+        return res.status(200).json({
+            message: "Coupon added successfully",
+            coupons: user.Usercoupons,
+        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 });
+
+
+
+router.patch("/users/:id/update-coupon", async (req, res) => {
+    const { id } = req.params;
+    const { couponCode, type, value, quantity } = req.body; // Nhận thông tin coupon từ request body
+
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Kiểm tra coupon có tồn tại trong bảng Coupon
+        const coupon = await Coupon.findOne({ code: couponCode, status: "enabled" });
+        if (!coupon) {
+            return res.status(404).json({ message: "Coupon not found" });
+        }
+
+        // Cập nhật coupon cho người dùng
+        const couponIndex = user.Usercoupons.findIndex(item => item.code === couponCode);
+
+        if (couponIndex > -1) {
+            // Nếu coupon đã tồn tại, cập nhật thông tin coupon
+            user.Usercoupons[couponIndex] = {
+                ...user.Usercoupons[couponIndex],
+                type: type || user.Usercoupons[couponIndex].type,
+                value: value || user.Usercoupons[couponIndex].value,
+                quantity: quantity || user.Usercoupons[couponIndex].quantity,
+            };
+        } else {
+
+            user.Usercoupons.push({
+                code: couponCode,
+                type: type || coupon.type,  // Lấy giá trị type mặc định nếu không có trong request
+                value: value || coupon.value,  // Lấy giá trị value mặc định nếu không có trong request
+                quantity: quantity || 1,  // Giá trị mặc định là 1 nếu không có
+            });
+        }
+
+        await user.save(); // Lưu cập nhật của người dùng
+
+        return res.status(200).json({
+            message: "Coupon updated successfully",
+            coupons: user.Usercoupons, // Trả về danh sách coupon của người dùng
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
 
 
 module.exports = router;

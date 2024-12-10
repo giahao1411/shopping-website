@@ -201,12 +201,12 @@ const MainContent = () => {
             {selectedFilter === "all" ? (
                 <>
                     {/* New Arrivals */}
-                    <div className="mt-10">
+                    {/* <div className="mt-10">
                         <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
                             New Arrival
                         </h2>
                         {renderProductGrid(newArrivals.slice(0, 5))}
-                    </div>
+                    </div> */}
 
                     {/* Best Selling */}
                     <div className="mt-10">

@@ -4,21 +4,23 @@ import Swal from "sweetalert2";
 
 const AddCouponModal = ({ isOpen, onClose, userId, onAddCoupon }) => {
 	const [couponCode, setCouponCode] = useState("");
+
 	const api = import.meta.env.VITE_APP_URL;
 
-	// Hàm xử lý khi gửi mã coupon
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		const trimmedCouponCode = couponCode.trim();
 		if (!trimmedCouponCode) {
-			alert("Please fill in all fields.");
+			alert("Vui lòng nhập mã coupon.");
 			return;
 		}
 
+		console.log("Đang gửi mã coupon:", trimmedCouponCode);
+
 		try {
 			const response = await axios.post(`${api}/api/user/users/${userId}/add-coupon`, {
-				couponCode: trimmedCouponCode,
+				couponCode: trimmedCouponCode, // Đảm bảo tên trường là "couponCode"
 			});
 
 			if (response.status === 200) {
@@ -28,21 +30,38 @@ const AddCouponModal = ({ isOpen, onClose, userId, onAddCoupon }) => {
 					showConfirmButton: false,
 					timer: 1500,
 				});
-				// Cập nhật danh sách coupon mới trong trạng thái của UserProfile
-				onAddCoupon(response.data.user.coupons);
-				setCouponCode(""); // Reset input
+				onAddCoupon(trimmedCouponCode);
+				setCouponCode(""); // Xóa input sau khi thêm thành công
 				onClose(); // Đóng modal
+			} else {
+				Swal.fire({
+					icon: "error",
+					title: response.data.message || "Mã coupon không tồn tại hoặc đã bị vô hiệu hóa.",
+					showConfirmButton: true,
+				});
 			}
 		} catch (error) {
 			if (error.response) {
+				console.error("Lỗi từ API: ", error.response);
 				Swal.fire({
 					icon: "error",
-					title: error.response.data.message,
-					showConfirmButton: false,
-					timer: 1500,
+					title: error.response.data.message || "Đã xảy ra lỗi trên máy chủ.",
+					showConfirmButton: true,
+				});
+			} else if (error.request) {
+				console.error("Không có phản hồi từ máy chủ: ", error.request);
+				Swal.fire({
+					icon: "error",
+					title: "Không nhận được phản hồi từ máy chủ.",
+					showConfirmButton: true,
 				});
 			} else {
-				console.error(error.message);
+				console.error("Lỗi không xác định: ", error.message);
+				Swal.fire({
+					icon: "error",
+					title: "Đã xảy ra lỗi không xác định.",
+					showConfirmButton: true,
+				});
 			}
 		}
 	};
