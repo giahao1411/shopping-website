@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "./InputField";
+import Swal from "sweetalert2";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -20,6 +21,9 @@ const ForgotPassword = () => {
 
         if (!email) {
             setError("Please fill in email field.");
+            return;
+        } else if (email === "admin@gmail.com") {
+            setError("You can not change this account's password");
             return;
         }
 
@@ -62,15 +66,25 @@ const ForgotPassword = () => {
             );
 
             if (response.status === 200) {
-                alert(response.data.message);
+                Swal.fire({
+                    icon: "success",
+                    title: response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
                 navigate("/account/login");
             }
         } catch (error) {
-            console.error("Updating failed:", error);
-            setError(
-                error.response?.data?.message ||
-                    "Error updating password. Please try again."
-            );
+            if (error.response) {
+                Swal.fire({
+                    icon: "error",
+                    title: error.response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                console.error(error.message);
+            }
         }
     };
 

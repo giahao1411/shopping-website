@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "./InputField";
+import Swal from "sweetalert2";
 
 const Register = () => {
     const [username, setUsername] = useState("");
@@ -38,20 +39,27 @@ const Register = () => {
             });
 
             if (response.status === 200) {
-                alert(response.data.message);
+                Swal.fire({
+                    icon: "success",
+                    title: response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
                 navigate("/account/login");
             }
         } catch (error) {
             if (error.response) {
-                setError(
-                    error.response.data.message ||
-                        "An unexpected error occurred."
-                );
+                Swal.fire({
+                    icon: "error",
+                    title: error.response.data.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
             } else {
                 console.error(error);
             }
         } finally {
-            setLoading(false); // reset loading state
+            setLoading(false);
         }
     };
 
