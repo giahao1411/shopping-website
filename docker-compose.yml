@@ -1,9 +1,9 @@
 services:
   db-init:
     build:
-      context: ./back-end  # Thay đổi context về thư mục đúng chứa Dockerfile
+      context: ./back-end  
     image: data
-    command: ["node", "/app/config/database.js"]  # Đảm bảo database.js tồn tại trong thư mục này
+    command: ["node", "config/database.js"]  
     environment:
       - MONGO_URI=mongodb://mongodb:27017/shopping-website
     depends_on:
