@@ -1,10 +1,22 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BiInfoCircle } from "react-icons/bi";
+import { SESSION } from "../../../libs/constant";
 import { Link } from "react-router-dom";
 import { formatDate, formatMoney } from "../../../libs/utilities";
 
 const OrderTracking = () => {
+    const storedUser = JSON.parse(localStorage.getItem(SESSION));
+    if (!storedUser) {
+        Swal.fire({
+            icon: "error",
+            title: "You need to login to view cart",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        return;
+    }
+
     const [orders, setOrders] = useState([]);
     const api = import.meta.env.VITE_APP_URL;
 
@@ -27,7 +39,9 @@ const OrderTracking = () => {
     // Fetch orders from the server
     const fetchOrders = async () => {
         try {
-            const response = await axios.get(`${api}/api/order/orders?limit=8`);
+            const response = await axios.get(
+                `${api}/api/order/orders/user/${storedUser.userId}?limit=8`
+            );
             if (response.status === 200) {
                 console.log("Fetched orders:", response.data.orders);
                 setOrders(response.data.orders);

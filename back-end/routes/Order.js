@@ -66,7 +66,6 @@ router.get("/orders/user/:userId", async (req, res) => {
     }
 });
 
-
 router.post("/orders/:userId", async (req, res) => {
     const { userId } = req.params;
     const { username, phone, address, cartItems } = req.body;
