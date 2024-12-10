@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import  { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { formatMoney } from "../../../libs/utilities";
-import { Search, Filter, Star } from "lucide-react";
+import {  Star } from "lucide-react";
 
-const ProductCard = ({ product, api }) => (
+const ProductCard = ({ product }) => (
     <Link
         to={`/details/product/${product._id}`}
         className="group transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
@@ -16,7 +16,7 @@ const ProductCard = ({ product, api }) => (
                     alt={product.name}
                     className="w-full h-70 object-cover group-hover:scale-105 transition-transform"
                 />
-                {product.discount > 0 && (
+                {product &&  product.discount > 0 && (
                     <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs">
                         {product.discount}% OFF
                     </span>

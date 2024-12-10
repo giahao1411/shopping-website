@@ -60,8 +60,15 @@ const SearchResult = () => {
     const [error, setError] = useState(null);
     const api = import.meta.env.VITE_APP_URL;
 
-    // Enhanced filter states
-    const [filters, setFilters] = useState({
+    // Tách riêng state cho filters tạm thời và filters đang áp dụng
+    const [selectedFilters, setSelectedFilters] = useState({
+        priceRange: { min: 0, max: Infinity },
+        selectedCategories: [],
+        sortBy: 'relevance',
+        searchQuery: query
+    });
+
+    const [appliedFilters, setAppliedFilters] = useState({
         priceRange: { min: 0, max: Infinity },
         selectedCategories: [],
         sortBy: 'relevance',
@@ -76,7 +83,6 @@ const SearchResult = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
-    
 
     // Fetch data and setup
     useEffect(() => {
@@ -99,6 +105,12 @@ const SearchResult = () => {
                     maxPrice: maxProductPrice
                 });
 
+                // Set initial max price for range slider
+                setSelectedFilters(prev => ({
+                    ...prev,
+                    priceRange: { min: 0, max: maxProductPrice }
+                }));
+
                 // Initial filtering
                 applyFilters(fetchedProducts);
             } catch (error) {
@@ -116,25 +128,21 @@ const SearchResult = () => {
     // Comprehensive filtering function
     const applyFilters = (sourceProducts = products) => {
         let filtered = sourceProducts.filter(product => {
-            // Text search
-            const matchesSearch = !filters.searchQuery || 
-                product.name.toLowerCase().includes(filters.searchQuery.toLowerCase());
+            const matchesSearch = !appliedFilters.searchQuery || 
+                product.name.toLowerCase().includes(appliedFilters.searchQuery.toLowerCase());
 
-            // Price range
             const inPriceRange = 
-                product.price >= filters.priceRange.min && 
-                product.price <= filters.priceRange.max;
+                product.price >= appliedFilters.priceRange.min && 
+                product.price <= appliedFilters.priceRange.max;
 
-            // Category filter
             const matchesCategory = 
-                filters.selectedCategories.length === 0 || 
-                filters.selectedCategories.includes(product.category);
+                appliedFilters.selectedCategories.length === 0 || 
+                appliedFilters.selectedCategories.includes(product.category);
 
             return matchesSearch && inPriceRange && matchesCategory;
         });
 
-        // Sorting logic
-        switch (filters.sortBy) {
+        switch (appliedFilters.sortBy) {
             case 'priceAsc':
                 filtered.sort((a, b) => a.price - b.price);
                 break;
@@ -151,11 +159,16 @@ const SearchResult = () => {
         setFilteredProducts(filtered);
     };
 
-    // Update filters and reapply
-    const updateFilters = (newFilterPart) => {
-        const updatedFilters = { ...filters, ...newFilterPart };
-        setFilters(updatedFilters);
-        applyFilters();
+    // Hàm để cập nhật filters tạm thời
+    const updateSelectedFilters = (newFilterPart) => {
+        setSelectedFilters(prev => ({ ...prev, ...newFilterPart }));
+    };
+
+    // Hàm để áp dụng các filter đã chọn
+    const applySelectedFilters = () => {
+        // Copy selectedFilters sang appliedFilters
+        setAppliedFilters(selectedFilters);
+        applyFilters(); // Sau đó áp dụng filter
     };
 
     if (loading) return (
@@ -190,8 +203,8 @@ const SearchResult = () => {
                             type="range"
                             min="0"
                             max={metadata.maxPrice}
-                            value={filters.priceRange.max}
-                            onChange={(e) => updateFilters({ 
+                            value={selectedFilters.priceRange.max}
+                            onChange={(e) => updateSelectedFilters({ 
                                 priceRange: { 
                                     min: 0, 
                                     max: Number(e.target.value) 
@@ -201,7 +214,7 @@ const SearchResult = () => {
                         />
                         <div className="flex justify-between mt-2 text-sm text-gray-600">
                             <span>0</span>
-                            <span>{formatMoney(filters.priceRange.max)}</span>
+                            <span>{formatMoney(selectedFilters.priceRange.max)}</span>
                         </div>
                     </div>
 
@@ -212,14 +225,14 @@ const SearchResult = () => {
                             <label key={category} className="flex items-center mb-2">
                                 <input
                                     type="checkbox"
-                                    checked={filters.selectedCategories.includes(category)}
+                                    checked={selectedFilters.selectedCategories.includes(category)}
                                     onChange={() => {
-                                        const currentCategories = filters.selectedCategories;
+                                        const currentCategories = selectedFilters.selectedCategories;
                                         const updatedCategories = currentCategories.includes(category)
                                             ? currentCategories.filter(c => c !== category)
                                             : [...currentCategories, category];
                                         
-                                        updateFilters({ 
+                                        updateSelectedFilters({ 
                                             selectedCategories: updatedCategories 
                                         });
                                     }}
@@ -234,8 +247,8 @@ const SearchResult = () => {
                     <div>
                         <h4 className="font-semibold text-gray-700 mb-3">Sort By</h4>
                         <select
-                            value={filters.sortBy}
-                            onChange={(e) => updateFilters({ 
+                            value={selectedFilters.sortBy}
+                            onChange={(e) => updateSelectedFilters({ 
                                 sortBy: e.target.value 
                             })}
                             className="w-full p-2 border rounded-md"
@@ -247,7 +260,7 @@ const SearchResult = () => {
                         </select>
                     </div>
                     <button
-                        onClick={applyFilters}
+                        onClick={applySelectedFilters}
                         className="mt-6 w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                     >
                         Apply Filters

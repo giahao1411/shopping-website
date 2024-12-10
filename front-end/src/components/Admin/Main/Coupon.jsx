@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BiSolidChevronLeft, BiSolidChevronRight } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { Link } from "react-router-dom"; // Ensure this is imported
 import Swal from "sweetalert2";
 
 const Coupon = () => {
@@ -80,9 +81,7 @@ const Coupon = () => {
 
 	const updateStatus = async (code, status) => {
 		try {
-			const response = await axios.patch(`${api}/api/coupon/coupons/edit/${code}`, {
-				status,
-			});
+			const response = await axios.patch(`${api}/api/coupon/coupons/edit/${code}`, { status });
 			if (response.status === 200) {
 				Swal.fire({
 					icon: "success",
@@ -100,6 +99,17 @@ const Coupon = () => {
 				showConfirmButton: false,
 				timer: 1500,
 			});
+		}
+	};
+
+	const getStatusColor = (status) => {
+		switch (status) {
+			case "disabled":
+				return "text-red-500";
+			case "enabled":
+				return "text-green-500";
+			default:
+				return "text-gray-500";
 		}
 	};
 
@@ -127,14 +137,9 @@ const Coupon = () => {
 			</div>
 
 			<div className="my-5">
-				<button
-					className="text-left text-blue-600 hover:text-blue-700 hover:underline"
-					onClick={() => {
-						Swal.fire("Redirect to Add New Coupon", "", "info");
-					}}
-				>
-					Add new coupon
-				</button>
+				<Link to="/admin/coupon/create" className="text-left text-blue-600 hover:text-blue-700 hover:underline">
+					Add new Coupon
+				</Link>
 			</div>
 
 			<div>
@@ -160,17 +165,23 @@ const Coupon = () => {
 									<select
 										value={coupon.status}
 										onChange={(e) => updateStatus(coupon.code, e.target.value)}
-										className="border rounded p-1"
+										className={`border-none bg-inherit font-semibold rounded p-1 ${getStatusColor(coupon.status)}`}
 									>
-										<option value="enabled">Enabled</option>
-										<option value="disabled">Disabled</option>
+										<option value="enabled" className="text-green-500">
+											Enabled
+										</option>
+										<option value="disabled" className="text-red-500">
+											Disabled
+										</option>
 									</select>
 								</td>
 								<td className="px-4 py-3 border border-gray-200 text-center">
-									<FaRegTrashAlt
-										className="text-xl cursor-pointer hover:text-blue-500 text-center"
-										onClick={() => deleteCoupon(coupon.code)}
-									/>
+									<div className="flex justify-center items-center">
+										<FaRegTrashAlt
+											className="text-xl cursor-pointer hover:text-blue-500"
+											onClick={() => deleteCoupon(coupon.code)}
+										/>
+									</div>
 								</td>
 							</tr>
 						))}

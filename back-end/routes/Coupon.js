@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Coupon = require("../models/CouponModel"); // Đảm bảo model Coupon đã được import
+const Coupon = require("../models/CouponModel");
 
 // API lấy tất cả coupon
 router.get("/coupons", async (req, res) => {
@@ -11,7 +11,6 @@ router.get("/coupons", async (req, res) => {
 
         // Lấy tất cả coupon, có phân trang
         const coupons = await Coupon.find().skip(skip).limit(parseInt(limit));
-
         const totalCoupons = await Coupon.countDocuments();
 
         res.status(200).json({
@@ -20,6 +19,7 @@ router.get("/coupons", async (req, res) => {
             currentPage: parseInt(page),
         });
     } catch (error) {
+        console.error("Error fetching coupons:", error);
         res.status(500).json({ message: "Error fetching coupons", error });
     }
 });
@@ -35,6 +35,7 @@ router.get("/coupons/:code", async (req, res) => {
 
         res.status(200).json(coupon);
     } catch (error) {
+        console.error("Error fetching coupon:", error);
         res.status(500).json({ message: "Error fetching coupon", error });
     }
 });
@@ -43,37 +44,30 @@ router.get("/coupons/:code", async (req, res) => {
 router.post("/coupons", async (req, res) => {
     const { name, type, value, maxUses } = req.body;
 
-    // Log dữ liệu nhận được
-    console.log("Received data:", req.body);
-
     // Kiểm tra dữ liệu đầu vào
-    if (!name || !type || (type !== "freeship" && !value) || !maxUses) {
-        return res
-            .status(400)
-            .json({ message: "Please provide all required fields." });
+    if (!name || !type || (type !== "freeship" && (value === undefined || value === null)) || !maxUses) {
+        return res.status(400).json({ message: "Please provide all required fields." });
     }
 
     try {
-        // Gán value = 0 nếu type là freeship (được xử lý trong Mongoose)
+        // Kiểm tra giá trị `value` nếu type là "freeship"
         if (type === "freeship" && value !== 0) {
-            return res
-                .status(400)
-                .json({ message: "Value for 'freeship' type must be 0" });
+            return res.status(400).json({ message: "Value for 'freeship' type must be 0" });
         }
 
         const newCoupon = new Coupon({
             name,
             type,
-            value,
+            value: type === "freeship" ? 0 : value, // Đặt value = 0 nếu type là freeship
             maxUses,
         });
 
         await newCoupon.save();
 
-        return res.status(201).json({
+        res.status(201).json({
             message: "Coupon created successfully",
             coupon: {
-                code: newCoupon.code, // Coupon code tự động sinh ra
+                code: newCoupon.code,
                 name: newCoupon.name,
                 type: newCoupon.type,
                 value: newCoupon.value,
@@ -82,7 +76,8 @@ router.post("/coupons", async (req, res) => {
             },
         });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.error("Error creating coupon:", error);
+        res.status(500).json({ message: "Error creating coupon", error });
     }
 });
 
@@ -92,9 +87,7 @@ router.patch("/coupons/edit/:code", async (req, res) => {
     const { status } = req.body;
 
     if (!["enabled", "disabled"].includes(status)) {
-        return res
-            .status(400)
-            .json({ message: "Invalid status. Use 'enabled' or 'disabled'" });
+        return res.status(400).json({ message: "Invalid status. Use 'enabled' or 'disabled'." });
     }
 
     try {
@@ -103,42 +96,35 @@ router.patch("/coupons/edit/:code", async (req, res) => {
             return res.status(404).json({ message: "Coupon not found" });
         }
 
-        // Cập nhật trạng thái coupon
         coupon.status = status;
         await coupon.save();
 
-        return res.status(200).json({
+        res.status(200).json({
             message: `Coupon status updated to ${status}`,
-            coupon: coupon,
+            coupon,
         });
     } catch (error) {
-        console.error(error);
-        return res
-            .status(500)
-            .json({ message: "Server error while updating coupon status" });
+        console.error("Error updating coupon status:", error);
+        res.status(500).json({ message: "Server error while updating coupon status." });
     }
 });
 
-// Xoá coupon theo mã coupon
+// Xóa coupon theo mã coupon
 router.delete("/coupons/delete/:code", async (req, res) => {
     const { code } = req.params;
 
     try {
-        const coupon = await Coupon.findOne({ code });
+        const coupon = await Coupon.findOneAndDelete({ code });
         if (!coupon) {
-            return res.status(404).json({ message: "Coupon not found" });
+            return res.status(404).json({ message: "Coupon not found." });
         }
 
-        await coupon.remove(); // Xóa coupon khỏi database
-
-        return res.status(200).json({
-            message: `Coupon with code ${code} deleted successfully`,
+        res.status(200).json({
+            message: `Coupon with code ${code} deleted successfully.`,
         });
     } catch (error) {
-        console.error(error);
-        return res
-            .status(500)
-            .json({ message: "Server error while deleting coupon" });
+        console.error("Error deleting coupon:", error);
+        res.status(500).json({ message: "Server error while deleting coupon." });
     }
 });
 
