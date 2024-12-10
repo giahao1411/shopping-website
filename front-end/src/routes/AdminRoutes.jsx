@@ -12,50 +12,109 @@ import CreateCoupon from "../components/Admin/Partials/CreateCoupon";
 import CreateProduct from "../components/Admin/Partials/CreateProduct";
 import ProductDetail from "../components/Admin/Partials/ProductDetail";
 import OrderDetail from "../components/Admin/Partials/OrderDetail";
+import PrivateRoute from "../libs/check";
 
 const AdminRoutes = [
-    <Route key="admin-dashboard" path="/admin" element={<Admin />}>
+    <Route
+        key="admin-dashboard"
+        path="/admin"
+        element={
+            <PrivateRoute allowedRoles={["admin", "superadmin"]}>
+                <Admin />
+            </PrivateRoute>
+        }
+    >
         <Route key="admin-dashboard" index element={<Dashboard />} />
-        <Route key="admin-user" path="/admin/user" element={<User />} />,
+        <Route
+            key="admin-user"
+            path="/admin/user"
+            element={
+                <PrivateRoute allowedRoles={["admin", "superadmin"]}>
+                    <User />
+                </PrivateRoute>
+            }
+        />
         <Route
             key="admin-product"
             path="/admin/product"
-            element={<Product />}
+            element={
+                <PrivateRoute allowedRoles={["admin", "superadmin"]}>
+                    <Product />
+                </PrivateRoute>
+            }
         />
-        ,
-        <Route key="admin-order" path="/admin/order" element={<Order />} />,
+        <Route
+            key="admin-order"
+            path="/admin/order"
+            element={
+                <PrivateRoute allowedRoles={["admin", "superadmin"]}>
+                    <Order />
+                </PrivateRoute>
+            }
+        />
         <Route
             key="admin-category"
             path="/admin/category"
-            element={<Category />}
+            element={
+                <PrivateRoute allowedRoles={["admin"]}>
+                    <Category />
+                </PrivateRoute>
+            }
         />
-        ,
-        <Route key="admin-coupon" path="/admin/coupon" element={<Coupon />} />,
+        <Route
+            key="admin-coupon"
+            path="/admin/coupon"
+            element={
+                <PrivateRoute allowedRoles={["admin"]}>
+                    <Coupon />
+                </PrivateRoute>
+            }
+        />
     </Route>,
     <Route
         key="admin-create-product"
         path="/admin/product/create"
-        element={<CreateProduct />}
+        element={
+            <PrivateRoute allowedRoles={["admin", "superadmin"]}>
+                <CreateProduct />
+            </PrivateRoute>
+        }
     />,
     <Route
         key="admin-product-detail"
         path="/admin/product/:productId"
-        element={<ProductDetail />}
+        element={
+            <PrivateRoute allowedRoles={["admin", "superadmin"]}>
+                <ProductDetail />
+            </PrivateRoute>
+        }
     />,
     <Route
         key="admin-create-category"
         path="/admin/category/create"
-        element={<CreateCategory />}
+        element={
+            <PrivateRoute allowedRoles={["admin"]}>
+                <CreateCategory />
+            </PrivateRoute>
+        }
     />,
     <Route
         key="admin-create-coupon"
         path="/admin/coupon/create"
-        element={<CreateCoupon />}
+        element={
+            <PrivateRoute allowedRoles={["admin"]}>
+                <CreateCoupon />
+            </PrivateRoute>
+        }
     />,
     <Route
         key="admin-order-detail"
         path="/admin/order/:orderId"
-        element={<OrderDetail />}
+        element={
+            <PrivateRoute allowedRoles={["admin", "superadmin"]}>
+                <OrderDetail />
+            </PrivateRoute>
+        }
     />,
 ];
 
