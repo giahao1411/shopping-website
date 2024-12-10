@@ -21,7 +21,15 @@ const HomeRoutes = [
             path="/details/product/:productId"
             element={<ProductDetail />}
         />
-        <Route key="home-cart" path="/cart" element={<Cart />} />
+        <Route
+            key="home-cart"
+            path="/cart"
+            element={
+                <PrivateRoute allowedRoles={["user"]}>
+                    <Cart />
+                </PrivateRoute>
+            }
+        />
         <Route
             key="home-order-history"
             path="/order-history"
