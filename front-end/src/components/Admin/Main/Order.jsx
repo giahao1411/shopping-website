@@ -37,7 +37,6 @@ const Order = () => {
                 `${api}/api/order/orders?page=${page}&limit=8`
             );
             if (response.status === 200) {
-                console.log("Fetched orders:", response.data.orders); // Log orders to see the fetched data
                 setOrders(response.data.orders);
                 setTotalPage(response.data.totalPages);
             }
@@ -49,8 +48,6 @@ const Order = () => {
     // Update order status
     const updateOrderStatus = async (id, newStatus) => {
         try {
-            console.log("Updating status for order:", id);
-
             const response = await axios.patch(
                 `${api}/api/order/orders/edit/${id}`,
                 {

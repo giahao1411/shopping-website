@@ -1,61 +1,45 @@
 services:
-  backend-app:
-    build:
-      context: ./back-end  # Docker sẽ tìm Dockerfile trong thư mục này
-    container_name: backend-app
-    ports:
-      - "8080:8080"
-    env_file:
-      - ./back-end/.env
-    environment:
-      - NODE_ENV=docker
-      - MONGO_URI=mongodb://mongodb:27017/shopping-website
-      - PORT=8080
-    depends_on:
-      - mongodb
-    networks:
-      - app-network
-    restart: unless-stopped
-    volumes:
-      - ./back-end/uploads:/app/uploads
-
-  frontend-app:
-    build:
-      context: ./front-end
-    container_name: frontend-app
-    ports:
-      - "5173:5173"
-    env_file:
-      - ./front-end/.env
-    environment:
-      - VITE_APP_URL=http://localhost:8080  # URL của backend
-    depends_on:
-      - backend-app  # Thêm phụ thuộc để frontend không khởi động trước backend
-    networks:
-      - app-network
-    restart: unless-stopped
-    command: ["npm", "start"]
-
   mongodb:
     image: mongo:5.0
-    container_name: mongodb-container
+    container_name: shopping-mongodb
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - mongo_shopping_data:/data/db
     networks:
-      - app-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand('ping').ok"]
-      interval: 30s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
+      - shopping-network
+
+  backend:
+    build:
+      context: ./back-end
+    env_file:
+      - ./back-end/.env
+    container_name: backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    networks:
+      - shopping-network
+
+  frontend:
+    build:
+      context: ./front-end
+    env_file:
+      - ./front-end/.env
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    command: npm run dev -- --host
+    networks:
+      - shopping-network
 
 volumes:
-  mongo-data:
+  mongo_shopping_data:
+
 
 networks:
-  app-network:
+  shopping-network:
     driver: bridge
