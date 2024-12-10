@@ -10,7 +10,7 @@ import UserProfile from "../components/Home/Main/UserProfile";
 import Review from "../components/Home/Main/Review";
 import Checkout from "../components/Home/Main/Checkout";
 import SearchResult from "../components/Home/Main/SearchResult";
-
+import OrderDetail from "../components/Home/Main/OrderDetail";
 
 const HomeRoutes = [
     <Route key="home" path="/" element={<Home />}>
@@ -36,6 +36,12 @@ const HomeRoutes = [
             key="home-search-results"
             path="/search-results/:query"
             element={<SearchResult />}
+        />
+
+        <Route
+            key="home-order-detail"
+            path="/order-detail/:orderId"
+            element={<OrderDetail />}
         />
 
         <Route key="home-review" path="/review/:orderId" element={<Review />} />

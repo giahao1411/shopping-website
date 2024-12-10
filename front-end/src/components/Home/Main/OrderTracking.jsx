@@ -60,6 +60,10 @@ const OrderTracking = () => {
         fetchOrders();
     }, []);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="min-h-screen mt-20 w-full max-w-screen-lg mx-auto">
             <div className="flex justify-between items-center mb-6">
