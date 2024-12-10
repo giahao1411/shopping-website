@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("../models/UserModel");
+const Coupon = require("../models/CouponModel");
 
 const validatePhone = require("../utilities/validatePhone");
 
@@ -302,5 +303,41 @@ router.delete("/users/:id/delete-phone/:phone", async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 });
+
+router.post("/users/:id/add-coupon", async (req, res) => {
+    const { id } = req.params;
+    const { CouponCode } = req.body;
+
+    try {
+        // Kiểm tra coupon có tồn tại trong bảng Coupon và trạng thái của nó là "enabled"
+        const coupon = await Coupon.findOne({ code: CouponCode, status: "enabled" });
+        if (!coupon) {
+            return res.status(404).json({ message: "Coupon not found or disabled" });
+        }
+
+        // Kiểm tra số lần sử dụng tối đa
+        if (coupon.usesCount >= coupon.maxUses) {
+            return res.status(400).json({ message: "Coupon has reached its usage limit" });
+        }
+
+        // Tìm người dùng trong cơ sở dữ liệu
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Sử dụng phương thức `useCoupon` trong UserModel để thêm coupon
+        await user.useCoupon(CouponCode);
+
+        // Cập nhật số lần sử dụng coupon
+        coupon.usesCount += 1;
+        await coupon.save();
+
+        return res.status(200).json({ message: "Coupon added successfully", coupons: user.coupons });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
 
 module.exports = router;

@@ -114,7 +114,7 @@ router.delete("/coupons/delete/:code", async (req, res) => {
     const { code } = req.params;
 
     try {
-        const coupon = await Coupon.findOneAndDelete({ code });
+        const coupon = await Coupon.findOneAndDelete({ code, status: "enabled" });
         if (!coupon) {
             return res.status(404).json({ message: "Coupon not found." });
         }
@@ -122,6 +122,11 @@ router.delete("/coupons/delete/:code", async (req, res) => {
         res.status(200).json({
             message: `Coupon with code ${code} deleted successfully.`,
         });
+
+        if (coupon.usesCount >= coupon.maxUses) {
+            return res.status(400).json({ message: 'Coupon has reached its usage limit' });
+        }
+
     } catch (error) {
         console.error("Error deleting coupon:", error);
         res.status(500).json({ message: "Server error while deleting coupon." });
