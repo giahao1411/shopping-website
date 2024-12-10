@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
+const CouponModel = require("./CouponModel");
 
 const UserSchema = new Schema({
     username: { type: String, required: true },
@@ -10,10 +11,12 @@ const UserSchema = new Schema({
     status: { type: String, enum: ["active", "banned"], default: "active" },
     addresses: { type: [String], default: [] },
 
-    // Mảng lưu coupon đã áp dụng
-    coupons: [
+
+    Usercoupons: [
         {
-            code: { type: String, ref: "Coupon" }, // Tham chiếu coupon qua code
+            code: { type: String, ref: "Coupon" },
+            type: { type: String }, // Thêm type
+            value: { type: Number },// Tham chiếu coupon qua code
             quantity: { type: Number, default: 0, min: 0 }, // Số lần người dùng sử dụng coupon này
         }
     ],
@@ -41,16 +44,31 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
 
 // Cập nhật coupon khi người dùng áp dụng
 UserSchema.methods.useCoupon = async function (couponCode) {
+    // Lấy thông tin coupon từ bảng Coupon
+    const coupon = await CouponModel.findOne({ code: couponCode });
+
+    if (!coupon) {
+        throw new Error("Coupon not found.");
+    }
+
     // Kiểm tra xem coupon có trong mảng coupons của người dùng không
-    const couponIndex = this.coupons.findIndex((coupon) => coupon.code === couponCode);
+    const couponIndex = this.Usercoupons.findIndex((couponItem) => couponItem.code === couponCode);
 
     if (couponIndex > -1) {
-        this.coupons[couponIndex].quantity += 1; // Nếu coupon đã tồn tại, tăng số lần sử dụng
+        // Nếu coupon đã tồn tại, tăng số lần sử dụng
+        this.Usercoupons[couponIndex].quantity += 1;
     } else {
-        this.coupons.push({ code: couponCode, quantity: 1 }); // Nếu chưa tồn tại, thêm mới
+        // Nếu chưa tồn tại, thêm mới
+        this.Usercoupons.push({
+            code: couponCode,
+            type: coupon.type,  // Lấy type từ Coupon
+            value: coupon.value,  // Lấy value từ Coupon
+            quantity: 1,
+        });
     }
 
     await this.save();
 };
+
 
 module.exports = model("User", UserSchema);

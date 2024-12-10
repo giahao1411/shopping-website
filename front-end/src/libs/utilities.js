@@ -19,3 +19,13 @@ export function formatDate(date) {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(date).toLocaleDateString("en-US", options);
 }
+
+export const mapCoupons = async (coupons) => {
+  return coupons.map((coupon) => {
+    return {
+      ...coupon,
+      name: coupon.name || "No name",  // Thêm trường name
+      type: coupon.type || "No type",  // Thêm trường type
+    };
+  });
+};
