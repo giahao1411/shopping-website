@@ -1,197 +1,154 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { BiInfoCircle } from "react-icons/bi";
+import { Link, useNavigate } from "react-router-dom";
+import { formatDate, formatMoney } from "../../../libs/utilities"; // Make sure you have utility functions
 
 const OrderHistory = () => {
-	const [orders, setOrders] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
-	const [searchQuery, setSearchQuery] = useState("");
-	const [filteredOrders, setFilteredOrders] = useState([]);
-	const navigate = useNavigate();
-	const api = import.meta.env.VITE_APP_URL;
+  const [orders, setOrders] = useState([]);
+  const api = import.meta.env.VITE_APP_URL;
+  const navigate = useNavigate();  // For navigating to the product detail page
 
-	const simulatedOrders = [
-		{
-			_id: "1",
-			createdAt: Date.now(),
-			totalPrice: "1,000",
-			status: "Pending",
-			items: [
-				{ _id: "a1", name: "Product A", image: "link_to_image_A" },
-				{ _id: "a2", name: "Product B", image: "link_to_image_B" },
-			],
-		},
-		{
-			_id: "2",
-			createdAt: Date.now(),
-			totalPrice: "2,000",
-			status: "Confirmed",
-			items: [{ _id: "b1", name: "Product C", image: "link_to_image_C" }],
-		},
-		{
-			_id: "3",
-			createdAt: Date.now(),
-			totalPrice: "3,500",
-			status: "Delivered",
-			items: [
-				{ _id: "c1", name: "Product D", image: "link_to_image_D" },
-				{ _id: "c2", name: "Product E", image: "link_to_image_E" },
-			],
-		},
-		{
-			_id: "4",
-			createdAt: Date.now(),
-			totalPrice: "1,500",
-			status: "Cancelled",
-			items: [{ _id: "d1", name: "Product F", image: "link_to_image_F" }],
-		},
-	];
+  // Get status color for styling
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending":
+        return "text-yellow-500";
+      case "Confirmed":
+      case "Delivering":
+        return "text-green-500";
+      case "Delivered":
+        return "text-blue-500";
+      case "Cancelled":
+        return "text-red-500";
+      default:
+        return "text-gray-500";
+    }
+  };
 
-	useEffect(() => {
-		setTimeout(() => {
-			setOrders(simulatedOrders);
-			setLoading(false);
-			setFilteredOrders(simulatedOrders);
-		}, 1000);
-	}, []);
+  // Fetch orders from the API
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(`${api}/api/order/orders?limit=8`);
+      if (response.status === 200) {
+        const filteredOrders = response.data.orders.filter(order =>
+          order.orderstatus === "Cancelled" || order.orderstatus === "Delivered"
+        );
+        setOrders(filteredOrders);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
 
-	const handleBack = () => {
-		navigate(-1);
-	};
+  // Handle Review button click
+  const handleReview = (orderId) => {
+    navigate(`/review/${orderId}`);
+  };
 
-	const handleSearch = () => {
-		const filtered = orders.filter(
-			(order) =>
-				order._id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				order.items.some((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-		);
-		setFilteredOrders(filtered);
-	};
+  // Handle order expansion
+  const [expandedOrder, setExpandedOrder] = useState(null);
 
-	const getStatusClass = (status) => {
-		switch (status) {
-			case "Pending":
-				return "text-yellow-500";
-			case "Confirmed":
-			case "Delivering":
-				return "text-green-500";
-			case "Delivered":
-				return "text-blue-500";
-			case "Cancelled":
-				return "text-red-500";
-			default:
-				return "text-gray-500";
-		}
-	};
+  const handleToggleDetails = (orderId) => {
+    setExpandedOrder(expandedOrder === orderId ? null : orderId);
+  };
 
-	const handleReview = (orderId) => {
-		navigate(`/review/${orderId}`);
-	};
+  // Fetch orders when component mounts
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-	const handleBuyAgain = () => {
-		navigate(`/checkout`);
-	};
+  return (
+    <div className="min-h-screen mt-20 w-full max-w-screen-lg mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl text-orange-500 font-bold text-gray-800">Order History</h1>
+        <Link to="/" className="text-sm text-blue-500 hover:text-blue-700">
+          <BiInfoCircle className="inline mr-2" /> Back to Home
+        </Link>
+      </div>
 
-	return (
-		<div className="py-20 font-sans min-h-screen">
-			<h2 className="text-center text-3xl font-semibold mb-8 text-orange-500">Order History</h2>
+      <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
+        <table className="min-w-full table-auto border-collapse">
+          <thead>
+            <tr className="bg-gray-100 text-gray-700">
+              <th className="px-4 py-3 text-center border-b">Order ID</th>
+              <th className="px-4 py-3 text-center border-b">Products</th>
+              <th className="px-4 py-3 text-center border-b">Date</th>
+              <th className="px-4 py-3 text-center border-b">Total</th>
+              <th className="px-4 py-3 text-center border-b">Status</th>
+              <th className="px-4 py-3 text-center border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.length > 0 ? (
+              orders.map((order, index) => (
+                <React.Fragment key={order._id || index}>
+                  <tr
+                    className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} cursor-pointer`}
+                    onClick={() => handleToggleDetails(order._id)}
+                  >
+                    <td className="px-4 py-3 text-center">{order._id}</td>
+                    <td className="px-4 py-3 text-center">
+                      {order.items?.map((item) => (
+                        <div key={item._id} className="flex items-center mb-2">
+                          <Link to={`/product/${item._id}`} className="flex items-center">
+                            <img
+                              src={item.image} // Ensure this is the correct image path
+                              alt={item.name}
+                              className="w-12 h-12 mr-2"
+                            />
+                            <span className="text-blue-600 hover:underline">{item.name}</span>
+                          </Link>
+                        </div>
+                      ))}
+                    </td>
+                    <td className="px-4 py-3 text-center">{formatDate(order.createdAt)}</td>
+                    <td className="px-4 py-3 text-center">{formatMoney(order.totalPrice)}</td>
+                    <td className={`px-4 py-3 text-center font-semibold ${getStatusColor(order.orderstatus)}`}>
+                      {order.orderstatus}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {order.orderstatus === "Delivered" && (
+                        <button
+                          className="py-2 px-4 bg-yellow-600 text-white rounded-md hover:bg-yellow-800 transition-colors"
+                          onClick={() => handleReview(order._id)}
+                        >
+                          Review
+                        </button>
+                      )}
+                    </td>
+                  </tr>
 
-			<div className="flex mb-6 max-w-7xl mx-auto">
-				<div className="flex w-full max-w-xs">
-					<input
-						type="text"
-						placeholder="Search by Order ID or Product Name"
-						className="w-full p-3 border border-gray-300 rounded-md"
-						onChange={(e) => setSearchQuery(e.target.value)}
-						value={searchQuery}
-					/>
-				</div>
-				<button
-					onClick={handleSearch}
-					className="ml-2 py-3 px-6 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition-colors"
-				>
-					Search
-				</button>
-			</div>
-
-			{loading ? (
-				<p className="text-center text-gray-600">Loading...</p>
-			) : error ? (
-				<p className="text-center text-red-500">{error}</p>
-			) : filteredOrders.length === 0 ? (
-				<p className="text-center text-gray-600">No orders found.</p>
-			) : (
-				<div className="overflow-x-auto">
-					<table className="w-full border border-gray-300 max-w-7xl mx-auto">
-						<thead>
-							<tr className="bg-gray-200">
-								<th className="p-4 border border-gray-300 text-center text-lg">Order ID</th>
-								<th className="p-4 border border-gray-300 text-center text-lg">Products</th>
-								<th className="p-4 border border-gray-300 text-center text-lg">Date</th>
-								<th className="p-4 border border-gray-300 text-center text-lg">Total</th>
-								<th className="p-4 border border-gray-300 text-center text-lg">Status</th>
-								<th className="p-4 border border-gray-300 text-center text-lg" colSpan={2}>
-									Actions
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							{filteredOrders.map((order, index) => (
-								<tr key={order._id || index} className="bg-gray-100 even:bg-white">
-									<td className="p-4 border border-gray-300 text-center">{order._id}</td>
-									<td className="p-4 border border-gray-300 text-center">
-										{/* Hiển thị tên sản phẩm */}
-										{order.items?.map((item) => (
-											<div key={item._id} className="flex items-center mb-2">
-												<img src={item.image} alt={item.name} className="w-12 h-12 mr-2" />
-												{item.name}
-											</div>
-										))}
-									</td>
-									<td className="p-4 border border-gray-300 text-center">
-										{new Date(order.createdAt).toLocaleDateString()}
-									</td>
-									<td className="p-4 border border-gray-300 text-center">{order.totalPrice}</td>
-									<td
-										className={`p-4 border border-gray-300 text-center font-semibold ${getStatusClass(order.status)}`}
-									>
-										{order.status}
-									</td>
-									{/* Cột Review */}
-									<td className="p-4 border border-gray-300 text-center">
-										{order.status === "Delivered" && (
-											<button
-												className="py-2 px-4 bg-yellow-600 text-white rounded-md hover:bg-yellow-800 transition-colors"
-												onClick={() => handleReview(order._id)}
-											>
-												Review
-											</button>
-										)}
-									</td>
-									{/* Cột Buy Again */}
-									<td className="p-4 border border-gray-300 text-center">
-										<button
-											className="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition-colors"
-											onClick={() => handleBuyAgain(order._id)}
-										>
-											Buy Again
-										</button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			)}
-
-			<button
-				className="block w-48 mx-auto mt-10 py-3 px-6 text-white bg-blue-600 hover:bg-blue-800 rounded-md transition-colors text-lg"
-				onClick={handleBack}
-			>
-				Back
-			</button>
-		</div>
-	);
+                  {/* Expanded Order Details */}
+                  {expandedOrder === order._id && (
+                    <tr className="bg-gray-200">
+                      <td colSpan="6" className="p-4">
+                        <h3 className="text-lg font-semibold mb-4">Product Details</h3>
+                        <ul>
+                          {order.items?.map((item) => (
+                            <li key={item._id} className="mb-2">
+                              <div><strong>Name:</strong> {item.name}</div>
+                              <div><strong>Price:</strong> {formatMoney(item.price)}</div>
+                              <div><strong>Description:</strong> {item.description || "No description available."}</div>
+                              <div><strong>Quantity:</strong> {item.quantity}</div>
+                            </li>
+                          ))}
+                        </ul>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center py-4 text-gray-500">No orders available</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default OrderHistory;
