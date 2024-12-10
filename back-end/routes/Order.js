@@ -41,6 +41,32 @@ router.get("/orders/:id", async (req, res) => {
     }
 });
 
+router.get("/orders/user/:userId", async (req, res) => {
+    const { userId } = req.params;
+    const { page = 1, limit = 8 } = req.query;
+
+    try {
+        const skip = (page - 1) * limit;
+
+        const orders = await Order.find({ userId })
+            .populate("items.productId") // Populate product details for each item
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        const totalOrders = await Order.countDocuments({ userId });
+
+        res.status(200).json({
+            orders,
+            totalPages: Math.ceil(totalOrders / limit),
+            currentPage: parseInt(page),
+        });
+    } catch (error) {
+        console.error("Error fetching user orders:", error);
+        res.status(500).json({ message: "Error fetching orders" });
+    }
+});
+
+
 router.post("/orders/:userId", async (req, res) => {
     const { userId } = req.params;
     const { username, phone, address, cartItems } = req.body;

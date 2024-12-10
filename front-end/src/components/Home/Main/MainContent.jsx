@@ -3,6 +3,8 @@ import { Star } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { formatMoney } from "../../../libs/utilities";
+import { toast, ToastContainer } from 'react-toastify';  // Import Toastify
+import 'react-toastify/dist/ReactToastify.css';  // Import Toastify styles
 
 const ProductCard = ({ product }) => (
     <Link
@@ -10,8 +12,6 @@ const ProductCard = ({ product }) => (
         className="group transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
     >
         <div className="bg-white border-2 border-gray-500 rounded-xl shadow-md overflow-hidden w-50">
-            {" "}
-            {/* Set fixed width */}
             <div className="relative">
                 <img
                     src={product.images[0]}
@@ -43,11 +43,7 @@ const ProductCard = ({ product }) => (
                         {[...Array(5)].map((_, index) => (
                             <Star
                                 key={index}
-                                fill={
-                                    index < Math.floor(product.rating)
-                                        ? "currentColor"
-                                        : "none"
-                                }
+                                fill={index < Math.floor(product.rating) ? "currentColor" : "none"}
                                 size={16}
                             />
                         ))}
@@ -64,17 +60,15 @@ const MainContent = () => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
-
     const api = import.meta.env.VITE_APP_URL;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [productsResponse, categoriesResponse] =
-                    await Promise.all([
-                        axios.get(`${api}/api/product/products`),
-                        axios.get(`${api}/api/category/categories/all`),
-                    ]);
+                const [productsResponse, categoriesResponse] = await Promise.all([
+                    axios.get(`${api}/api/product/products`),
+                    axios.get(`${api}/api/category/categories/all`),
+                ]);
 
                 setProducts(productsResponse.data.products);
                 setCategories(categoriesResponse.data.categories);
@@ -126,12 +120,13 @@ const MainContent = () => {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
-            // Navigate to search results page with query as URL parameter
-            navigate(
-                `/search-results/${encodeURIComponent(searchQuery.trim())}`
-            );
+        if (!searchQuery.trim()) {
+            // Show a toast message when search query is empty
+            toast.error("Please enter a search keyword.");
+            return; // Prevent form submission
         }
+        // Navigate to search results page if there's a valid search query
+        navigate(`/search-results/${encodeURIComponent(searchQuery.trim())}`);
     };
 
     const renderProductGrid = (productsToRender) => (
@@ -174,7 +169,6 @@ const MainContent = () => {
                 </button>
             </form>
 
-            {/* Rest of the component remains the same */}
             {/* Category Filters and Product Sections */}
             <div className="flex justify-center items-center py-4 gap-6">
                 <button
@@ -229,8 +223,7 @@ const MainContent = () => {
                             </h2>
                             {renderProductGrid(
                                 products.filter(
-                                    (product) =>
-                                        product.category === category.type
+                                    (product) => product.category === category.type
                                 )
                             )}
                         </div>
@@ -244,6 +237,9 @@ const MainContent = () => {
                     {renderProductGrid(filteredProducts)}
                 </div>
             )}
+
+            {/* Toast Container for error messages */}
+            <ToastContainer />
         </main>
     );
 };
