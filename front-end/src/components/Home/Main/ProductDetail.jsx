@@ -11,23 +11,45 @@ const ProductDetail = () => {
     const { productId } = useParams();
 
     const [product, setProduct] = useState(null);
+    const [relatedProducts, setRelatedProducts] = useState([]); // New state for related products
     const [quantity, setQuantity] = useState(1);
     const [selectedImg, setSelectedImg] = useState("");
-
     const navigate = useNavigate();
     const api = import.meta.env.VITE_APP_URL;
+
+    // Function to fetch all products
+    const fetchAllProducts = async () => {
+        try {
+            const response = await axios.get(`${api}/api/product/products`);
+            if (response.status === 200) {
+                return response.data.products; // Return all products
+            }
+        } catch (error) {
+            console.error("Error fetching all products:", error);
+            return [];
+        }
+    };
 
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
-                const response = await axios.get(
-                    `${api}/api/product/products/${productId}`
-                );
+                // Fetch product details
+                const response = await axios.get(`${api}/api/product/products/${productId}`);
                 if (response.status === 200) {
                     const data = response.data.product;
                     setProduct(data);
                     setQuantity(1);
                     setSelectedImg(data.images[0]);
+
+                    // Fetch all products to find related products based on category
+                    const allProducts = await fetchAllProducts();
+
+                    // Filter related products (same category, different productId)
+                    const related = allProducts.filter(
+                        (item) => item.category === data.category && item._id !== data._id
+                    );
+
+                    setRelatedProducts(related); // Update related products state
                 }
             } catch (error) {
                 if (error.response) {
@@ -40,7 +62,6 @@ const ProductDetail = () => {
 
         // Scroll to top whenever the page is visited or the productId changes
         window.scrollTo(0, 0);
-
         fetchProductDetails();
     }, [productId]);
 
@@ -102,10 +123,8 @@ const ProductDetail = () => {
             cancelButtonText: "No, cancel",
         }).then((result) => {
             if (result.isConfirmed) {
-                // Nếu người dùng chọn Yes, chuyển đến trang checkout
                 navigate("/checkout");
             } else {
-                // Nếu người dùng chọn No, không làm gì cả
                 console.log("Purchase cancelled");
             }
         });
@@ -127,14 +146,12 @@ const ProductDetail = () => {
         <div className="flex flex-col items-center py-8 mt-20 min-h-screen">
             <div className="flex justify-between w-full max-w-5xl bg-gray-100 p-5 rounded-md">
                 <div className="relative w-full max-w-md">
-                    {/* Main Image */}
                     <img
                         src={selectedImg}
                         alt={product.name}
                         className="w-[500px] h-[500px] rounded-md object-cover"
                     />
 
-                    {/* Thumbnails */}
                     <div className="mt-4 flex justify-start gap-3">
                         {product.images.map((image, index) => (
                             <img
@@ -154,8 +171,8 @@ const ProductDetail = () => {
 
                     <hr className="border-t-2 border-orange-500 my-5" />
 
-                    <div className=" flex flex-col gap-y-5 text-xl">
-                        <p className="">
+                    <div className="flex flex-col gap-y-5 text-xl">
+                        <p>
                             <strong>Category: </strong>
                             {product.category}
                         </p>
@@ -168,8 +185,7 @@ const ProductDetail = () => {
                             {formatMoney(product.price)}
                         </p>
                         <p>
-                            <strong>Most Sold: </strong>{" "}
-                            {product.most_sale || "Not Available"}
+                            <strong>Most Sold: </strong> {product.most_sale || "Not Available"}
                         </p>
                     </div>
 
@@ -207,6 +223,28 @@ const ProductDetail = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Related Products Section */}
+            {relatedProducts.length > 0 && (
+                <div className="mt-16 w-full max-w-5xl px-5">
+                    <h3 className="text-xl font-bold text-gray-800 mb-6">Related Products</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        {relatedProducts.map((relatedProduct) => (
+                            <div key={relatedProduct._id} className="border p-5 rounded-lg shadow-lg hover:shadow-xl">
+                                <img
+                                    src={relatedProduct.images[0]}
+                                    alt={relatedProduct.name}
+                                    className="w-full h-48 object-cover rounded-md"
+                                />
+                                <div className="mt-3">
+                                    <p className="text-lg font-semibold">{relatedProduct.name}</p>
+                                    <p className="text-gray-600">{formatMoney(relatedProduct.price)}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
