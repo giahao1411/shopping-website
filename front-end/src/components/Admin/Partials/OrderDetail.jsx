@@ -15,12 +15,6 @@ const OrderDetail = () => {
                 `${api}/api/order/orders/${orderId}`
             );
 
-            console.log(response.data.order.items);
-            console.log(
-                typeof response.data.order.totalPrice,
-                response.data.order.totalPrice
-            );
-
             if (response.status === 200) {
                 setOrder(response.data.order);
             } else {

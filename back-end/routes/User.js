@@ -310,7 +310,11 @@ router.post("/users/:id/add-coupon", async (req, res) => {
     const { couponCode } = req.body;  // couponCode thay vì CouponCode
     console.log("Coupon Code Received:", couponCode);
     try {
+<<<<<<< HEAD
         const coupon = await Coupon.findOne({ code: couponCode, status: "enabled" });
+=======
+        const coupon = await Coupon.findOne({ code: CouponCode, status: "enabled" });
+>>>>>>> 97f575d8ab18aede7516077f04f4196c0311caf0
         if (!coupon) {
             return res.status(404).json({ message: "Coupon not found or disabled" });
         }
@@ -324,8 +328,12 @@ router.post("/users/:id/add-coupon", async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+<<<<<<< HEAD
         // Thêm coupon vào User
         await user.useCoupon(couponCode);
+=======
+        await user.useCoupon(CouponCode);
+>>>>>>> 97f575d8ab18aede7516077f04f4196c0311caf0
 
         coupon.usesCount += 1;
         await coupon.save();

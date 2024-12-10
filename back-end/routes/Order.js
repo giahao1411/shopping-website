@@ -4,6 +4,7 @@ const router = express.Router();
 const Order = require("../models/OrderModel");
 const User = require("../models/UserModel");
 const Cart = require("../models/CartModel");
+const Product = require("../models/ProductModel");
 
 router.get("/orders", async (req, res) => {
     try {
@@ -39,6 +40,32 @@ router.get("/orders/:id", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+router.get("/orders/user/:userId", async (req, res) => {
+    const { userId } = req.params;
+    const { page = 1, limit = 8 } = req.query;
+
+    try {
+        const skip = (page - 1) * limit;
+
+        const orders = await Order.find({ userId })
+            .populate("items.productId") // Populate product details for each item
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        const totalOrders = await Order.countDocuments({ userId });
+
+        res.status(200).json({
+            orders,
+            totalPages: Math.ceil(totalOrders / limit),
+            currentPage: parseInt(page),
+        });
+    } catch (error) {
+        console.error("Error fetching user orders:", error);
+        res.status(500).json({ message: "Error fetching orders" });
+    }
+});
+
 
 router.post("/orders/:userId", async (req, res) => {
     const { userId } = req.params;
@@ -110,6 +137,14 @@ router.patch("/orders/edit/:id", async (req, res) => {
                 );
                 break;
             case "Cancelled":
+                // restore product's quantity in cart items
+                for (const item of order.items) {
+                    const product = await Product.findById(item.productId);
+                    if (product) {
+                        product.quantity += item.quantity;
+                        await product.save();
+                    }
+                }
                 order.expectedAt = null;
                 break;
             case "Delivering":
