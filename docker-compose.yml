@@ -42,4 +42,4 @@ volumes:
 
 networks:
   shopping-network:
-    drive: bridge
+    driver: bridge
