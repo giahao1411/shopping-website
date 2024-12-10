@@ -1,7 +1,7 @@
 services:
   backend-app:
     build:
-      context: ./back-end  # Docker sẽ tìm Dockerfile trong thư mục này
+      context: ./back-end  
     container_name: backend-app
     ports:
       - "8080:8080"
@@ -28,9 +28,9 @@ services:
     env_file:
       - ./front-end/.env
     environment:
-      - VITE_APP_URL=http://localhost:8080  # URL của backend
+      - VITE_APP_URL=http://localhost:8080 
     depends_on:
-      - backend-app  # Thêm phụ thuộc để frontend không khởi động trước backend
+      - backend-app 
     networks:
       - app-network
     restart: unless-stopped

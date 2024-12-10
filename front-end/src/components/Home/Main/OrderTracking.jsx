@@ -1,77 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { BiInfoCircle } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import { formatDate, formatMoney } from "../../../libs/utilities";
 
-const OrderHistory = () => {
+const OrderTracking = () => {
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [filteredOrders, setFilteredOrders] = useState([]);
-    const navigate = useNavigate();
+    const api = import.meta.env.VITE_APP_URL;
 
-    const simulatedOrders = [
-        {
-            _id: "1",
-            createdAt: Date.now(),
-            totalPrice: "1,000",
-            status: "Pending",
-            items: [
-                { _id: "a1", name: "Product A", image: "link_to_image_A" },
-                { _id: "a2", name: "Product B", image: "link_to_image_B" },
-            ],
-        },
-        {
-            _id: "2",
-            createdAt: Date.now(),
-            totalPrice: "2,000",
-            status: "Confirmed",
-            items: [
-                { _id: "b1", name: "Product C", image: "link_to_image_C" },
-            ],
-        },
-        {
-            _id: "3",
-            createdAt: Date.now(),
-            totalPrice: "3,500",
-            status: "Shipping",
-            items: [
-                { _id: "c1", name: "Product D", image: "link_to_image_D" },
-                { _id: "c2", name: "Product E", image: "link_to_image_E" },
-            ],
-        },
-        {
-            _id: "4",
-            createdAt: Date.now(),
-            totalPrice: "1,500",
-            status: "Delivered",
-            items: [
-                { _id: "d1", name: "Product F", image: "link_to_image_F" },
-            ],
-        },
-    ];
-
-    useEffect(() => {
-        // Mô phỏng gọi API
-        setLoading(true);
-        setTimeout(() => {
-            setOrders(simulatedOrders);  // Dữ liệu giả lập
-            setFilteredOrders(simulatedOrders);  // Hiển thị tất cả đơn hàng ban đầu
-            setLoading(false);
-        }, 1000);  // Mô phỏng thời gian chờ của API
-    }, []);
-
-    const handleBack = () => {
-        navigate(-1);
-    };
-
-    const getStatusClass = (status) => {
+    const getStatusColor = (status) => {
         switch (status) {
             case "Pending":
                 return "text-yellow-500";
             case "Confirmed":
-            case "Shipping":
+            case "Delivering":
                 return "text-green-500";
             case "Delivered":
+                return "text-blue-500";
             case "Cancelled":
                 return "text-red-500";
             default:
@@ -79,94 +24,107 @@ const OrderHistory = () => {
         }
     };
 
-    const handleSearch = () => {
-        const result = orders.filter(order =>
-            order._id.toLowerCase().includes(searchQuery) ||
-            order.items.some(item => item.name.toLowerCase().includes(searchQuery))
-        );
-        setFilteredOrders(result);
+    // Fetch orders from the server
+    const fetchOrders = async () => {
+        try {
+            const response = await axios.get(
+                `${api}/api/order/orders?limit=8`
+            );
+            if (response.status === 200) {
+                console.log("Fetched orders:", response.data.orders);
+                setOrders(response.data.orders);
+            }
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        }
     };
 
-    return (
-        <div className="py-20 font-sans min-h-screen">
-            <h2 className="text-center font-bold text-3xl font-semibold mb-8 text-orange-500">
-                Order Tracking
-            </h2>
+    // Cancel order
+    const cancelOrder = async (id) => {
+        try {
+            const response = await axios.patch(
+                `${api}/api/order/orders/edit/${id}`,
+                {
+                    orderstatus: "Cancelled", // Update status to "Cancelled"
+                }
+            );
+            if (response.status === 200) {
+                console.log("Cancelled order data:", response.data);
+                fetchOrders(); // Fetch orders again after cancellation
+            }
+        } catch (error) {
+            console.error("Error cancelling order:", error);
+        }
+    };
 
-            <div className="flex mb-6 max-w-7xl mx-auto">
-                <div className="flex w-full max-w-xs">
-                    <input
-                        type="text"
-                        placeholder="Search by Order ID or Product Name"
-                        className="w-full p-3 border border-gray-300 rounded-md"
-                        onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
-                    />
-                </div>
-                <button
-                    onClick={handleSearch}
-                    className="ml-2 py-3 px-6 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition-colors"
-                >
-                    Search
-                </button>
+    // Fetch orders when component mounts
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
+    return (
+        <div className="min-h-screen mt-20 w-full max-w-screen-lg mx-auto">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl text-orange-500 font-bold text-gray-800">Order Tracking</h1>
+                <Link to="/" className="text-sm text-blue-500 hover:text-blue-700">
+                    <BiInfoCircle className="inline mr-2" /> Back to Home
+                </Link>
             </div>
 
+            <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
+                <table className="min-w-full table-auto border-collapse">
+                    <thead>
+                        <tr className="bg-gray-100 text-gray-700">
+                            <th className="px-4 py-3 text-center border-b">Username</th>
+                            <th className="px-4 py-3 text-center border-b">Address</th>
+                            <th className="px-4 py-3 text-center border-b">Phone</th>
+                            <th className="px-4 py-3 text-center border-b">Total Price</th>
+                            <th className="px-4 py-3 text-center border-b">Created At</th>
+                            <th className="px-4 py-3 text-center border-b">Status</th>
+                            <th className="px-4 py-3 text-center border-b">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.length > 0 ? (
+                            orders.map((order, index) => (
+                                <tr
+                                    key={order._id || index}
+                                    className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+                                >
+                                    <td className="px-4 py-3 text-center">{order.username}</td>
+                                    <td className="px-4 py-3 text-center">{order.address}</td>
+                                    <td className="px-4 py-3 text-center">{order.phone}</td>
+                                    <td className="px-4 py-3 text-center">{formatMoney(order.totalPrice)}</td>
+                                    <td className="px-4 py-3 text-center">{formatDate(order.createdAt)}</td>
+                                    <td className="px-4 py-3 text-center">
+                                        <span className={`font-semibold ${getStatusColor(order.orderstatus)}`}>{order.orderstatus}</span>
+                                    </td>
+                                    <td className="px-4 py-3 text-center">
+                                        <button
+                                            onClick={() => cancelOrder(order._id)}
+                                            className={`px-4 py-2 rounded-md focus:outline-none ${order.orderstatus === "Pending" || order.orderstatus === "Confirmed"
+                                                    ? "bg-red-500 text-white hover:bg-red-700" // Nút hiển thị bình thường
+                                                    : "bg-gray-400 text-gray-700 cursor-not-allowed" // Nút mờ và không tương tác được
+                                                }`}
+                                            disabled={order.orderstatus !== "Pending" && order.orderstatus !== "Confirmed"} // Vô hiệu hóa nút khi không phải Pending hoặc Confirmed
+                                        >
+                                            Cancel Order
+                                        </button>
+                                    </td>
 
-            {loading ? (
-                <p className="text-center text-gray-600">Loading...</p>
-            ) : error ? (
-                <p className="text-center text-red-500">{error}</p>
-            ) : filteredOrders.length === 0 ? (
-                <p className="text-center text-gray-600">No orders found.</p>
-            ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full border border-gray-300 max-w-7xl mx-auto">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="p-4 border border-gray-300 text-center text-lg">Order ID</th>
-                                <th className="p-4 border border-gray-300 text-center text-lg">Product Name</th>
-                                <th className="p-4 border border-gray-300 text-center text-lg">Date</th>
-                                <th className="p-4 border border-gray-300 text-center text-lg">Total</th>
-                                <th className="p-4 border border-gray-300 text-center text-lg">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredOrders.map((order, index) => (
-                                <tr key={order._id || index} className="bg-gray-100 even:bg-white">
-                                    <td className="p-4 border border-gray-300 text-center">{order._id}</td>
-                                    <td className="p-4 border border-gray-300 text-center">
-                                        {order.items?.map(item => (
-                                            <div key={item._id} className="flex items-center">
-                                                <img
-                                                    src={item.image}
-                                                    alt={item.name}
-                                                    className="inline-block w-12 h-12 mr-2"
-                                                />
-                                                {item.name}
-                                            </div>
-                                        ))}
-                                    </td>
-                                    <td className="p-4 border border-gray-300 text-center">
-                                        {new Date(order.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="p-4 border border-gray-300 text-center">{order.totalPrice}</td>
-                                    <td className={`p-4 border border-gray-300 text-center font-semibold ${getStatusClass(order.status)}`}>
-                                        {order.status}
-                                    </td>
+
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            <button
-                className="block w-48 mx-auto mt-10 py-3 px-6 text-white bg-blue-600 hover:bg-blue-800 rounded-md transition-colors text-lg"
-                onClick={handleBack}
-            >
-                Back
-            </button>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="7" className="text-center py-4 text-gray-500">No orders available</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
 
-export default OrderHistory;
+export default OrderTracking;
