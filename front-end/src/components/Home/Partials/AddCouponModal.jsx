@@ -20,13 +20,17 @@ const AddCouponModal = ({ isOpen, onClose, userId, onAddCoupon }) => {
 
 		try {
 			const response = await axios.post(`${api}/api/user/users/${userId}/add-coupon`, {
-				couponCode: trimmedCouponCode, // Đảm bảo tên trường là "couponCode"
+				couponCode: trimmedCouponCode,
 			});
 
-			if (response.status === 200) {
+			// Log the entire response to debug
+			console.log("API Response:", response);
+
+			if (response.status === 200 || response.status === 201) {
+				// Cập nhật để chấp nhận nhiều status code hơn
 				Swal.fire({
 					icon: "success",
-					title: response.data.message,
+					title: response.data.message || "Coupon added successfully.",
 					showConfirmButton: false,
 					timer: 1500,
 				});
@@ -36,27 +40,30 @@ const AddCouponModal = ({ isOpen, onClose, userId, onAddCoupon }) => {
 			} else {
 				Swal.fire({
 					icon: "error",
-					title: response.data.message || "Mã coupon không tồn tại hoặc đã bị vô hiệu hóa.",
+					title: response.data.message || "Mã coupon không hợp lệ hoặc đã bị vô hiệu hóa.",
 					showConfirmButton: true,
 				});
 			}
 		} catch (error) {
+			// Log the error details for debugging
+			console.error("Lỗi từ API:", error);
+
 			if (error.response) {
-				console.error("Lỗi từ API: ", error.response);
+				// Lỗi từ server
 				Swal.fire({
 					icon: "error",
 					title: error.response.data.message || "Đã xảy ra lỗi trên máy chủ.",
 					showConfirmButton: true,
 				});
 			} else if (error.request) {
-				console.error("Không có phản hồi từ máy chủ: ", error.request);
+				// Lỗi không nhận được phản hồi từ server
 				Swal.fire({
 					icon: "error",
 					title: "Không nhận được phản hồi từ máy chủ.",
 					showConfirmButton: true,
 				});
 			} else {
-				console.error("Lỗi không xác định: ", error.message);
+				// Lỗi không xác định
 				Swal.fire({
 					icon: "error",
 					title: "Đã xảy ra lỗi không xác định.",

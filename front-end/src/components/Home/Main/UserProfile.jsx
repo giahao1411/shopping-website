@@ -225,47 +225,68 @@ const UserProfile = () => {
 		}
 	};
 
-	const onAddCoupon = async (couponCode) => {
-		// Tạo một mảng coupon mới, thêm couponCode vào mảng hiện tại
-		const updatedCoupons = [...(user.coupons || []), couponCode];
+	const onAddCoupon = (couponCode) => {
+		// Cập nhật coupons trong state trước khi gửi request tới API
+		setUser((prevUser) => ({
+			...prevUser,
+			coupons: [...prevUser.coupons, couponCode],
+		}));
 
-		try {
-			// Thực hiện yêu cầu PATCH để thêm coupon mới
-			const response = await axios.patch(`${api}/api/user/users/${storedUser.userId}/update-coupon`, {
-				coupons: updatedCoupons,
-			});
-
-			// Cập nhật lại thông tin người dùng với các coupon mới
-			setUser((prevUser) => ({
-				...prevUser,
-				coupons: response.data.Usercoupons,
-			}));
-
-			Swal.fire({
-				icon: "success",
-				title: "Coupon added successfully!",
-				showConfirmButton: false,
-				timer: 1500,
-			});
-		} catch (error) {
-			if (error.response) {
-				Swal.fire({
-					icon: "error",
-					title: "Failed to add coupon",
-					text: error.response.data.message || "An error occurred while adding the coupon.",
-					showConfirmButton: true,
+		// Gửi request tới API để cập nhật coupon
+		const addCouponToServer = async () => {
+			try {
+				const response = await axios.patch(`${api}/api/user/users/${storedUser.userId}/update-coupon`, {
+					coupons: [...user.coupons, couponCode],
 				});
-				console.error("Error:", error.response.data.message);
-			} else {
-				Swal.fire({
-					icon: "error",
-					title: "Unexpected Error",
-					text: error.message,
-					showConfirmButton: true,
-				});
-				console.error("Error:", error.message);
+
+				// Kiểm tra xem API có phản hồi thành công không
+				if (response.status === 200) {
+					Swal.fire({
+						icon: "success",
+						title: "Coupon added successfully!",
+						showConfirmButton: false,
+						timer: 1500,
+					});
+				} else {
+					// Nếu thất bại, cần xóa coupon đã thêm từ state
+					setUser((prevUser) => ({
+						...prevUser,
+						coupons: prevUser.coupons.filter((coupon) => coupon !== couponCode),
+					}));
+					Swal.fire({
+						icon: "error",
+						title: "Failed to add coupon",
+						text: response.data.message || "An error occurred while adding the coupon.",
+						showConfirmButton: true,
+					});
+				}
+			} catch (error) {
+				// Nếu có lỗi, cần xóa coupon đã thêm từ state
+				setUser((prevUser) => ({
+					...prevUser,
+					coupons: prevUser.coupons.filter((coupon) => coupon !== couponCode),
+				}));
+
+				if (error.response) {
+					Swal.fire({
+						icon: "error",
+						title: "Failed to add coupon",
+						text: error.response.data.message || "An error occurred while adding the coupon.",
+						showConfirmButton: true,
+					});
+				} else {
+					Swal.fire({
+						icon: "error",
+						title: "Unexpected Error",
+						text: error.message,
+						showConfirmButton: true,
+					});
+				}
 			}
-		}
+		};
+
+		// Gọi hàm gửi request
+		window.location.reload(false);
 	};
 
 	return (
