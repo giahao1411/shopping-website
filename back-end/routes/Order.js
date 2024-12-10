@@ -4,6 +4,7 @@ const router = express.Router();
 const Order = require("../models/OrderModel");
 const User = require("../models/UserModel");
 const Cart = require("../models/CartModel");
+const Product = require("../models/ProductModel");
 
 router.get("/orders", async (req, res) => {
     try {
@@ -110,6 +111,14 @@ router.patch("/orders/edit/:id", async (req, res) => {
                 );
                 break;
             case "Cancelled":
+                // restore product's quantity in cart items
+                for (const item of order.items) {
+                    const product = await Product.findById(item.productId);
+                    if (product) {
+                        product.quantity += item.quantity;
+                        await product.save();
+                    }
+                }
                 order.expectedAt = null;
                 break;
             case "Delivering":

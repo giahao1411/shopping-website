@@ -313,9 +313,6 @@ const Checkout = () => {
                                             Quantity:{" "}
                                             {formatNumber(item.quantity)}
                                         </p>
-                                        <button className="text-blue-500 hover:underline text-sm mt-2">
-                                            Remove from cart
-                                        </button>
                                     </div>
                                     <p className="font-semibold">
                                         {formatMoney(item.totalPrice)}
