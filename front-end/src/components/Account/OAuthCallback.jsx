@@ -26,7 +26,7 @@ const OAuthCallback = () => {
 
                     localStorage.setItem(
                         SESSION,
-                        JSON.stringify({ userId, username, email })
+                        JSON.stringify({ userId, username, email, role })
                     );
 
                     navigate(role === "user" ? "/" : "/admin");
