@@ -6,10 +6,12 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const helmet = require("helmet");
 const path = require("path");
+const RedisStore = require("connect-redis").default;
 
 // Import modules
 const database = require("./config/database");
 const corsOptions = require("./config/cors");
+const { redisClient } = require("./config/redisClient");
 require("./utilities/googleAuth");
 
 // Import routers
@@ -33,13 +35,14 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Session configuration for passport.js
 app.use(
     session({
+        store: new RedisStore({ client: redisClient }),
         secret: "itsasecret",
         resave: false,
         saveUninitialized: false,
         cookie: {
             secure: process.env.NODE_ENV === "production",
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24, // Cookie expiration time (24 hours)
+            maxAge: 1000 * 60 * 60 * 1, // Cookie expiration time (1 hours)
         },
     })
 );
