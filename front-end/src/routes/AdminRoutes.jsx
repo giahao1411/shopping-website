@@ -8,6 +8,7 @@ import Order from "../components/Admin/Main/Order";
 import Product from "../components/Admin/Main/Product";
 import User from "../components/Admin/Main/User";
 import CreateCategory from "../components/Admin/Partials/CreateCategory";
+import CreateCoupon from "../components/Admin/Partials/CreateCoupon";
 import CreateProduct from "../components/Admin/Partials/CreateProduct";
 import ProductDetail from "../components/Admin/Partials/ProductDetail";
 
@@ -23,6 +24,7 @@ const AdminRoutes = [
 	<Route key="admin-create-product" path="/admin/product/create" element={<CreateProduct />} />,
 	<Route key="admin-product-detail" path="/admin/product/:productId" element={<ProductDetail />} />,
 	<Route key="admin-create-category" path="/admin/category/create" element={<CreateCategory />} />,
+	<Route key="admin-create-coupon" path="/admin/coupon/create" element={<CreateCoupon />} />,
 ];
 
 export default AdminRoutes;

@@ -136,7 +136,7 @@ const Order = () => {
 										<select
 											value={order.orderstatus}
 											onChange={(e) => updateOrderStatus(order._id, e.target.value)}
-											className={`p-2 bg-gray-50 border-none rounded-md outline-none font-semibold ${getStatusColor(
+											className={`p-2 bg-inherit border-none rounded-md outline-none font-semibold ${getStatusColor(
 												order.orderstatus
 											)}`}
 										>
