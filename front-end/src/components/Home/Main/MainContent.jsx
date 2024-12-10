@@ -25,7 +25,7 @@ const ProductCard = ({ product }) => (
                 )}
             </div>
             <div className="p-4">
-                <h3 className=" w-full h-14 break-word font-bold text-lg mb-2 line-clamp-2 text-gray-800">
+                <h3 className="w-full h-14 break-word font-bold text-lg mb-2 line-clamp-2 text-gray-800">
                     {product.name}
                 </h3>
                 <div className="flex justify-between items-center">
@@ -59,6 +59,8 @@ const MainContent = () => {
     const [selectedFilter, setSelectedFilter] = useState("all");
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate();
     const api = import.meta.env.VITE_APP_URL;
 
@@ -66,11 +68,12 @@ const MainContent = () => {
         const fetchData = async () => {
             try {
                 const [productsResponse, categoriesResponse] = await Promise.all([
-                    axios.get(`${api}/api/product/products`),
+                    axios.get(`${api}/api/product/products`, { params: { page: currentPage, limit: 7 } }),
                     axios.get(`${api}/api/category/categories/all`),
                 ]);
 
                 setProducts(productsResponse.data.products);
+                setTotalPages(productsResponse.data.totalPages);
                 setCategories(categoriesResponse.data.categories);
             } catch (error) {
                 console.error("Data fetching error:", error);
@@ -78,7 +81,7 @@ const MainContent = () => {
         };
 
         fetchData();
-    }, []);
+    }, [currentPage]);
 
     const filteredProducts = useMemo(() => {
         let filtered = products;
@@ -98,22 +101,6 @@ const MainContent = () => {
         return filtered;
     }, [products, selectedFilter, searchQuery]);
 
-    const bestSellingProducts = useMemo(
-        () => [...products].sort((a, b) => b.sales - a.sales).slice(0, 5),
-        [products]
-    );
-
-    const newArrivals = useMemo(() => {
-        const today = new Date();
-        return products.filter((product) => {
-            const createdAt = new Date(product.createdAt);
-            const diffDays = Math.floor(
-                Math.abs(today - createdAt) / (1000 * 60 * 60 * 24)
-            );
-            return diffDays <= 7;
-        });
-    }, [products]);
-
     const handleCategoryFilter = (category) => {
         setSelectedFilter(category);
     };
@@ -127,6 +114,10 @@ const MainContent = () => {
         }
         // Navigate to search results page if there's a valid search query
         navigate(`/search-results/${encodeURIComponent(searchQuery.trim())}`);
+    };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
     };
 
     const renderProductGrid = (productsToRender) => (
@@ -197,23 +188,15 @@ const MainContent = () => {
                 ))}
             </div>
 
-            {/* Existing product sections */}
+            {/* Product Sections */}
             {selectedFilter === "all" ? (
-                <>
-                    {/* New Arrivals */}
-                    {/* <div className="mt-10">
-                        <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
-                            New Arrival
-                        </h2>
-                        {renderProductGrid(newArrivals.slice(0, 5))}
-                    </div> */}
-
+                <div>
                     {/* Best Selling */}
                     <div className="mt-10">
                         <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
                             Best Selling
                         </h2>
-                        {renderProductGrid(bestSellingProducts)}
+                        {renderProductGrid(filteredProducts)}
                     </div>
 
                     {categories.map((category) => (
@@ -228,7 +211,7 @@ const MainContent = () => {
                             )}
                         </div>
                     ))}
-                </>
+                </div>
             ) : (
                 <div className="mt-10">
                     <h2 className="text-2xl font-semibold text-orange-500 uppercase text-center border-b-2 border-black pb-2 mx-[250px]">
@@ -238,7 +221,38 @@ const MainContent = () => {
                 </div>
             )}
 
-            {/* Toast Container for error messages */}
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-8">
+                <button
+                    className="px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-full"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    Prev
+                </button>
+                {[...Array(totalPages)].map((_, index) => (
+                    <button
+                        key={index}
+                        className={`px-4 py-2 mx-2 rounded-full ${
+                            currentPage === index + 1
+                                ? "bg-orange-500 text-white"
+                                : "bg-gray-200 text-gray-800"
+                        }`}
+                        onClick={() => handlePageChange(index + 1)}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+                <button
+                    className="px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-full"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                    Next
+                </button>
+            </div>
+
+            {/* Toast Container */}
             <ToastContainer />
         </main>
     );
